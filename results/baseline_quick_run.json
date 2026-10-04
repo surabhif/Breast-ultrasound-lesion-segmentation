@@ -1,0 +1,48 @@
+{
+  "run_id": "baseline_quick",
+  "note": "Tiny U-Net from scratch at 64\u00d764 for a fast CPU baseline.",
+  "hardware": {
+    "device": "cpu",
+    "platform": "Linux-6.12.94+-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "torch": "2.14.1+cpu"
+  },
+  "config": {
+    "model_kind": "tiny",
+    "img_size": 64,
+    "epochs": 5,
+    "batch_size": 8,
+    "learning_rate": 0.001,
+    "seed": 42,
+    "pretrained": false
+  },
+  "subset_sizes": {
+    "train": 534,
+    "val": 134,
+    "test": 112
+  },
+  "runtime_seconds": 45,
+  "metrics": {
+    "best_val_dice": 0.3860762974148625,
+    "test": {
+      "n": 112,
+      "dice_mean": 0.4236966758047305,
+      "dice_ci95": [
+        0.36612863950803437,
+        0.48535565090851984
+      ],
+      "iou_mean": 0.32868713791895104,
+      "iou_ci95": [
+        0.27775178935681943,
+        0.3840616932706907
+      ],
+      "cls_auc": 0.8031746031746032,
+      "n_cls": 93
+    }
+  },
+  "artifacts": {
+    "checkpoint": "export/quick_best.pt",
+    "onnx": "web/public/models/busi_unet.onnx",
+    "onnx_size_mb": 1.881
+  }
+}

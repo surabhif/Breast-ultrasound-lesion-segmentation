@@ -1,0 +1,5 @@
+trained_int8_dynamic
+fp32_mb=54.963
+int8_mb=15.869
+max_cls_delta=0.0086
+mean_seg_delta=0.0014
