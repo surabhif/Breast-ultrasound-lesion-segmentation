@@ -1,0 +1,79 @@
+{
+  "disclaimer": "Research samples from the BUSI held-out test split. Not for clinical use. Cite Al-Dhabyani et al., Data in Brief 2020.",
+  "seed": 42,
+  "source": "BUSI Dataset_BUSI_with_GT (Al-Dhabyani et al. 2020)",
+  "samples": [
+    {
+      "id": "busi-test-00",
+      "src": "samples/sample_00_benign.png",
+      "mask_src": "samples/sample_00_benign_mask.png",
+      "label": "benign",
+      "groundTruthMalignant": false,
+      "hasLesion": true,
+      "case_id": "benign/benign (343).png",
+      "kind": "ultrasound",
+      "annotation_flag": true,
+      "note": "Held-out BUSI test image (grouped split)."
+    },
+    {
+      "id": "busi-test-01",
+      "src": "samples/sample_01_benign.png",
+      "mask_src": "samples/sample_01_benign_mask.png",
+      "label": "benign",
+      "groundTruthMalignant": false,
+      "hasLesion": true,
+      "case_id": "benign/benign (208).png",
+      "kind": "ultrasound",
+      "annotation_flag": false,
+      "note": "Held-out BUSI test image (grouped split)."
+    },
+    {
+      "id": "busi-test-02",
+      "src": "samples/sample_02_malignant.png",
+      "mask_src": "samples/sample_02_malignant_mask.png",
+      "label": "malignant",
+      "groundTruthMalignant": true,
+      "hasLesion": true,
+      "case_id": "malignant/malignant (142).png",
+      "kind": "ultrasound",
+      "annotation_flag": true,
+      "note": "Held-out BUSI test image (grouped split)."
+    },
+    {
+      "id": "busi-test-03",
+      "src": "samples/sample_03_malignant.png",
+      "mask_src": "samples/sample_03_malignant_mask.png",
+      "label": "malignant",
+      "groundTruthMalignant": true,
+      "hasLesion": true,
+      "case_id": "malignant/malignant (102).png",
+      "kind": "ultrasound",
+      "annotation_flag": false,
+      "note": "Held-out BUSI test image (grouped split)."
+    },
+    {
+      "id": "busi-test-04",
+      "src": "samples/sample_04_normal.png",
+      "mask_src": "samples/sample_04_normal_mask.png",
+      "label": "normal",
+      "groundTruthMalignant": null,
+      "hasLesion": false,
+      "case_id": "normal/normal (126).png",
+      "kind": "ultrasound",
+      "annotation_flag": false,
+      "note": "Held-out BUSI test image (grouped split)."
+    },
+    {
+      "id": "busi-test-05",
+      "src": "samples/sample_05_normal.png",
+      "mask_src": "samples/sample_05_normal_mask.png",
+      "label": "normal",
+      "groundTruthMalignant": null,
+      "hasLesion": false,
+      "case_id": "normal/normal (96).png",
+      "kind": "ultrasound",
+      "annotation_flag": true,
+      "note": "Held-out BUSI test image (grouped split)."
+    }
+  ]
+}

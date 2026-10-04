@@ -1,0 +1,96 @@
+:root {
+  --bg: #e8eef3;
+  --bg-deep: #d5e0e8;
+  --ink: #14232e;
+  --ink-soft: #2f4454;
+  --muted: #5a7182;
+  --line: #b7c7d3;
+  --panel: #f7fafc;
+  --accent: #1a5f7a;
+  --accent-deep: #12485c;
+  --warn: #7a3a14;
+  --warn-bg: #f6e7d9;
+  --malignant: #9f2d42;
+  --benign: #1a5f7a;
+  --normal: #3d6b4f;
+  --lesion: #c45c26;
+  --radius: 12px;
+  --shadow: 0 14px 36px rgba(20, 35, 46, 0.08);
+  --font-sans: 'Figtree', 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+  color: var(--ink);
+  background:
+    radial-gradient(1000px 520px at 8% -8%, #cfe0ea 0%, transparent 55%),
+    radial-gradient(900px 480px at 100% 0%, #e4ebe4 0%, transparent 48%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: var(--accent-deep);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 0.5rem;
+}
+
+p {
+  margin: 0 0 1rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+code {
+  font-size: 0.92em;
+}

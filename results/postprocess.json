@@ -1,0 +1,6 @@
+{
+  "seg_threshold": 0.4,
+  "min_component_area": 40,
+  "selected_on": "validation_lesion_dice",
+  "val_lesion_dice_at_selection": 0.8236932935312447
+}

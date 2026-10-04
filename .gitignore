@@ -1,0 +1,40 @@
+# Root
+.DS_Store
+*.pt
+*.pth
+*.ckpt
+.ipynb_checkpoints/
+
+# Dataset (do not commit full BUSI)
+data/raw/
+data/processed/
+data/busi/
+!data/.gitkeep
+
+# Training exports (checkpoints stay local; ONNX goes under web/public)
+export/
+!export/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Node / web
+web/node_modules/
+web/dist/
+web/.env
+web/.env.*
+
+# IDE
+.idea/
+.vscode/
+artifacts/
+*.log
+
+# local onnx backups
+web/public/models/*_fp32.onnx
+web/public/models/*_int8.onnx

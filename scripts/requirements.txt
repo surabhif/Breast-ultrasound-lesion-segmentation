@@ -1,0 +1,15 @@
+# Core training / export dependencies for BUSI lesion segmentation
+torch>=2.1
+torchvision>=0.16
+numpy>=1.24
+pillow>=10.0
+scikit-learn>=1.3
+scikit-image>=0.22
+opencv-python-headless>=4.8
+ImageHash>=4.3
+onnx>=1.15
+onnxruntime>=1.16
+tqdm>=4.66
+matplotlib>=3.8
+pandas>=2.0
+scipy>=1.11
