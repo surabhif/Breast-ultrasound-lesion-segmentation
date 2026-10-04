@@ -70,11 +70,11 @@ Tiny U-Net at 64×64 — useful smoke test. Skip if you only want the full model
     md(
         """## 4. Full training (GPU recommended)
 
-ResNet-18 U-Net at 128×128. On Colab GPU this is much faster than CPU.
+ResNet-18 U-Net at 160×160. On Colab GPU this is much faster than CPU.
 """
     ),
     code(
-        """!python scripts/train_full.py --epochs 20 --img-size 128 --batch-size 16 --patience 5 --run-cv --cv-epochs 3"""
+        """!python scripts/train_full.py --epochs 40 --img-size 160 --batch-size 16 --patience 10 --freeze-epochs 3 --run-cv --cv-epochs 4"""
     ),
     md("## 5. Cleaning experiment, gallery, metrics, quantize"),
     code(

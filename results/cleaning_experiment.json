@@ -11,101 +11,101 @@
   "full_model_clean_vs_flagged": {
     "available": true,
     "model": "full_best.pt",
-    "img_size": 128,
+    "img_size": 160,
     "all_test": {
       "n": 112,
-      "dice_mean": 0.44952226127459916,
+      "dice_mean": 0.6860509370871287,
       "dice_ci95": [
-        0.3909451244006628,
-        0.5091303732424733
+        0.6190194951907657,
+        0.7503460170881062
       ],
-      "iou_mean": 0.3416219833565553,
+      "iou_mean": 0.6182044092295718,
       "iou_ci95": [
-        0.2909934375797003,
-        0.3942697306335316
+        0.5547237149998824,
+        0.6801579106357374
       ],
-      "cls_auc": 0.8264550264550264,
+      "cls_auc": 0.9391534391534392,
       "n_cls": 93
     },
     "clean_test": {
       "n": 55,
-      "dice_mean": 0.43679388386989493,
+      "dice_mean": 0.6229383436474434,
       "dice_ci95": [
-        0.35636988102620853,
-        0.5252455881031184
+        0.518874974725158,
+        0.7233388635118986
       ],
-      "iou_mean": 0.34151964335391477,
+      "iou_mean": 0.5555899367751069,
       "iou_ci95": [
-        0.271473806254201,
-        0.4246248236360098
+        0.4626937368557336,
+        0.6528117972255844
       ],
-      "cls_auc": 0.7991886409736308,
+      "cls_auc": 0.9391480730223123,
       "n_cls": 46
     },
     "flagged_test": {
       "n": 57,
-      "dice_mean": 0.46180402894580497,
+      "dice_mean": 0.746949053564018,
       "dice_ci95": [
-        0.39159080985416217,
-        0.5361026855552566
+        0.6576049082702858,
+        0.8313845214866082
       ],
-      "iou_mean": 0.34172073248191026,
+      "iou_mean": 0.6786218826505466,
       "iou_ci95": [
-        0.28396383540374215,
-        0.40340505600909854
+        0.5895887263427119,
+        0.7607346217925318
       ],
-      "cls_auc": 0.8619909502262444,
+      "cls_auc": 0.9434389140271493,
       "n_cls": 47
     },
     "lesion_clean": {
       "n": 46,
-      "dice_mean": 0.4135579043196343,
+      "dice_mean": 0.7013393234131683,
       "dice_ci95": [
-        0.3343408054683446,
-        0.4942241517285809
+        0.6029422698810779,
+        0.7963669935050559
       ],
-      "iou_mean": 0.29964305152878845,
+      "iou_mean": 0.6208140543266791,
       "iou_ci95": [
-        0.2393368147728509,
-        0.36467333097287424
+        0.5247748461004218,
+        0.7144616105632738
       ],
-      "cls_auc": 0.7991886409736308,
+      "cls_auc": 0.9391480730223123,
       "n_cls": 46
     },
     "lesion_flagged": {
       "n": 47,
-      "dice_mean": 0.5387836064616349,
+      "dice_mean": 0.7994914052826226,
       "dice_ci95": [
-        0.47409922080919564,
-        0.5961611551098521
+        0.7233690225337976,
+        0.8599403040350231
       ],
-      "iou_mean": 0.3931506724522308,
+      "iou_mean": 0.7166265384301148,
       "iou_ci95": [
-        0.34102719127924214,
-        0.4408734466104733
+        0.6392406390598291,
+        0.7811007460439051
       ],
-      "cls_auc": 0.8619909502262444,
+      "cls_auc": 0.9434389140271493,
       "n_cls": 47
     },
-    "dice_inflation_all_minus_clean": 0.0127,
-    "auc_all": 0.8264550264550264,
-    "auc_clean": 0.7991886409736308,
-    "auc_flagged": 0.8619909502262444,
+    "dice_inflation_all_minus_clean": 0.0631,
+    "auc_all": 0.9391534391534392,
+    "auc_clean": 0.9391480730223123,
+    "auc_flagged": 0.9434389140271493,
     "interpretation_hint": "If flagged (caliper/text) images score higher on classification AUC than clean images, the model may be using burned-in marks as shortcuts. If overall Dice drops after removing flagged cases, reported BUSI scores may be partly driven by easier annotated frames."
   },
   "duplicate_leakage_proxy": {
     "model": "tiny_unet_short",
     "epochs": 4,
     "img_size": 96,
-    "grouped_val_dice": 0.3032667039329294,
-    "grouped_test_dice": 0.31865605657189605,
-    "grouped_test_auc": 0.8216931216931216,
+    "grouped_val_dice": 0.4282133842942277,
+    "grouped_test_dice": 0.43274427201459403,
+    "grouped_test_auc": 0.7857142857142858,
     "random_split_val_group_leak_fraction": 0.3881,
     "n_val_leaky_ids": 52,
-    "leaky_val_dice": 0.36928490173694845,
-    "leaky_test_dice": 0.2933424103279563,
-    "leaky_test_auc": 0.8253968253968255,
-    "val_dice_inflation_leaky_minus_grouped": 0.066,
+    "leaky_val_dice": 0.423251828720063,
+    "leaky_test_dice": 0.3991820837138452,
+    "leaky_test_auc": 0.7714285714285715,
+    "val_dice_inflation_leaky_minus_grouped": -0.005,
     "note": "Random stratified splits (ignoring near-duplicate groups) often put near-copies in both train and val, which can inflate validation Dice/AUC. The held-out test set here stays the same grouped test for both models, so test deltas mainly reflect training differences; the key leakage signal is val inflation and the reported leak fraction."
   }
 }

@@ -1,12 +1,12 @@
 {
-  "fp32_mb": 54.963,
-  "int8_mb": 15.869,
-  "served_mb": 15.869,
+  "fp32_mb": 46.267,
+  "int8_mb": 11.664,
+  "served_mb": 11.664,
   "method": "dynamic_uint8",
   "adopted_for_web": true,
-  "gallery_mean_abs_delta_cls": 0.0015059163173039754,
-  "gallery_max_abs_delta_cls": 0.008595257997512817,
-  "gallery_mean_abs_delta_seg": 0.0014051254620426334,
-  "gallery_max_abs_delta_seg": 0.0025387988425791264,
+  "gallery_mean_abs_delta_cls": 0.015366659810145697,
+  "gallery_max_abs_delta_cls": 0.1177552342414856,
+  "gallery_mean_abs_delta_seg": 0.0031526491822357152,
+  "gallery_max_abs_delta_seg": 0.023858413100242615,
   "n_compared": 24
 }

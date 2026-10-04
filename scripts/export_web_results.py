@@ -21,13 +21,23 @@ from busi_data import (  # noqa: E402
     RESULTS,
     WEB_PUBLIC,
     BusiDataset,
+    dice_score,
     load_manifest,
     load_splits,
+    remove_small_components,
 )
 from model_def import build_model  # noqa: E402
 from train_full import evaluate_detailed  # noqa: E402
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def load_postprocess() -> tuple[float, int]:
+    path = RESULTS / "postprocess.json"
+    if path.exists():
+        pp = json.loads(path.read_text())
+        return float(pp.get("seg_threshold", 0.5)), int(pp.get("min_component_area", 0))
+    return 0.5, 0
 
 
 def draw_overlay(image: Image.Image, gt_mask: np.ndarray, pred_mask: np.ndarray) -> Image.Image:
@@ -69,7 +79,16 @@ def draw_overlay(image: Image.Image, gt_mask: np.ndarray, pred_mask: np.ndarray)
     return img.convert("RGB")
 
 
-def export_failure_gallery(model, manifest, test_ids, img_size: int, out_dir: Path, top_k: int = 8) -> list[dict]:
+def export_failure_gallery(
+    model,
+    manifest,
+    test_ids,
+    img_size: int,
+    out_dir: Path,
+    top_k: int = 8,
+    seg_thresh: float = 0.5,
+    min_area: int = 0,
+) -> list[dict]:
     out_dir.mkdir(parents=True, exist_ok=True)
     ds = BusiDataset(manifest, test_ids, img_size=img_size, augment=False)
     loader = DataLoader(ds, batch_size=1, shuffle=False)
@@ -81,9 +100,9 @@ def export_failure_gallery(model, manifest, test_ids, img_size: int, out_dir: Pa
             images = batch["image"].to(DEVICE)
             masks = batch["mask"].numpy()[0, 0]
             seg_logits, cls_logits = model(images)
-            pred = (torch.sigmoid(seg_logits)[0, 0].cpu().numpy() > 0.5)
-            from busi_data import dice_score
-
+            pred = torch.sigmoid(seg_logits)[0, 0].cpu().numpy() > seg_thresh
+            if min_area > 0:
+                pred = remove_small_components(pred, min_area)
             d = dice_score(pred, masks > 0.5)
             # Prefer lesion cases for failure gallery
             if batch["label"][0] == "normal" and masks.sum() == 0 and pred.sum() == 0:
@@ -131,12 +150,13 @@ def main() -> None:
         raise SystemExit(f"Missing checkpoint {args.checkpoint}. Train first.")
 
     ckpt = torch.load(args.checkpoint, map_location=DEVICE, weights_only=False)
-    img_size = int(ckpt.get("img_size", 128))
+    img_size = int(ckpt.get("img_size", 160))
     model_kind = ckpt.get("model_kind", "resnet18")
     model = build_model(model_kind, pretrained=False).to(DEVICE)
     model.load_state_dict(ckpt["state_dict"])
     model.eval()
 
+    seg_thresh, min_area = load_postprocess()
     manifest = load_manifest()
     splits = load_splits()
     test_ids = splits["test_ids"]
@@ -144,11 +164,21 @@ def main() -> None:
 
     test_ds = BusiDataset(manifest, test_ids, img_size=img_size, augment=False)
     test_loader = DataLoader(test_ds, batch_size=8, shuffle=False)
-    test_metrics = evaluate_detailed(model, test_loader)
+    test_metrics = evaluate_detailed(
+        model, test_loader, seg_thresh=seg_thresh, min_area=min_area
+    )
     test_summary = {k: v for k, v in test_metrics.items() if k != "per_image"}
 
     mistakes_dir = WEB_PUBLIC / "results" / "mistakes"
-    gallery = export_failure_gallery(model, manifest, test_ids, img_size, mistakes_dir)
+    gallery = export_failure_gallery(
+        model,
+        manifest,
+        test_ids,
+        img_size,
+        mistakes_dir,
+        seg_thresh=seg_thresh,
+        min_area=min_area,
+    )
 
     full_run = {}
     full_run_path = RESULTS / "full_run.json"

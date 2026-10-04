@@ -55,7 +55,7 @@ export function maskToOverlay(
   outW: number,
   outH: number,
   opacity: number,
-  threshold = 0.45,
+  threshold = 0.4,
 ): ImageData {
   const canvas = document.createElement('canvas')
   canvas.width = maskW

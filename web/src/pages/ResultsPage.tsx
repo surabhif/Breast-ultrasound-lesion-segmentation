@@ -21,7 +21,7 @@ type Metrics = {
     cls_ece?: number
     decision_threshold: number
     confusion_matrix?: { labels: string[]; matrix: number[][]; row_means_true: boolean }
-    cv_summary?: { fold: number; val_dice: number }[]
+    cv_summary?: { fold: number; val_dice?: number; val_lesion_dice?: number }[]
   }
   roc_curve?: { fpr: number; tpr: number }[]
   calibration?: {
@@ -285,11 +285,11 @@ export default function ResultsPage() {
       {m.cv_summary && m.cv_summary.length > 0 && (
         <section className="panel" style={{ marginTop: '1rem' }}>
           <h2 className="section-title">Cross-validation summary</h2>
-          <p className="muted">Short per-fold val Dice (see training config for epoch budget).</p>
+          <p className="muted">Short per-fold val lesion Dice (see training config for epoch budget).</p>
           <ul>
             {m.cv_summary.map((f) => (
               <li key={f.fold}>
-                Fold {f.fold}: Dice {fmt(f.val_dice)}
+                Fold {f.fold}: lesion Dice {fmt(f.val_lesion_dice ?? f.val_dice)}
               </li>
             ))}
           </ul>

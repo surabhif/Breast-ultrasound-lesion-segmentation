@@ -19,8 +19,7 @@ from torchvision import models
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 
-# Default inference size for the shipped browser model
-DEFAULT_IMG_SIZE = 128
+DEFAULT_IMG_SIZE = 160
 
 
 class ConvBNReLU(nn.Module):
@@ -88,8 +87,22 @@ class TinyUNet(nn.Module):
         return seg_logits, cls_logits
 
 
+class _Up(nn.Module):
+    """Bilinear upsample + 1×1 proj (fewer params than ConvTranspose for ONNX size)."""
+
+    def __init__(self, in_ch: int, out_ch: int) -> None:
+        super().__init__()
+        self.proj = nn.Conv2d(in_ch, out_ch, kernel_size=1, bias=False)
+        self.bn = nn.BatchNorm2d(out_ch)
+
+    def forward(self, x: torch.Tensor, skip: torch.Tensor) -> torch.Tensor:
+        x = F.interpolate(x, size=skip.shape[-2:], mode="bilinear", align_corners=False)
+        x = F.relu(self.bn(self.proj(x)), inplace=True)
+        return torch.cat([x, skip], dim=1)
+
+
 class ResNetUNet(nn.Module):
-    """U-Net with a torchvision ResNet-18 encoder (ImageNet pretrained optional)."""
+    """U-Net with torchvision ResNet-18 encoder; slim bilinear decoder for ~15MB INT8."""
 
     def __init__(self, pretrained: bool = True) -> None:
         super().__init__()
@@ -102,43 +115,43 @@ class ResNetUNet(nn.Module):
         self.layer3 = encoder.layer3  # 256
         self.layer4 = encoder.layer4  # 512
 
-        self.up4 = nn.ConvTranspose2d(512, 256, 2, stride=2)
-        self.dec4 = DoubleConv(256 + 256, 256)
-        self.up3 = nn.ConvTranspose2d(256, 128, 2, stride=2)
-        self.dec3 = DoubleConv(128 + 128, 128)
-        self.up2 = nn.ConvTranspose2d(128, 64, 2, stride=2)
-        self.dec2 = DoubleConv(64 + 64, 64)
-        self.up1 = nn.ConvTranspose2d(64, 64, 2, stride=2)
-        self.dec1 = DoubleConv(64 + 64, 64)
-        self.up0 = nn.ConvTranspose2d(64, 32, 2, stride=2)
-        self.dec0 = DoubleConv(32, 32)
-        self.seg_head = nn.Conv2d(32, 1, kernel_size=1)
+        # Slimmer decoder than classic DoubleConv@256 to keep INT8 ≤ ~15 MB
+        self.up4 = _Up(512, 128)
+        self.dec4 = DoubleConv(128 + 256, 128)
+        self.up3 = _Up(128, 64)
+        self.dec3 = DoubleConv(64 + 128, 64)
+        self.up2 = _Up(64, 32)
+        self.dec2 = DoubleConv(32 + 64, 64)
+        self.up1 = _Up(64, 32)
+        self.dec1 = DoubleConv(32 + 64, 32)
+        self.final_up = nn.Sequential(
+            nn.Upsample(scale_factor=2, mode="bilinear", align_corners=False),
+            ConvBNReLU(32, 16),
+            nn.Conv2d(16, 1, kernel_size=1),
+        )
         self.cls_head = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Flatten(),
-            nn.Linear(512, 128),
-            nn.ReLU(inplace=True),
-            nn.Dropout(0.3),
-            nn.Linear(128, 1),
+            nn.Dropout(0.25),
+            nn.Linear(512, 1),
         )
 
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        s0 = self.stem(x)           # /2, 64
-        s1 = self.pool(s0)          # /4
-        s1 = self.layer1(s1)        # /4, 64
-        s2 = self.layer2(s1)        # /8, 128
-        s3 = self.layer3(s2)        # /16, 256
-        s4 = self.layer4(s3)        # /32, 512
+        s0 = self.stem(x)  # /2, 64
+        s1 = self.layer1(self.pool(s0))  # /4, 64
+        s2 = self.layer2(s1)  # /8, 128
+        s3 = self.layer3(s2)  # /16, 256
+        s4 = self.layer4(s3)  # /32, 512
 
-        d4 = self.dec4(torch.cat([self.up4(s4), s3], dim=1))
-        d3 = self.dec3(torch.cat([self.up3(d4), s2], dim=1))
-        d2 = self.dec2(torch.cat([self.up2(d3), s1], dim=1))
-        d1 = self.dec1(torch.cat([self.up1(d2), s0], dim=1))
-        d0 = self.dec0(self.up0(d1))
-        # Match input spatial size if off-by-one from odd dims
-        if d0.shape[-2:] != x.shape[-2:]:
-            d0 = F.interpolate(d0, size=x.shape[-2:], mode="bilinear", align_corners=False)
-        seg_logits = self.seg_head(d0)
+        d4 = self.dec4(self.up4(s4, s3))
+        d3 = self.dec3(self.up3(d4, s2))
+        d2 = self.dec2(self.up2(d3, s1))
+        d1 = self.dec1(self.up1(d2, s0))
+        seg_logits = self.final_up(d1)
+        if seg_logits.shape[-2:] != x.shape[-2:]:
+            seg_logits = F.interpolate(
+                seg_logits, size=x.shape[-2:], mode="bilinear", align_corners=False
+            )
         cls_logits = self.cls_head(s4).squeeze(1)
         return seg_logits, cls_logits
 
@@ -166,19 +179,26 @@ class OnnxExportWrapper(nn.Module):
         return seg_mask, cls_prob
 
 
-def dice_loss_with_logits(logits: torch.Tensor, targets: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
+def soft_dice_loss(logits: torch.Tensor, targets: torch.Tensor, eps: float = 1e-5) -> torch.Tensor:
     probs = torch.sigmoid(logits)
     targets = targets.float()
-    dims = (1, 2, 3) if probs.ndim == 4 else (1, 2)
+    dims = (1, 2, 3)
     inter = (probs * targets).sum(dim=dims)
     denom = probs.sum(dim=dims) + targets.sum(dim=dims)
     dice = (2 * inter + eps) / (denom + eps)
-    return 1 - dice.mean()
+    return 1.0 - dice.mean()
 
 
-def combined_seg_loss(logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
-    bce = F.binary_cross_entropy_with_logits(logits, targets.float())
-    return bce + dice_loss_with_logits(logits, targets)
+def combined_seg_loss(
+    logits: torch.Tensor,
+    targets: torch.Tensor,
+    dice_weight: float = 1.5,
+    bce_pos_weight: float = 2.5,
+) -> torch.Tensor:
+    """BCE with positive weighting (lesions are sparse) + soft Dice."""
+    pw = torch.tensor([bce_pos_weight], device=logits.device, dtype=logits.dtype)
+    bce = F.binary_cross_entropy_with_logits(logits, targets.float(), pos_weight=pw)
+    return bce + dice_weight * soft_dice_loss(logits, targets)
 
 
 def classification_loss(logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:

@@ -118,10 +118,17 @@ def main() -> None:
         ckpt = torch.load(ckpt_path, map_location=DEVICE, weights_only=False)
         model = build_model(ckpt.get("model_kind", "resnet18"), pretrained=False).to(DEVICE)
         model.load_state_dict(ckpt["state_dict"])
-        img_size = int(ckpt.get("img_size", 128))
+        img_size = int(ckpt.get("img_size", 160))
+        pp_path = RESULTS / "postprocess.json"
+        thr, area = 0.5, 0
+        if pp_path.exists():
+            import json as _json
+            _pp = _json.loads(pp_path.read_text())
+            thr = float(_pp.get("seg_threshold", 0.5))
+            area = int(_pp.get("min_component_area", 0))
         test_ds = BusiDataset(manifest, splits["test_ids"], img_size=img_size, augment=False)
         test_loader = DataLoader(test_ds, batch_size=8, shuffle=False)
-        full = evaluate_detailed(model, test_loader)
+        full = evaluate_detailed(model, test_loader, seg_thresh=thr, min_area=area)
         per = full["per_image"]
 
         # Attach annotation flags from manifest

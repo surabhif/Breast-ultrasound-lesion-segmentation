@@ -18,7 +18,7 @@ export default function ModelCardPage() {
           benign-vs-malignant classification head
         </li>
         <li>
-          <strong>Input:</strong> RGB ultrasound resized to 128×128, ImageNet normalized
+          <strong>Input:</strong> RGB ultrasound resized to 160×160, ImageNet normalized
         </li>
         <li>
           <strong>Outputs:</strong> lesion probability map (<code>seg_mask</code>) and P(malignant)
@@ -26,7 +26,7 @@ export default function ModelCardPage() {
         </li>
         <li>
           <strong>Served artifact:</strong> <code>models/busi_unet.onnx</code> ({MODEL_STATUS.label}
-          , ~{MODEL_STATUS.sizeHintMb} MB target after quantization)
+          , ~{MODEL_STATUS.sizeHintMb} MB after INT8 quantization)
         </li>
         <li>
           <strong>Framework:</strong> PyTorch training → ONNX → onnxruntime-web (WASM)
@@ -77,7 +77,7 @@ export default function ModelCardPage() {
         <li>Single public dataset; scanner / population shift is untested</li>
         <li>No patient IDs → residual leakage risk beyond near-duplicate hashing</li>
         <li>Caliper and HUD artifacts may still act as shortcuts</li>
-        <li>Low resolution (128²) for CPU/browser practicality — fine detail is lost</li>
+        <li>160² resolution for CPU/browser practicality — fine detail is lost</li>
         <li>Classification head is auxiliary and poorly defined for “normal” images</li>
         <li>Small test set → wide confidence intervals</li>
       </ul>

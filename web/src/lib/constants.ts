@@ -1,6 +1,6 @@
 /** Shared constants matching training / ONNX export contract. */
 
-export const IMG_SIZE = 128
+export const IMG_SIZE = 160
 
 /** ImageNet mean/std used in training preprocessing. */
 export const IMAGENET_MEAN = [0.485, 0.456, 0.406] as const
@@ -19,7 +19,7 @@ export const MODEL_CACHE = 'busi-unet-v1'
 export const MODEL_STATUS = {
   kind: 'resnet18_unet' as const,
   label: 'ResNet-18 U-Net',
-  sizeHintMb: 16,
+  sizeHintMb: 12,
 }
 
 export const SITE = {

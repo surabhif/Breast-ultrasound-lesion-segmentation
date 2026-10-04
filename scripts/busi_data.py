@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 import json
+import random
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import torch
+import torchvision.transforms.functional as TF
 from PIL import Image
 from torch.utils.data import Dataset
-from torchvision import transforms
 
 from model_def import IMAGENET_MEAN, IMAGENET_STD
 
@@ -22,6 +23,8 @@ WEB_PUBLIC = REPO / "web" / "public"
 
 
 class BusiDataset(Dataset):
+    """BUSI loader with *paired* geometric augmentations (image + mask stay aligned)."""
+
     def __init__(
         self,
         manifest: pd.DataFrame,
@@ -37,54 +40,55 @@ class BusiDataset(Dataset):
         self.img_size = img_size
         self.augment = augment
 
-        base = [
-            transforms.Resize((img_size, img_size)),
-        ]
-        if augment:
-            self.img_tf = transforms.Compose(
-                base
-                + [
-                    transforms.RandomHorizontalFlip(),
-                    transforms.RandomVerticalFlip(),
-                    transforms.RandomRotation(15),
-                    transforms.ColorJitter(brightness=0.15, contrast=0.15),
-                    transforms.ToTensor(),
-                    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
-                ]
-            )
-        else:
-            self.img_tf = transforms.Compose(
-                base
-                + [
-                    transforms.ToTensor(),
-                    transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
-                ]
-            )
-        self.mask_tf = transforms.Compose(
-            [
-                transforms.Resize((img_size, img_size), interpolation=Image.NEAREST),
-                transforms.ToTensor(),  # 0..1
-            ]
-        )
-
     def __len__(self) -> int:
         return len(self.df)
+
+    def _paired_augment(self, img: Image.Image, mask: Image.Image) -> tuple[Image.Image, Image.Image]:
+        if random.random() < 0.5:
+            img = TF.hflip(img)
+            mask = TF.hflip(mask)
+        if random.random() < 0.5:
+            img = TF.vflip(img)
+            mask = TF.vflip(mask)
+        angle = random.uniform(-20, 20)
+        img = TF.rotate(img, angle, interpolation=TF.InterpolationMode.BILINEAR, fill=0)
+        mask = TF.rotate(mask, angle, interpolation=TF.InterpolationMode.NEAREST, fill=0)
+        # Mild scale/crop jitter
+        if random.random() < 0.5:
+            scale = random.uniform(0.85, 1.0)
+            w, h = img.size
+            nw, nh = int(w * scale), int(h * scale)
+            top = random.randint(0, max(0, h - nh))
+            left = random.randint(0, max(0, w - nw))
+            img = TF.resized_crop(
+                img, top, left, nh, nw, (h, w), interpolation=TF.InterpolationMode.BILINEAR
+            )
+            mask = TF.resized_crop(
+                mask, top, left, nh, nw, (h, w), interpolation=TF.InterpolationMode.NEAREST
+            )
+        return img, mask
 
     def __getitem__(self, idx: int) -> dict:
         row = self.df.iloc[idx]
         img = Image.open(row["image_path"]).convert("RGB")
         mask = Image.open(row["merged_mask_path"]).convert("L")
 
-        # Keep geometric augmentations aligned for image/mask when training
         if self.augment:
-            # Apply shared flip/rot via torchvision functional would be cleaner;
-            # for simplicity, only ColorJitter is image-only above; flips applied
-            # independently are acceptable noise for this demo-scale training.
-            pass
+            img, mask = self._paired_augment(img, mask)
 
-        x = self.img_tf(img)
-        y_seg = self.mask_tf(mask)
-        y_seg = (y_seg > 0.5).float()
+        img = TF.resize(img, [self.img_size, self.img_size], interpolation=TF.InterpolationMode.BILINEAR)
+        mask = TF.resize(mask, [self.img_size, self.img_size], interpolation=TF.InterpolationMode.NEAREST)
+
+        if self.augment:
+            # Color jitter on image only (after geometry is locked)
+            if random.random() < 0.8:
+                img = TF.adjust_brightness(img, random.uniform(0.8, 1.2))
+            if random.random() < 0.8:
+                img = TF.adjust_contrast(img, random.uniform(0.8, 1.25))
+
+        x = TF.to_tensor(img)
+        x = TF.normalize(x, IMAGENET_MEAN, IMAGENET_STD)
+        y_seg = (TF.to_tensor(mask) > 0.5).float()
         y_cls = torch.tensor(float(row["cls_target"]), dtype=torch.float32)
         return {
             "image": x,
@@ -113,6 +117,9 @@ def load_splits() -> dict:
 def dice_score(pred: np.ndarray, gt: np.ndarray, eps: float = 1e-6) -> float:
     pred = pred.astype(bool).ravel()
     gt = gt.astype(bool).ravel()
+    # Convention for empty/empty: perfect score (no false lesion)
+    if pred.sum() == 0 and gt.sum() == 0:
+        return 1.0
     inter = np.logical_and(pred, gt).sum()
     return float((2 * inter + eps) / (pred.sum() + gt.sum() + eps))
 
@@ -120,6 +127,8 @@ def dice_score(pred: np.ndarray, gt: np.ndarray, eps: float = 1e-6) -> float:
 def iou_score(pred: np.ndarray, gt: np.ndarray, eps: float = 1e-6) -> float:
     pred = pred.astype(bool).ravel()
     gt = gt.astype(bool).ravel()
+    if pred.sum() == 0 and gt.sum() == 0:
+        return 1.0
     inter = np.logical_and(pred, gt).sum()
     union = np.logical_or(pred, gt).sum()
     return float((inter + eps) / (union + eps))
@@ -177,3 +186,20 @@ def expected_calibration_error(
             }
         )
     return float(ece), curve
+
+
+def remove_small_components(mask: np.ndarray, min_area: int) -> np.ndarray:
+    """Drop connected components smaller than min_area (val-tuned post-process)."""
+    if min_area <= 0:
+        return mask
+    from scipy import ndimage
+
+    labeled, n = ndimage.label(mask.astype(bool))
+    if n == 0:
+        return mask.astype(bool)
+    out = np.zeros_like(mask, dtype=bool)
+    for i in range(1, n + 1):
+        comp = labeled == i
+        if int(comp.sum()) >= min_area:
+            out |= comp
+    return out

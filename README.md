@@ -28,24 +28,24 @@ The **full BUSI archive is not committed** (redistribution license is unclear). 
 
 ## Headline results (committed run)
 
-From `results/full_run.json` / `web/public/results/metrics.json` (CPU-trained ResNet-18 U-Net, 128×128, grouped held-out test):
+From `results/full_run.json` / `web/public/results/metrics.json` (CPU-trained ResNet-18 U-Net, 160×160, grouped held-out test; val-tuned threshold 0.4 + min-component area 40):
 
 | Metric | Value |
 |--------|-------|
-| Test Dice (all) | **0.450** (95% CI 0.391–0.509) |
-| Lesion-only Dice | **0.477** |
-| Test IoU | ~0.35 |
-| Benign vs malignant ROC-AUC | **0.826** |
-| Served ONNX | ~**15.9 MB** dynamic INT8 |
+| Test Dice (all) | **0.686** (95% CI 0.619–0.750) |
+| Lesion-only Dice | **0.751** (95% CI 0.689–0.808) |
+| Test IoU | **0.618** |
+| Benign vs malignant ROC-AUC | **0.939** |
+| Served ONNX | **~11.7 MB** dynamic INT8 |
 
 Quick baseline (tiny U-Net, 64×64, ~1 min CPU): Dice ≈ 0.42, AUC ≈ 0.80 — see `results/baseline_quick_run.json`.
 
 ### Cleaning experiment (honest)
 
 - **~47%** of images flagged for likely calipers / burned-in text (heuristic audit CSV).
-- Dice(all) − Dice(clean) ≈ **+0.013** (small overall inflation).
-- Classification AUC higher on **flagged** (≈0.86) than **clean** (≈0.80) test cases — consistent with a possible mark shortcut; report, don’t overclaim.
-- Random (non-grouped) splits put ~**39%** of val images in a near-dup group also seen in train; val Dice inflated by ~**+0.066** vs grouped splits in a short tiny-U-Net proxy.
+- Dice(all) − Dice(clean) ≈ **+0.063** (flagged frames are easier; lesion Dice flagged ≈ 0.80 vs clean ≈ 0.70).
+- Classification AUC is similar on flagged vs clean (~0.94) for this stronger model — earlier weaker runs showed a larger gap.
+- Random (non-grouped) splits still put ~**39%** of val images in a near-dup group also seen in train; a short tiny-U-Net proxy on this run did **not** show val Dice inflation (≈ −0.005) — leakage risk remains, but the effect is run-dependent.
 
 True **patient-level** splits are **not possible** — BUSI has no patient IDs. We keep perceptual-hash near-duplicate groups together.
 
@@ -65,7 +65,7 @@ python scripts/prepare_dataset.py
 python scripts/run_baseline_quick.py
 
 # 2b) Full model (CPU OK; Colab GPU faster)
-python scripts/train_full.py --epochs 15 --img-size 128 --batch-size 8 --patience 5 --run-cv
+python scripts/train_full.py --epochs 40 --img-size 160 --batch-size 8 --patience 10 --freeze-epochs 3 --run-cv
 
 # 3) Research export bundle
 python scripts/run_cleaning_experiment.py
@@ -110,7 +110,7 @@ Citation: Al-Dhabyani W, Gomaa M, Khaled H, Fahmy A. Dataset of breast ultrasoun
 4. `export_web_results.py` → `web/public/results/metrics.json` + failure gallery
 5. `export_gallery.py` → ~6 BUSI test samples under `web/public/samples/`
 
-ONNX I/O: `input` `[N,3,128,128]` → `seg_mask` `[N,1,128,128]`, `cls_prob` `[N,1]`.
+ONNX I/O: `input` `[N,3,160,160]` → `seg_mask` `[N,1,160,160]`, `cls_prob` `[N,1]`.
 
 ---
 
@@ -119,7 +119,7 @@ ONNX I/O: `input` `[N,3,128,128]` → `seg_mask` `[N,1,128,128]`, `cls_prob` `[N
 - Single public dataset; domain shift untested  
 - No patient IDs  
 - Caliper detector is a heuristic, not OCR  
-- 128² resolution for CPU/browser practicality  
+- 160² resolution for CPU/browser practicality  
 - **Not a medical device**
 
 ---

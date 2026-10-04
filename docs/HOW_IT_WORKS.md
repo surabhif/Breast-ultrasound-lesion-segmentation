@@ -54,11 +54,13 @@ If someone asks why you didn’t use random 80/20: explain leakage risk from dup
 We use:
 
 - **Quick baseline:** tiny U-Net from scratch at 64×64 — trains on CPU in minutes
-- **Full model:** ResNet-18 ImageNet encoder + U-Net decoder at 128×128
+- **Full model:** ResNet-18 ImageNet encoder + slim bilinear U-Net decoder at 160×160
 
-**Auxiliary classification head:** a small MLP on the bottleneck predicts **P(malignant)** for benign vs malignant. **Normal** images train with **empty masks** so the segmenter learns “no lesion,” and classification loss is **skipped** for normals (target = −1).
+**Auxiliary classification head:** a small linear head on the bottleneck predicts **P(malignant)** for benign vs malignant. **Normal** images train with **empty masks** so the segmenter learns “no lesion,” and classification loss is **skipped** for normals (target = −1).
 
-Loss = (BCE + Dice) for masks + weighted BCE for classification.
+Loss = (pos-weighted BCE + soft Dice) for masks + weighted BCE for classification.
+
+**Training details that matter:** geometric augmentations are applied to image and mask *together* (otherwise the mask no longer matches the image). We checkpoint on **lesion Dice** (not overall Dice dragged by false positives on normals). Threshold and tiny-blob removal are chosen on **validation only**, then frozen for the test report.
 
 ---
 
@@ -73,7 +75,7 @@ Loss = (BCE + Dice) for masks + weighted BCE for classification.
 | **Sensitivity / specificity** | TPR / TNR at a chosen threshold (we state 0.5) |
 | **Calibration / ECE** | Do 0.8 scores really mean ~80% malignant in that bin? ECE summarizes the gap |
 
-**Interview tip:** high Dice on **normal** images (empty vs empty) can look good without proving lesion skill. That’s why we also report **lesion-only Dice**.
+**Interview tip:** for empty ground-truth masks, predicting nothing should score as perfect (Dice = 1). If the model paints a false lesion on a normal image, Dice collapses toward 0 — so “normal Dice” is really a false-positive check. That’s why we also report **lesion-only Dice**.
 
 ---
 
@@ -99,7 +101,7 @@ You can say:
 
 - One public dataset; scanners/populations differ in the real world  
 - Heuristic flags ≠ perfect OCR of every annotation  
-- 128×128 loses fine detail  
+- 160×160 loses fine detail  
 - Demo is **not** a medical device  
 
 Keep the disclaimer visible. Curiosity + honesty beats inflated leaderboard numbers.
