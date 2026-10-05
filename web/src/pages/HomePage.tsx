@@ -1,57 +1,44 @@
-import { NavLink } from 'react-router-dom'
-import { SITE } from '../lib/constants'
+import { lazy, Suspense, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { LandingHero } from './home/LandingHero'
+import { LandingWhy } from './home/LandingWhy'
+import { LandingWhat } from './home/LandingWhat'
+import { LandingHow } from './home/LandingHow'
+import { applyLandingHash } from './home/landingNav'
+
+const BusExplainer = lazy(() => import('../explainer/BusExplainer'))
 
 export default function HomePage() {
-  return (
-    <div className="fade-in home-page">
-      <section className="hero panel">
-        <p className="hero-kicker">BUSI research demo</p>
-        <h1 className="hero-brand">{SITE.title}</h1>
-        <p className="hero-lead">
-          A U-Net that outlines breast ultrasound lesions in your browser and estimates a
-          benign-vs-malignant score — built as a transparent high-school research project on the
-          public BUSI dataset.
-        </p>
-        <div className="hero-actions">
-          <NavLink className="btn" to="/demo">
-            Try the demo
-          </NavLink>
-          <NavLink className="btn secondary" to="/results">
-            See results
-          </NavLink>
-        </div>
-        <p className="tiny muted" style={{ marginBottom: 0, marginTop: '1rem' }}>
-          Research demo, not for clinical use. Model weights run locally via ONNX Runtime Web.
-        </p>
-      </section>
+  useEffect(() => {
+    applyLandingHash(window.location.hash)
+    const onHash = () => applyLandingHash(window.location.hash)
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
-      <section className="home-grid">
-        <article className="panel">
-          <h2 className="section-title">What it does</h2>
-          <p>
-            Upload a breast ultrasound image or pick a BUSI test sample. The model predicts a lesion
-            mask (overlay + outline) and a probability that a lesion is malignant rather than
-            benign. Normal images were trained with empty masks so the network can also learn “no
-            lesion.”
-          </p>
-        </article>
-        <article className="panel">
-          <h2 className="section-title">Research angle</h2>
-          <p>
-            BUSI has no patient IDs, and many frames contain caliper marks or near-duplicates. This
-            project measures how those issues can inflate reported scores — and uses grouped splits
-            so near-copies never cross train/test.
-          </p>
-        </article>
-        <article className="panel">
-          <h2 className="section-title">Learn the method</h2>
-          <p>
-            Read the plain-language walkthrough in{' '}
-            <a href={SITE.githubUrl + '/blob/main/docs/HOW_IT_WORKS.md'}>docs/HOW_IT_WORKS.md</a>,
-            then the <NavLink to="/model-card">model card</NavLink> for intended use, metrics, and
-            limitations.
-          </p>
-        </article>
+  return (
+    <div className="home fade-in landing-home">
+      <LandingHero />
+      <LandingWhy />
+      <LandingWhat />
+      <LandingHow />
+
+      <section id="explainer" className="landing-explainer" aria-label="Interactive educational tour">
+        <Suspense
+          fallback={
+            <div className="panel landing-explainer-fallback">
+              <p className="landing-eyebrow">Interactive explainer</p>
+              <h2>Loading the educational tour…</h2>
+              <div className="landing-actions">
+                <Link className="btn" to="/demo">
+                  Try the detector
+                </Link>
+              </div>
+            </div>
+          }
+        >
+          <BusExplainer compactIntro />
+        </Suspense>
       </section>
     </div>
   )

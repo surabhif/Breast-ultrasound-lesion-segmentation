@@ -39,6 +39,24 @@ export default function AboutPage() {
         sample set ships with the web demo.
       </p>
 
+      <h2>What this app does</h2>
+      <ul>
+        <li>
+          An educational tour on breast ultrasound, BUSI labels, segmentation, and data pitfalls.
+        </li>
+        <li>
+          An in-browser detector that predicts a lesion mask overlay and a benign-vs-malignant
+          score on BUSI-style ultrasound images.
+        </li>
+        <li>
+          A Results page with Dice, IoU, classification metrics, and the cleaning experiment from
+          the current training run.
+        </li>
+        <li>
+          A model card documenting intended use, data, and limitations — educational, not clinical.
+        </li>
+      </ul>
+
       <h2>Method (short)</h2>
       <ul>
         <li>U-Net segmentation with an auxiliary benign-vs-malignant head</li>
