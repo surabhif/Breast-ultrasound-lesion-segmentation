@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import samplesManifest from '../data/samples.json'
 import { MODEL_STATUS } from '../lib/constants'
 import {
@@ -29,6 +30,7 @@ function uncertaintyWording(clsProb: number, maskMean: number): string {
 }
 
 export default function DemoPage() {
+  const [searchParams] = useSearchParams()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [selectedMeta, setSelectedMeta] = useState<Sample | null>(null)
   const [sourceUrl, setSourceUrl] = useState<string | null>(null)
@@ -44,6 +46,7 @@ export default function DemoPage() {
   })
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const objectUrlRef = useRef<string | null>(null)
+  const preloadDone = useRef(false)
 
   useEffect(() => {
     void getSession(setLoadProgress).catch(() => {
@@ -109,6 +112,16 @@ export default function DemoPage() {
     }
   }
 
+  useEffect(() => {
+    if (preloadDone.current) return
+    const id = searchParams.get('sample')
+    if (!id) return
+    const sample = samplesManifest.samples.find((s) => s.id === id)
+    if (!sample) return
+    preloadDone.current = true
+    void analyze(`${import.meta.env.BASE_URL}${sample.src}`, sample)
+  }, [searchParams])
+
   const progressPct =
     loadProgress.totalBytes && loadProgress.totalBytes > 0
       ? Math.min(100, Math.round((100 * loadProgress.loadedBytes) / loadProgress.totalBytes))
@@ -121,10 +134,10 @@ export default function DemoPage() {
   return (
     <div className="fade-in demo-page">
       <header className="page-intro">
-        <h1>Try the demo</h1>
+        <h1>Try the detector</h1>
         <p>
-          Choose a BUSI held-out test image or upload your own ultrasound. Inference runs entirely
-          in your browser — nothing is uploaded to a server.
+          Choose a real BUSI held-out test image or upload your own ultrasound. Inference runs
+          entirely in your browser.
         </p>
       </header>
 
@@ -206,13 +219,19 @@ export default function DemoPage() {
         <section className="panel">
           <h2 className="section-title">Mask overlay &amp; score</h2>
           <div className="viewer">
-            {!sourceUrl && (
+            {!sourceUrl && !busy && (
               <div className="viewer-empty">
                 <p>No image selected yet.</p>
                 <p className="muted">
                   Click a gallery sample to compare the predicted outline with the BUSI label, or
                   upload an image.
                 </p>
+              </div>
+            )}
+            {busy && !result && (
+              <div className="viewer-empty">
+                <p>Running model…</p>
+                <p className="muted">Drawing the lesion mask and score locally in your browser.</p>
               </div>
             )}
             {sourceUrl && <canvas ref={canvasRef} aria-label="Ultrasound with lesion overlay" />}
@@ -279,7 +298,7 @@ export default function DemoPage() {
             <span className="muted">{Math.round(opacity * 100)}%</span>
           </label>
 
-          <details className="explainer">
+          <details className="explainer heatmap-explainer">
             <summary>How to read this overlay</summary>
             <p>
               Orange fill is the model&apos;s lesion probability map; the darker outline is a

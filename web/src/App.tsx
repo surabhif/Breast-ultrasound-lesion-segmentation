@@ -10,7 +10,7 @@ import './App.css'
 
 const TITLES: Record<string, string> = {
   '/': SITE.title,
-  '/demo': `Try the demo · ${SITE.shortTitle}`,
+  '/demo': `Try the detector · ${SITE.shortTitle}`,
   '/results': `Results · ${SITE.shortTitle}`,
   '/about': `About · ${SITE.shortTitle}`,
   '/model-card': `Model card · ${SITE.shortTitle}`,
@@ -31,9 +31,9 @@ export default function App() {
 
       <div className="site-notice" role="note">
         <p>
-          Research demo, not for clinical use. In-browser U-Net on the BUSI breast ultrasound
-          dataset — results are for education and research only.{' '}
-          <NavLink to="/model-card#limitations" className="notice-learn-more">
+          Research demo, not for clinical use. Educational baseline only — never for diagnosis or
+          care decisions.{' '}
+          <NavLink to="/model-card#current-model" className="notice-learn-more">
             Learn more
           </NavLink>
         </p>
