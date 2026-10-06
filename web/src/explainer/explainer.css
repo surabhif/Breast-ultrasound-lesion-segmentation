@@ -51,6 +51,16 @@
 
 .tour-step-tab.active {
   background: var(--accent);
+  color: #ffffff;
+}
+
+.tour-step-tab.active .tour-step-short {
+  color: #ffffff;
+}
+
+.tour-step-tab.active .tour-step-num {
+  background: var(--accent-deep);
+  color: #ffffff;
 }
 
 .tour-step-num {
@@ -154,7 +164,7 @@
   border-radius: 0;
   border: 0;
   background:
-    linear-gradient(160deg, #f7f7f5, #eef8f1 55%, #fff0f8);
+    linear-gradient(160deg, var(--accent-pale), var(--accent-soft) 55%, #ffffff);
   display: grid;
   place-items: center;
   padding: 1.15rem;
@@ -209,7 +219,7 @@
   left: 33%;
   top: 35%;
   border-radius: 0;
-  background: rgba(0, 230, 118, 0.45);
+  background: rgba(41, 115, 115, 0.5);
   animation: tour-fade 2.8s ease-in-out infinite;
 }
 
@@ -293,8 +303,8 @@
 }
 
 .tour-chip.accent {
-  border-color: var(--ink);
-  color: var(--ink);
+  border-color: var(--accent-deep);
+  color: #ffffff;
   background: var(--accent);
 }
 
