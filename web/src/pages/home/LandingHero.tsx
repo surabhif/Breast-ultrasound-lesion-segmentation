@@ -12,8 +12,10 @@ export function LandingHero() {
       </p>
       <p className="landing-lede">
         An educational web app about one research question on public breast ultrasound:{' '}
-        <em>can a small model outline a lesion in the browser — and how honest are the scores
-        when calipers and near-duplicates exist?</em>{' '}
+        <em>
+          can a small model outline a lesion in the browser — and how honest are the scores when
+          calipers and near-duplicates exist?
+        </em>{' '}
         Walk through a short tour, then try a research demo that predicts a lesion mask and a
         benign-vs-malignant score — all in your browser.
       </p>
