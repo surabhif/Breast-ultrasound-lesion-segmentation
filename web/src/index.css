@@ -1,28 +1,40 @@
 :root {
-  --bg: #e8eef3;
-  --bg-deep: #d5e0e8;
-  --ink: #14232e;
-  --ink-soft: #2f4454;
-  --muted: #5a7182;
-  --line: #b7c7d3;
-  --panel: #f7fafc;
-  --accent: #1a5f7a;
-  --accent-deep: #12485c;
-  --warn: #7a3a14;
-  --warn-bg: #f6e7d9;
-  --malignant: #9f2d42;
-  --benign: #1a5f7a;
-  --normal: #3d6b4f;
-  --lesion: #c45c26;
-  --radius: 12px;
-  --shadow: 0 14px 36px rgba(20, 35, 46, 0.08);
-  --font-sans: 'Figtree', 'Segoe UI', sans-serif;
-  --font-display: 'Fraunces', Georgia, serif;
+  /* Baseten-inspired palette (approximate; no proprietary assets) */
+  --bg: #ffffff;
+  --bg-muted: #f7f7f5;
+  --bg-deep: #f0f0ec;
+  --ink: #0e0e0e;
+  --ink-soft: #2a2a2a;
+  --muted: #6b7280;
+  --line: #e5e5e5;
+  --line-strong: #d4d4d4;
+  --panel: #ffffff;
+  --accent: #00e676;
+  --accent-deep: #00b86b;
+  --accent-ink: #00663a;
+  --accent-soft: #d8ffe8;
+  --pink-soft: #ffd6f0;
+  --warn: #0e0e0e;
+  --warn-bg: #00e676;
+  --malignant: #c81e4a;
+  --benign: #0e0e0e;
+  --normal: #4b5563;
+  --lesion: #ff5a1f;
+  --radius: 2px;
+  --radius-lg: 4px;
+  --shadow: none;
+  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Chivo Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --max: 1120px;
   color: var(--ink);
-  background:
-    radial-gradient(1000px 520px at 8% -8%, #cfe0ea 0%, transparent 55%),
-    radial-gradient(900px 480px at 100% 0%, #e4ebe4 0%, transparent 48%),
-    linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-attachment: fixed;
   font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -44,13 +56,13 @@ body {
 }
 
 a {
-  color: var(--accent-deep);
+  color: var(--ink);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
 
 a:hover {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 img {
@@ -68,10 +80,11 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   margin: 0 0 0.5rem;
+  color: var(--ink);
 }
 
 p {
@@ -92,5 +105,17 @@ p {
 }
 
 code {
-  font-size: 0.92em;
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--bg-muted);
+  border: 1px solid var(--line);
+  padding: 0.1em 0.35em;
+}
+
+mark,
+.hl {
+  background: var(--accent);
+  color: var(--ink);
+  padding: 0 0.15em;
+  box-decoration-break: clone;
 }
