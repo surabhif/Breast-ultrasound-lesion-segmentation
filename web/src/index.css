@@ -1,25 +1,44 @@
 :root {
-  /* Baseten-inspired palette (approximate; no proprietary assets) */
+  /*
+   * Brand teal palette from #297373 (tints + shades).
+   * White text on --accent / --accent-deep / --accent-ink meets WCAG AA.
+   * Dark ink on --accent-soft / --accent-muted / --accent-pale meets WCAG AA.
+   * Do not place dark text on solid --accent (contrast ~3.5).
+   */
+  --brand: #297373;
+  --accent: #297373;
+  --accent-deep: #1f5656;
+  --accent-ink: #164040;
+  --accent-mid: #3d8585;
+  --accent-muted: #cadcdc;
+  --accent-soft: #dfeaea;
+  --accent-pale: #f2f7f7;
+  --accent-border: #89b2b2;
+
   --bg: #ffffff;
-  --bg-muted: #f7f7f5;
-  --bg-deep: #f0f0ec;
+  --bg-muted: var(--accent-pale);
+  --bg-deep: #e5eeee;
   --ink: #0e0e0e;
   --ink-soft: #2a2a2a;
-  --muted: #6b7280;
-  --line: #e5e5e5;
-  --line-strong: #d4d4d4;
+  --muted: #5c6b6b;
+  --line: #dce6e6;
+  --line-strong: #c5d4d4;
   --panel: #ffffff;
-  --accent: #00e676;
-  --accent-deep: #00b86b;
-  --accent-ink: #00663a;
-  --accent-soft: #d8ffe8;
-  --pink-soft: #ffd6f0;
-  --warn: #0e0e0e;
-  --warn-bg: #00e676;
+
+  /* Clinical disclaimer banner: solid brand + white text (AA 5.53) */
+  --warn-bg: var(--accent);
+  --warn: #ffffff;
+
+  /* Semantic labels — keep B/M distinguishable from brand teal */
   --malignant: #c81e4a;
+  --malignant-soft: #ffe4ea;
+  --malignant-border: #f0b4c0;
   --benign: #0e0e0e;
-  --normal: #4b5563;
-  --lesion: #ff5a1f;
+  --benign-soft: #ffffff;
+  --normal: var(--accent-ink);
+  --normal-soft: var(--accent-soft);
+  --lesion: #c45c26;
+
   --radius: 2px;
   --radius-lg: 4px;
   --shadow: none;
@@ -31,8 +50,8 @@
   color: var(--ink);
   background-color: var(--bg);
   background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+    linear-gradient(to right, rgba(41, 115, 115, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(41, 115, 115, 0.07) 1px, transparent 1px);
   background-size: 48px 48px;
   background-attachment: fixed;
   font-family: var(--font-sans);
@@ -112,10 +131,11 @@ code {
   padding: 0.1em 0.35em;
 }
 
+/* Solid accent highlight → white text for AA contrast */
 mark,
 .hl {
   background: var(--accent);
-  color: var(--ink);
+  color: #ffffff;
   padding: 0 0.15em;
   box-decoration-break: clone;
 }
