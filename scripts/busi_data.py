@@ -100,6 +100,48 @@ class BusiDataset(Dataset):
         }
 
 
+def resize_rgb_bilinear(arr: np.ndarray, out_size: int) -> np.ndarray:
+    """Deterministic half-pixel-center bilinear resize (HWC uint8/float → HWC float).
+
+    Shared with `web/src/lib/image.ts` so browser and Python ONNX paths match.
+    Not identical to Pillow's C bilinear, but bit-stable across runtimes.
+    """
+    if arr.ndim != 3 or arr.shape[2] < 3:
+        raise ValueError(f"expected HWC RGB array, got {arr.shape}")
+    src = arr.astype(np.float64)
+    sh, sw = src.shape[0], src.shape[1]
+    dh = dw = int(out_size)
+    ys = (np.arange(dh) + 0.5) * sh / dh - 0.5
+    xs = (np.arange(dw) + 0.5) * sw / dw - 0.5
+    ys = np.clip(ys, 0.0, sh - 1.0)
+    xs = np.clip(xs, 0.0, sw - 1.0)
+    y0 = np.floor(ys).astype(np.int64)
+    x0 = np.floor(xs).astype(np.int64)
+    y1 = np.minimum(y0 + 1, sh - 1)
+    x1 = np.minimum(x0 + 1, sw - 1)
+    fy = (ys - y0).reshape(dh, 1, 1)
+    fx = (xs - x0).reshape(1, dw, 1)
+    Ia = src[y0][:, x0]
+    Ib = src[y0][:, x1]
+    Ic = src[y1][:, x0]
+    Id = src[y1][:, x1]
+    wa = (1 - fx) * (1 - fy)
+    wb = fx * (1 - fy)
+    wc = (1 - fx) * fy
+    wd = fx * fy
+    return wa * Ia + wb * Ib + wc * Ic + wd * Id
+
+
+def imagenet_tensor_from_rgb(arr_hwc: np.ndarray, img_size: int = 160) -> np.ndarray:
+    """RGB HWC [0,255] → NCHW float32 ImageNet-normalized batch of 1."""
+    resized = resize_rgb_bilinear(arr_hwc, img_size)
+    arr = (resized / 255.0).astype(np.float32)
+    mean = np.array(IMAGENET_MEAN, dtype=np.float32).reshape(1, 1, 3)
+    std = np.array(IMAGENET_STD, dtype=np.float32).reshape(1, 1, 3)
+    arr = (arr - mean) / std
+    return np.transpose(arr, (2, 0, 1))[None, ...].astype(np.float32)
+
+
 def load_manifest() -> pd.DataFrame:
     path = PROCESSED / "manifest.csv"
     if not path.exists():

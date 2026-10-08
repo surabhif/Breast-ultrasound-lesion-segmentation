@@ -1,6 +1,14 @@
 import * as ort from 'onnxruntime-web'
-import { IMG_SIZE, MODEL_CACHE, MODEL_URL } from './constants'
+import {
+  IMG_SIZE,
+  MIN_COMPONENT_AREA,
+  MODEL_CACHE,
+  MODEL_URL,
+  SEG_THRESHOLD,
+  ensureModelManifest,
+} from './constants'
 import { imageToTensor, loadImage, maskToOverlay } from './image'
+import { postprocessMask } from './morphology'
 
 export type InferenceResult = {
   clsProb: number
@@ -34,16 +42,32 @@ function configureOrt(): void {
 async function fetchModelBuffer(onProgress?: ProgressCb): Promise<ArrayBuffer> {
   if (cachedBuffer) return cachedBuffer
 
+  const manifest = await ensureModelManifest()
+  const modelUrl = MODEL_URL()
+  const cacheName = MODEL_CACHE()
+
   onProgress?.({
     status: 'checking-cache',
     loadedBytes: 0,
     totalBytes: null,
-    message: 'Checking browser cache…',
+    message: `Checking browser cache (v${manifest.version})…`,
   })
 
   try {
-    const cache = await caches.open(MODEL_CACHE)
-    const hit = await cache.match(MODEL_URL)
+    // Drop stale cache buckets from older model versions.
+    const keys = await caches.keys()
+    await Promise.all(
+      keys
+        .filter((k) => k.startsWith('busi-unet-') && k !== cacheName)
+        .map((k) => caches.delete(k)),
+    )
+  } catch {
+    // Cache API may be unavailable
+  }
+
+  try {
+    const cache = await caches.open(cacheName)
+    const hit = await cache.match(modelUrl)
     if (hit) {
       const buf = await hit.arrayBuffer()
       cachedBuffer = buf
@@ -51,7 +75,7 @@ async function fetchModelBuffer(onProgress?: ProgressCb): Promise<ArrayBuffer> {
         status: 'creating-session',
         loadedBytes: buf.byteLength,
         totalBytes: buf.byteLength,
-        message: 'Loaded model from cache…',
+        message: `Loaded model v${manifest.version} from cache…`,
       })
       return buf
     }
@@ -63,10 +87,10 @@ async function fetchModelBuffer(onProgress?: ProgressCb): Promise<ArrayBuffer> {
     status: 'downloading',
     loadedBytes: 0,
     totalBytes: null,
-    message: 'Downloading model…',
+    message: `Downloading model v${manifest.version}…`,
   })
 
-  const res = await fetch(MODEL_URL)
+  const res = await fetch(modelUrl)
   if (!res.ok) throw new Error(`Model download failed (${res.status})`)
   const total = Number(res.headers.get('Content-Length')) || null
   const reader = res.body?.getReader()
@@ -105,9 +129,9 @@ async function fetchModelBuffer(onProgress?: ProgressCb): Promise<ArrayBuffer> {
   cachedBuffer = buf
 
   try {
-    const cache = await caches.open(MODEL_CACHE)
+    const cache = await caches.open(cacheName)
     await cache.put(
-      MODEL_URL,
+      modelUrl,
       new Response(buf.slice(0), {
         headers: { 'Content-Type': 'application/octet-stream' },
       }),
@@ -204,16 +228,20 @@ export async function runInference(
     throw new Error(`ONNX model must output seg_mask, cls_prob (got: ${names.join(', ')})`)
   }
 
-  const mask = segTensor.data as Float32Array
+  const rawMask = segTensor.data as Float32Array
   const [, , maskH, maskW] = segTensor.dims as [number, number, number, number]
   const clsProb = (clsTensor.data as Float32Array)[0] ?? 0
+
+  // Match Python eval: threshold 0.4 + drop connected components < 40 px.
+  const mask = postprocessMask(rawMask, maskH, maskW, SEG_THRESHOLD, MIN_COMPONENT_AREA)
+
   let maskSum = 0
   for (let i = 0; i < mask.length; i++) maskSum += mask[i]!
   const maskMean = maskSum / mask.length
 
   const displayWidth = Math.min(640, width)
   const displayHeight = Math.round((height / width) * displayWidth)
-  const overlay = maskToOverlay(mask, maskH, maskW, displayWidth, displayHeight, 1)
+  const overlay = maskToOverlay(mask, maskH, maskW, displayWidth, displayHeight, 1, SEG_THRESHOLD)
 
   return {
     clsProb,

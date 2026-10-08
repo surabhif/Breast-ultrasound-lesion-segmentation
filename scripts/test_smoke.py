@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -25,11 +26,17 @@ def test_model_forward():
 def test_metrics_json_schema():
     path = REPO / "web" / "public" / "results" / "metrics.json"
     data = json.loads(path.read_text())
-    assert data["schema_version"] == 1
+    assert data["schema_version"] == 2
     assert "test_dice" in data["metrics"]
     assert data["metrics"]["test_dice"] > 0
     assert data["metrics"].get("cls_roc_auc") is not None
-    assert Path(REPO / "web" / "public" / "models" / "busi_unet.onnx").exists()
+    assert data.get("model_version") == "1.0.0"
+    served = data.get("served_int8")
+    assert served is not None, "served_int8 block required in schema v2"
+    assert served["test_dice"] > 0
+    assert served["normal_false_positive_count"] >= 0
+    assert (REPO / "web" / "public" / "models" / "v1.0.0" / "busi_unet.onnx").exists()
+    assert (REPO / "web" / "public" / "models" / "current.json").exists()
 
 
 def test_audit_and_splits_exist():
@@ -43,15 +50,28 @@ def test_onnx_runs():
     import numpy as np
     import onnxruntime as ort
 
-    path = REPO / "web" / "public" / "models" / "busi_unet.onnx"
+    path = REPO / "web" / "public" / "models" / "v1.0.0" / "busi_unet.onnx"
     sess = ort.InferenceSession(str(path), providers=["CPUExecutionProvider"])
-    # Infer size
     shape = sess.get_inputs()[0].shape
-    h = int(shape[2]) if isinstance(shape[2], int) else 128
+    h = int(shape[2]) if isinstance(shape[2], int) else 160
     x = np.random.randn(1, 3, h, h).astype(np.float32)
     outs = sess.run(None, {"input": x})
     assert len(outs) == 2
     assert outs[0].shape[-2:] == (h, h)
+
+    cur = json.loads((REPO / "web" / "public" / "models" / "current.json").read_text())
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert digest == cur["sha256"]
+
+
+def test_external_protocol_preregistered():
+    path = REPO / "docs" / "EXTERNAL_VALIDATION_PROTOCOL.md"
+    assert path.exists()
+    text = path.read_text()
+    assert "v1.0.0" in text
+    assert "0bbf529d" in text
+    assert "BUS-BRA" in text and "BrEaST" in text
+    assert "Not run yet" in text or "not run yet" in text.lower()
 
 
 if __name__ == "__main__":
@@ -59,4 +79,5 @@ if __name__ == "__main__":
     test_metrics_json_schema()
     test_audit_and_splits_exist()
     test_onnx_runs()
+    test_external_protocol_preregistered()
     print("All smoke tests passed.")

@@ -1,0 +1,12 @@
+{
+  "fp32_mb": 46.267,
+  "int8_mb": 11.664,
+  "served_mb": 11.664,
+  "method": "dynamic_uint8",
+  "adopted_for_web": true,
+  "gallery_mean_abs_delta_cls": 0.015366659810145697,
+  "gallery_max_abs_delta_cls": 0.1177552342414856,
+  "gallery_mean_abs_delta_seg": 0.0031526491822357152,
+  "gallery_max_abs_delta_seg": 0.023858413100242615,
+  "n_compared": 24
+}

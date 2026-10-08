@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "label": "BUSI lesion segmentation \u2014 ResNet-18 U-Net",
   "disclaimer": "Research demo, not for clinical use.",
   "surabhi_prompts": [
@@ -525,10 +525,80 @@
     }
   },
   "model_artifact": {
-    "path": "models/busi_unet.onnx",
+    "path": "models/v1.0.0/busi_unet.onnx",
     "served_mb": 11.664,
     "quantization": "dynamic_uint8",
     "fp32_mb": 46.267,
-    "status": "trained_int8_dynamic\nfp32_mb=46.267\nint8_mb=11.664\nmax_cls_delta=0.1178\nmean_seg_delta=0.0032"
+    "status": "trained_int8_dynamic\nfp32_mb=46.267\nint8_mb=11.664\nmax_cls_delta=0.1178\nmean_seg_delta=0.0032",
+    "version": "1.0.0",
+    "sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+    "preprocess": "shared_half_pixel_bilinear (busi_data.resize_rgb_bilinear / image.resizeRgbBilinear)"
+  },
+  "model_version": "1.0.0",
+  "served_int8": {
+    "label": "Served INT8 ONNX (v1.0.0) on held-out BUSI test",
+    "sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+    "seg_threshold": 0.4,
+    "min_component_area": 40,
+    "test_dice": 0.6972011494235116,
+    "test_dice_bootstrap_95ci": [
+      0.6318544128007265,
+      0.7656603082162292
+    ],
+    "test_iou": 0.6295263549739772,
+    "test_iou_bootstrap_95ci": [
+      0.567721238896154,
+      0.6939308107729822
+    ],
+    "lesion_dice": 0.7643712765714284,
+    "lesion_dice_bootstrap_95ci": [
+      0.7049727284836597,
+      0.8211196389529184
+    ],
+    "by_label": {
+      "benign": {
+        "n": 63,
+        "dice_mean": 0.7487316216173011,
+        "dice_ci95": [
+          0.6655292069953922,
+          0.8231480772927728
+        ],
+        "iou_mean": 0.682393075770187
+      },
+      "malignant": {
+        "n": 30,
+        "dice_mean": 0.7972145519750955,
+        "dice_ci95": [
+          0.7340945771833857,
+          0.8436558551805153
+        ],
+        "iou_mean": 0.6838729323091063
+      },
+      "normal": {
+        "n": 19,
+        "dice_mean": 0.3684210533837091,
+        "dice_ci95": [
+          0.15789473777098811,
+          0.5789473689815383
+        ],
+        "iou_mean": 0.3684210533837091
+      }
+    },
+    "cls_roc_auc": 0.9306878306878307,
+    "cls_sensitivity": 0.8666666666666667,
+    "cls_specificity": 0.8412698412698413,
+    "cls_ece": 0.1106833475892262,
+    "normal_false_positive_count": 12,
+    "normal_n": 19,
+    "normal_false_positive_rate": 0.631578947368421,
+    "delta_vs_fp32": {
+      "test_dice": 0.011150212336382914,
+      "lesion_dice": 0.013428212858643263,
+      "cls_roc_auc": -0.00846560846560851
+    }
+  },
+  "metrics_source": {
+    "fp32_pytorch": "results/full_run.json (training checkpoint)",
+    "int8_served": "results/served_int8_test.json (onnxruntime CPU, same postprocess)"
   }
 }

@@ -1,0 +1,90 @@
+# External validation protocol (pre-registration)
+
+**Status:** Pre-registered · **Model freeze:** `v1.0.0` · **Date:** 2026-10-08  
+**Evaluation:** Not run yet. This document freezes the protocol *before* any external images are scored.
+
+Research demo only — not for clinical use.
+
+---
+
+## 1. Purpose
+
+Report how the **frozen** BUSI-trained model transfers to independent public breast-ultrasound datasets with masks. No hyperparameter, threshold, or architecture tuning on external data for the v1 report. Any post-hoc analysis is labelled exploratory.
+
+## 2. Frozen model
+
+| Field | Value |
+|-------|--------|
+| Version | `v1.0.0` |
+| Artifact | `web/public/models/v1.0.0/busi_unet.onnx` |
+| sha256 | `0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570` |
+| Quantization | ONNX Runtime dynamic UINT8 (weights) |
+| Also report | FP32 checkpoint `export/full_best.pt` (same architecture / training run) for side-by-side comparison |
+
+Pointer file: `web/public/models/current.json`.
+
+## 3. Preprocessing (identical to BUSI served / browser)
+
+1. Load image as RGB.
+2. Resize to **160×160** with the shared half-pixel-center bilinear (`scripts/busi_data.py:resize_rgb_bilinear` / `web/src/lib/image.ts:resizeRgbBilinear`) — the same path used for served INT8 metrics and in-browser inference.
+3. Scale to [0, 1], then ImageNet normalize: mean `(0.485, 0.456, 0.406)`, std `(0.229, 0.224, 0.225)`.
+4. Masks (when used as ground truth): resize to 160×160 with **nearest** neighbour; binarize at 127. Multi-lesion masks are **OR-merged**.
+
+## 4. Post-processing and decision thresholds (frozen from BUSI validation)
+
+From `results/postprocess.json` / training val lesion-Dice selection — **not** re-tuned on external data:
+
+| Parameter | Value |
+|-----------|--------|
+| Segmentation threshold | **0.4** |
+| Min connected-component area | **40** px (4-connectivity, matching `scipy.ndimage.label` default) |
+| Classification threshold (B vs M) | **0.5** |
+
+## 5. Datasets (primary)
+
+### 5.1 BUS-BRA
+
+- Citation: Gómez-Flores et al., *Med Phys* 2024;51:3110–3123 ([doi:10.1002/mp.16812](https://doi.org/10.1002/mp.16812))
+- Download: Zenodo [record 8231412](https://zenodo.org/records/8231412) (`BUSBRA.zip`) — **CC BY 4.0**
+- ~1,875 images, 1,064 patients, biopsy-proven benign/malignant; manual masks; no normal class
+- Use official patient-aware partitions where provided; otherwise keep all patients for a single external test (document which)
+- Script stub: `scripts/download_busbra.py` (does not commit data)
+
+### 5.2 BrEaST (BREAST-LESIONS-USG)
+
+- Citation: Pawłowska et al., *Sci Data* 2024;11:148 ([doi:10.1038/s41597-024-02984-z](https://doi.org/10.1038/s41597-024-02984-z))
+- Download: TCIA collection [doi:10.7937/9WKK-Q141](https://doi.org/10.7937/9WKK-Q141) — **CC BY 4.0**
+- 256 images / 256 patients (benign / malignant / few normal); freehand masks
+- Map only tumour masks; check clinical spreadsheet for multi-region annotations
+- Script stub: `scripts/download_breast.py` (does not commit data)
+
+**Secondary (optional later, not required for first external report):** BUS-UCLM (Vallez et al., 2025). UDIAT / BUSIS skipped for access friction.
+
+## 6. Metrics (per dataset)
+
+Computed with the same code paths as internal test (`scripts/eval_served_model.py` / future `scripts/eval_external.py`):
+
+- Per-image Dice and IoU: mean + 95% bootstrap CI
+- Lesion-only Dice (exclude normals when present)
+- Normal-image false-positive rate (non-empty predicted mask | label=normal), when normals exist
+- B-vs-M ROC-AUC, sensitivity / specificity @ 0.5, ECE + reliability diagram
+- Where patient IDs exist: **patient-clustered** bootstrap for CIs
+- Exploratory (labelled): Dice by scanner / BI-RADS if metadata available; caliper-flag rate via existing heuristic
+
+## 7. Analysis and reporting rules
+
+1. Publish an internal (BUSI) vs external table and forest plot with CIs.
+2. Negative or worse-than-hoped results are published unchanged.
+3. CC BY attribution (credit, licence link, note of resize-to-160) on Results, About, and README.
+4. **No tuning** of threshold, min-area, architecture, or training recipe on external data for the v1 report.
+5. Any fine-tune / multi-dataset retrain becomes a separate model version (`v2+`); v1 external numbers remain published.
+
+## 8. Honesty checkpoint
+
+Git history of this file **before** the first commit that adds `results/external/*.json` is the pre-registration proof. First external scoring commit must reference model sha256 `0bbf529d…` and this protocol path.
+
+## 9. Out of scope for this pre-registration
+
+- Running the evaluation (Phase 1)
+- Committing raw external images
+- Changing v1.0.0 weights after this freeze (bugfix wrappers only; new weights → new version)

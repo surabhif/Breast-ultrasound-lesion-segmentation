@@ -9,6 +9,12 @@
 data/raw/
 data/processed/
 data/busi/
+data/external/
+
+# Playwright / Vitest local outputs
+web/test-results/
+web/playwright-report/
+web/blob-report/
 !data/.gitkeep
 
 # Training exports (checkpoints stay local; ONNX goes under web/public)
