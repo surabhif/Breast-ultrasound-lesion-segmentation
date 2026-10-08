@@ -259,6 +259,17 @@ export default function ResultsPage() {
         <p className="muted tiny">
           {data.label} · model v{data.model_version ?? MODEL_VERSION}
         </p>
+        <p className="report-link-row">
+          <a className="btn secondary" href={`${import.meta.env.BASE_URL}report.pdf`} target="_blank" rel="noreferrer">
+            Research write-up (PDF)
+          </a>
+          <Link className="btn secondary" to="/bi-rads">
+            BI-RADS context
+          </Link>
+          <Link className="btn secondary" to="/surgeons-view">
+            Surgeon&apos;s view
+          </Link>
+        </p>
       </header>
 
       {served && (

@@ -1674,3 +1674,180 @@ td {
   width: 100%;
   border: 1px solid var(--line);
 }
+
+/* —— Phase 3: clinical context + portfolio —— */
+.callout-warn {
+  background: var(--accent);
+  color: #ffffff;
+  border: 1px solid var(--accent-deep);
+  padding: 0.85rem 1rem;
+  margin: 1rem 0 1.25rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.callout-warn strong {
+  color: #ffffff;
+}
+.callout-warn a {
+  color: #ffffff;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.table-wrap th,
+.table-wrap td {
+  border: 1px solid var(--line-strong);
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+.table-wrap th {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.refs {
+  padding-left: 1.25rem;
+}
+.refs li {
+  margin-bottom: 0.5rem;
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.example-card {
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--accent-pale);
+  padding: 0.6rem;
+}
+.example-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+.example-pair-single {
+  grid-template-columns: 1fr;
+}
+.example-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #e8eeee;
+  border: 1px solid var(--line);
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+.portfolio-card {
+  border: 1px solid var(--line-strong);
+  background: var(--accent-pale);
+  padding: 1rem 1.1rem 1.15rem;
+}
+.portfolio-card h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+.portfolio-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0.75rem 0;
+  padding: 0.65rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid var(--accent-border);
+}
+.portfolio-metric-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-ink);
+}
+.portfolio-links {
+  margin: 0.5rem 0 0;
+  font-size: 0.92rem;
+}
+
+.how-built {
+  margin-top: 1.75rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--line-strong);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.walkthrough-embed {
+  margin: 1.25rem 0;
+  max-width: 720px;
+}
+.walkthrough-embed video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line-strong);
+  background: #0e0e0e;
+}
+.walkthrough-embed figcaption {
+  margin-top: 0.4rem;
+}
+
+.report-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.cite-block {
+  background: var(--accent-pale);
+  border: 1px solid var(--accent-border);
+  padding: 0.9rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+
+/* Stronger focus rings for interactive controls (P7) */
+input[type='range']:focus-visible,
+input[type='checkbox']:focus-visible,
+input[type='radio']:focus-visible,
+button:focus-visible,
+.gallery-item:focus-visible,
+.segmented button:focus-visible {
+  outline: 3px solid var(--accent-deep);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .landing-hero,
+  .btn,
+  .site-nav a {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -3,7 +3,28 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
-## [Unreleased] — Phase 2 (2026-10-08)
+## [Unreleased] — Phase 3 (2026-10-08)
+
+### Added
+
+- `/bi-rads` — plain-language BI-RADS ultrasound context (score ≠ category); verified ACR / review citations.
+- `/surgeons-view` — size/margins research framing; BrEaST CC BY examples + BUSI outline silhouettes (D2).
+- `web/public/report.pdf` — research write-up auto-filled from results JSON; `scripts/build_report_pdf.py` + CI drift check.
+- `CITATION.cff` + About “How to cite” (Zenodo DOI TODO for owner login).
+- Captioned walkthrough `web/public/video/walkthrough.mp4` + poster + VTT; storyboard in `docs/VIDEO_SCRIPT.md`.
+- `/portfolio` — Surabhi Fadnavis: student research in oncology AI (verified sibling links; no invented metrics).
+- Social preview regenerated from CC BY BrEaST imagery; privacy note (no analytics/cookies).
+- Accessibility audit notes in `docs/ACCESSIBILITY.md`; focus/ARIA/contrast/reduced-motion/caption fixes.
+- Decision log D5–D9, D11; consistent “How this was built” credit (D6).
+
+### Skipped
+
+- **C3** clinician review / acknowledgements (D4 revoked / D8).
+- **P6** analytics (no account).
+- Separate `surabhif.github.io` portfolio repo (D11 — in-site `/portfolio` instead).
+- Model **v1.0.0** unchanged; no Dec 4 freeze tag/release (D9).
+
+## [Phase 2] — 2026-10-08
 
 ### Removed
 

@@ -1,0 +1,3 @@
+# Optional deps for research write-up PDF (CI installs these for the drift check).
+reportlab>=4.0
+pypdf>=4.0

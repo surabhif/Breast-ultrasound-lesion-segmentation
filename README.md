@@ -138,8 +138,24 @@ ONNX I/O: `input` `[N,3,160,160]` → `seg_mask` `[N,1,160,160]`, `cls_prob` `[N
 
 ---
 
+## Phase 3 pages
+
+| Path | Role |
+|------|------|
+| `/bi-rads` | BI-RADS ultrasound context (score ≠ category) |
+| `/surgeons-view` | Size/margins research framing |
+| `/portfolio` | Surabhi Fadnavis · student research in oncology AI |
+| `web/public/report.pdf` | Auto-filled research write-up (site-only venue) |
+| `web/public/video/walkthrough.mp4` | Captioned 60–90s site walkthrough |
+
+Cite with `CITATION.cff` / About → How to cite. **TODO (owner):** Zenodo DOI (needs owner login). Analytics skipped (no account); About states no cookies / browser-only inference.
+
+## How this was built
+
+The code, analysis scripts, and most site and report text were produced with AI coding tools (**Cursor**). Surabhi Fadnavis owns the research questions, interpretation, presentation choices, and final review. High-school research project — not clinician-reviewed and **not for clinical use**.
+
 ## Credits
 
-Project by **Surabhi Fadnavis** (high-school senior, aspiring surgical oncologist). Structure mirrors her [PatchCamelyon lymph-node demo](https://github.com/surabhif/Lymph-node-metastasis-detector). Substantial implementation assistance from an AI coding agent (Cursor); Surabhi owns the research questions, interpretation, and presentation.
+Project by **Surabhi Fadnavis** (high-school senior, Georgia). Structure mirrors her [PatchCamelyon lymph-node demo](https://github.com/surabhif/Lymph-node-metastasis-detector). See also the [pathology report explainer](https://github.com/surabhif/Pathology-report-explainer).
 
 MIT license for code. BUSI images remain under their original terms — only a minimal cited sample ships in `web/public/samples/`.

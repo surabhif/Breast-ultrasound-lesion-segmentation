@@ -111,6 +111,18 @@ The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA** and **BrE
 
 This project does **not** include expert medical review or outreach (D4 revoked).
 
+## Phase 3 (clinical context & polish)
+
+- **BI-RADS page:** plain-language ultrasound categories/descriptors; a model score is **not** a BI-RADS assessment.
+- **Surgeon’s-view page:** why size/margins matter clinically, and why demo measurements are research-only (BrEaST CC BY examples + BUSI outline silhouettes).
+- **Write-up PDF:** `web/public/report.pdf` auto-filled from results JSON; CI fails on number drift.
+- **Cite / portfolio / video / OG / a11y / privacy:** CITATION.cff, in-site portfolio (sibling repos verified), captioned walkthrough, social preview from CC BY imagery, accessibility fixes, no analytics.
+- **Served model stays v1.0.0.** No Dec 4 freeze tag yet. C3 clinician review skipped.
+
+## How this was built
+
+The code, analysis scripts, and most site and report text were produced with AI coding tools (Cursor). Surabhi owns the research questions, interpretation, presentation choices, and final review. Not clinician-reviewed. Not for clinical use.
+
 ## Limitations to volunteer before you’re asked
 
 - Domain shift: AUC falls externally even when Dice looks OK  

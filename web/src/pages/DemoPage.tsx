@@ -535,7 +535,7 @@ export default function DemoPage() {
           )}
 
           <label className="opacity-control">
-            <span>Overlay opacity</span>
+            <span id="opacity-label">Overlay opacity</span>
             <input
               type="range"
               min={0}
@@ -544,18 +544,27 @@ export default function DemoPage() {
               value={opacity}
               onChange={(e) => setOpacity(Number(e.target.value))}
               disabled={!result}
+              aria-labelledby="opacity-label"
+              aria-valuemin={0}
+              aria-valuemax={1}
+              aria-valuenow={opacity}
+              aria-valuetext={`${Math.round(opacity * 100)} percent`}
             />
             <span className="muted">{Math.round(opacity * 100)}%</span>
           </label>
 
           <label className="opacity-control">
-            <span>Mask threshold {segThr.toFixed(2)}</span>
+            <span id="seg-thr-label">Mask threshold {segThr.toFixed(2)}</span>
             <input
               type="range"
               min={0.1}
               max={0.9}
               step={0.05}
               value={segThr}
+              aria-labelledby="seg-thr-label"
+              aria-valuemin={0.1}
+              aria-valuemax={0.9}
+              aria-valuenow={segThr}
               onChange={(e) => {
                 const t = Number(e.target.value)
                 setSegThr(t)
@@ -591,7 +600,7 @@ export default function DemoPage() {
           </label>
 
           <label className="opacity-control">
-            <span>
+            <span id="cls-thr-label">
               Class threshold {clsThr.toFixed(2)} →{' '}
               {result ? (result.clsProb >= clsThr ? 'malignant' : 'benign') : '—'}
             </span>
@@ -603,6 +612,10 @@ export default function DemoPage() {
               value={clsThr}
               onChange={(e) => setClsThr(Number(e.target.value))}
               disabled={!result}
+              aria-labelledby="cls-thr-label"
+              aria-valuemin={0}
+              aria-valuemax={1}
+              aria-valuenow={clsThr}
             />
           </label>
 
@@ -612,6 +625,7 @@ export default function DemoPage() {
                 type="checkbox"
                 checked={useTta}
                 onChange={(e) => setUseTta(e.target.checked)}
+                aria-label="Estimate uncertainty with eight-fold test-time augmentation"
               />
               Estimate uncertainty (8× TTA — runs in Web Worker)
             </label>
@@ -621,6 +635,7 @@ export default function DemoPage() {
                 checked={showUncertainty}
                 onChange={(e) => setShowUncertainty(e.target.checked)}
                 disabled={!tta}
+                aria-label="Show uncertainty heatmap overlay"
               />
               Show uncertainty heatmap
             </label>
@@ -691,6 +706,7 @@ export default function DemoPage() {
                   type="checkbox"
                   checked={showMeasureOverlay}
                   onChange={(e) => setShowMeasureOverlay(e.target.checked)}
+                  aria-label="Draw diameter and width measurement lines"
                 />
                 Draw diameter / width lines
               </label>

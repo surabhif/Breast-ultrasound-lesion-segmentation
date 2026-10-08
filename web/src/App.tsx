@@ -6,6 +6,9 @@ import AboutPage from './pages/AboutPage'
 import ResultsPage from './pages/ResultsPage'
 import ModelCardPage from './pages/ModelCardPage'
 import MistakesPage from './pages/MistakesPage'
+import BiradsPage from './pages/BiradsPage'
+import SurgeonsViewPage from './pages/SurgeonsViewPage'
+import PortfolioPage from './pages/PortfolioPage'
 import { MODEL_STATUS, SITE } from './lib/constants'
 import './App.css'
 
@@ -14,6 +17,9 @@ const TITLES: Record<string, string> = {
   '/demo': `Try the detector · ${SITE.shortTitle}`,
   '/results': `Results · ${SITE.shortTitle}`,
   '/mistakes': `Mistakes explorer · ${SITE.shortTitle}`,
+  '/bi-rads': `BI-RADS context · ${SITE.shortTitle}`,
+  '/surgeons-view': `Surgeon's view · ${SITE.shortTitle}`,
+  '/portfolio': `Portfolio · ${SITE.shortTitle}`,
   '/about': `About · ${SITE.shortTitle}`,
   '/model-card': `Model card · ${SITE.shortTitle}`,
 }
@@ -57,6 +63,9 @@ export default function App() {
               <NavLink to="/demo">Demo</NavLink>
               <NavLink to="/results">Results</NavLink>
               <NavLink to="/mistakes">Mistakes</NavLink>
+              <NavLink to="/bi-rads">BI-RADS</NavLink>
+              <NavLink to="/surgeons-view">Surgeon&apos;s view</NavLink>
+              <NavLink to="/portfolio">Portfolio</NavLink>
               <NavLink to="/about">About</NavLink>
               <NavLink to="/model-card">Model card</NavLink>
             </nav>
@@ -70,6 +79,9 @@ export default function App() {
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/results" element={<ResultsPage />} />
           <Route path="/mistakes" element={<MistakesPage />} />
+          <Route path="/bi-rads" element={<BiradsPage />} />
+          <Route path="/surgeons-view" element={<SurgeonsViewPage />} />
+          <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/model-card" element={<ModelCardPage />} />
         </Routes>
@@ -93,7 +105,15 @@ export default function App() {
                 </a>
               </li>
               <li>
-                <NavLink to="/about">How to cite</NavLink>
+                <NavLink to="/about#cite">How to cite</NavLink>
+              </li>
+              <li>
+                <NavLink to="/portfolio">Portfolio</NavLink>
+              </li>
+              <li>
+                <a href={`${import.meta.env.BASE_URL}report.pdf`} target="_blank" rel="noreferrer">
+                  Research write-up (PDF)
+                </a>
               </li>
               <li>
                 <NavLink to="/model-card">Model card</NavLink>
