@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+from PIL import Image
 
 from .common import EXTERNAL_ROOT, ensure_manifest
 
@@ -34,6 +35,10 @@ def build_manifest(root: Path = ROOT, clinical: Path = CLINICAL) -> pd.DataFrame
         label = str(r["Classification"]).strip().lower()
         if label not in {"benign", "malignant", "normal"}:
             continue
+        # Sci Data 2024: Pixel_size is "width and height of pixel in cm".
+        px_cm = float(r["Pixel_size"]) if not pd.isna(r["Pixel_size"]) else None
+        with Image.open(img) as im:
+            ow, oh = im.size
         # Normals may lack tumor masks — empty GT.
         rows.append(
             {
@@ -44,7 +49,9 @@ def build_manifest(root: Path = ROOT, clinical: Path = CLINICAL) -> pd.DataFrame
                 "patient_id": str(int(r["CaseID"])),
                 "scanner": None,
                 "birads": str(r["BIRADS"]) if not pd.isna(r["BIRADS"]) else None,
-                "pixel_size_mm": float(r["Pixel_size"]) if not pd.isna(r["Pixel_size"]) else None,
+                "pixel_size_mm": (px_cm * 10.0) if px_cm is not None else None,
+                "orig_width": ow,
+                "orig_height": oh,
                 "has_doppler": False,
                 "dataset": "breast",
                 "_other_masks": str(other) if not pd.isna(other) else "",

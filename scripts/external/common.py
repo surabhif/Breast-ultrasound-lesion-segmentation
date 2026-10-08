@@ -23,6 +23,8 @@ MANIFEST_COLUMNS = [
     "scanner",
     "birads",
     "pixel_size_mm",
+    "orig_width",
+    "orig_height",
     "has_doppler",
     "dataset",
 ]

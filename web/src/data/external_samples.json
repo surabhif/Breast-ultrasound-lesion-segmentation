@@ -13,10 +13,13 @@
       "dataset": "breast",
       "licence": "CC BY 4.0",
       "attribution": "Paw\u0142owska et al., Sci Data 2024; TCIA Breast-Lesions-USG (doi:10.7937/9WKK-Q141). Resized for web.",
-      "pixel_size_mm": 0.006944444,
+      "pixel_size_mm": 0.06944444,
       "birads": "4b",
       "annotation_flag": false,
-      "note": "CC BY external review/demo sample (not BUSI)."
+      "note": "CC BY external review/demo sample (not BUSI).",
+      "orig_width": 545,
+      "orig_height": 532,
+      "mm_per_mask_px_160": 0.23372394337499997
     },
     {
       "id": "breast-breast_01_benign",
@@ -30,10 +33,13 @@
       "dataset": "breast",
       "licence": "CC BY 4.0",
       "attribution": "Paw\u0142owska et al., Sci Data 2024; TCIA Breast-Lesions-USG (doi:10.7937/9WKK-Q141). Resized for web.",
-      "pixel_size_mm": 0.00726979,
+      "pixel_size_mm": 0.0726979,
       "birads": "5",
       "annotation_flag": false,
-      "note": "CC BY external review/demo sample (not BUSI)."
+      "note": "CC BY external review/demo sample (not BUSI).",
+      "orig_width": 676,
+      "orig_height": 618,
+      "mm_per_mask_px_160": 0.293972133125
     },
     {
       "id": "breast-breast_02_benign",
@@ -47,10 +53,13 @@
       "dataset": "breast",
       "licence": "CC BY 4.0",
       "attribution": "Paw\u0142owska et al., Sci Data 2024; TCIA Breast-Lesions-USG (doi:10.7937/9WKK-Q141). Resized for web.",
-      "pixel_size_mm": 0.0078125,
+      "pixel_size_mm": 0.078125,
       "birads": "4a",
       "annotation_flag": false,
-      "note": "CC BY external review/demo sample (not BUSI)."
+      "note": "CC BY external review/demo sample (not BUSI).",
+      "orig_width": 485,
+      "orig_height": 537,
+      "mm_per_mask_px_160": 0.24951171875
     },
     {
       "id": "breast-breast_03_malignant",
@@ -64,10 +73,13 @@
       "dataset": "breast",
       "licence": "CC BY 4.0",
       "attribution": "Paw\u0142owska et al., Sci Data 2024; TCIA Breast-Lesions-USG (doi:10.7937/9WKK-Q141). Resized for web.",
-      "pixel_size_mm": 0.006944444,
+      "pixel_size_mm": 0.06944444,
       "birads": "4c",
       "annotation_flag": false,
-      "note": "CC BY external review/demo sample (not BUSI)."
+      "note": "CC BY external review/demo sample (not BUSI).",
+      "orig_width": 545,
+      "orig_height": 532,
+      "mm_per_mask_px_160": 0.23372394337499997
     },
     {
       "id": "breast-breast_04_malignant",
@@ -81,10 +93,13 @@
       "dataset": "breast",
       "licence": "CC BY 4.0",
       "attribution": "Paw\u0142owska et al., Sci Data 2024; TCIA Breast-Lesions-USG (doi:10.7937/9WKK-Q141). Resized for web.",
-      "pixel_size_mm": 0.006944444,
+      "pixel_size_mm": 0.06944444,
       "birads": "5",
       "annotation_flag": false,
-      "note": "CC BY external review/demo sample (not BUSI)."
+      "note": "CC BY external review/demo sample (not BUSI).",
+      "orig_width": 545,
+      "orig_height": 532,
+      "mm_per_mask_px_160": 0.23372394337499997
     },
     {
       "id": "breast-breast_05_malignant",
@@ -98,10 +113,13 @@
       "dataset": "breast",
       "licence": "CC BY 4.0",
       "attribution": "Paw\u0142owska et al., Sci Data 2024; TCIA Breast-Lesions-USG (doi:10.7937/9WKK-Q141). Resized for web.",
-      "pixel_size_mm": 0.008680556,
+      "pixel_size_mm": 0.08680556,
       "birads": "4c",
       "annotation_flag": false,
-      "note": "CC BY external review/demo sample (not BUSI)."
+      "note": "CC BY external review/demo sample (not BUSI).",
+      "orig_width": 437,
+      "orig_height": 541,
+      "mm_per_mask_px_160": 0.26529949275
     }
   ]
 }

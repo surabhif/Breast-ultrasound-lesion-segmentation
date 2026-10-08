@@ -27,6 +27,9 @@ type Sample = {
   reported_dice_int8?: number
   reported_cls_prob_int8?: number
   pixel_size_mm?: number | null
+  orig_width?: number | null
+  orig_height?: number | null
+  mm_per_mask_px_160?: number | null
   attribution?: string
   dataset?: string
   licence?: string
@@ -223,7 +226,12 @@ export default function DemoPage() {
         setBrowserIoU(iouScore(predBin, expert, 0.5))
       }
 
-      const spacing = meta?.pixel_size_mm ?? null
+      // BrEaST Pixel_size is cm at original res → we store mm/px @ orig; convert to 160².
+      const spacing =
+        meta?.mm_per_mask_px_160 ??
+        (meta?.pixel_size_mm != null && meta.orig_width && meta.orig_height
+          ? meta.pixel_size_mm * ((meta.orig_width + meta.orig_height) / 2) / out.maskW
+          : null)
       setMeasurements(measureLesion(out.mask, out.maskH, out.maskW, spacing, SEG_THRESHOLD))
     } catch (err) {
       console.error(err)
@@ -497,7 +505,7 @@ export default function DemoPage() {
               <p className="muted tiny">
                 Not clinical measurements. Computed on the 160×160 model mask
                 {measurements.longestDiameterMm != null
-                  ? ' with BrEaST pixel spacing (approx. mm).'
+                  ? ' with BrEaST spacing (cm→mm, scaled from original size to 160²). Approx. only.'
                   : ' in pixels (no physical spacing for BUSI).'}
               </p>
               <ul className="measure-list">

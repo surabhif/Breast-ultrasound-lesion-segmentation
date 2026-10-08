@@ -1,0 +1,238 @@
+{
+  "label": "Leakage ablation: random vs grouped splits (same grouped test)",
+  "epochs": 6,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "img_size": 160,
+  "random_split_val_group_leak_fraction_example": null,
+  "runs": [
+    {
+      "mode": "grouped",
+      "seed": 42,
+      "epochs": 6,
+      "best_val_lesion_dice": 0.6763735187134028,
+      "val_dice": 0.5602795565955115,
+      "test_dice": 0.5598162200630087,
+      "test_lesion_dice": 0.674187275723356,
+      "test_auc": null,
+      "history": [
+        {
+          "epoch": 0,
+          "val_lesion_dice": 0.37265436296439386
+        },
+        {
+          "epoch": 1,
+          "val_lesion_dice": 0.32816475532394107
+        },
+        {
+          "epoch": 2,
+          "val_lesion_dice": 0.6272448814748769
+        },
+        {
+          "epoch": 3,
+          "val_lesion_dice": 0.6313314938439407
+        },
+        {
+          "epoch": 4,
+          "val_lesion_dice": 0.6656861498259461
+        },
+        {
+          "epoch": 5,
+          "val_lesion_dice": 0.6763735187134028
+        }
+      ]
+    },
+    {
+      "mode": "random",
+      "seed": 42,
+      "epochs": 6,
+      "best_val_lesion_dice": 0.676121862787148,
+      "val_dice": 0.5600710955169357,
+      "test_dice": 0.5294104147550448,
+      "test_lesion_dice": 0.6375695316123156,
+      "test_auc": null,
+      "history": [
+        {
+          "epoch": 0,
+          "val_lesion_dice": 0.36095274292720564
+        },
+        {
+          "epoch": 1,
+          "val_lesion_dice": 0.37169487948777685
+        },
+        {
+          "epoch": 2,
+          "val_lesion_dice": 0.3827494774219983
+        },
+        {
+          "epoch": 3,
+          "val_lesion_dice": 0.6632430474698062
+        },
+        {
+          "epoch": 4,
+          "val_lesion_dice": 0.6441032093978819
+        },
+        {
+          "epoch": 5,
+          "val_lesion_dice": 0.676121862787148
+        }
+      ]
+    },
+    {
+      "mode": "grouped",
+      "seed": 43,
+      "epochs": 6,
+      "best_val_lesion_dice": 0.742496621632201,
+      "val_dice": 0.6225158585901992,
+      "test_dice": 0.5959984958572375,
+      "test_lesion_dice": 0.7177616290143656,
+      "test_auc": null,
+      "history": [
+        {
+          "epoch": 0,
+          "val_lesion_dice": 0.4031294883096883
+        },
+        {
+          "epoch": 1,
+          "val_lesion_dice": 0.5216262812473733
+        },
+        {
+          "epoch": 2,
+          "val_lesion_dice": 0.6195567280388619
+        },
+        {
+          "epoch": 3,
+          "val_lesion_dice": 0.5784229189992112
+        },
+        {
+          "epoch": 4,
+          "val_lesion_dice": 0.6803685983356115
+        },
+        {
+          "epoch": 5,
+          "val_lesion_dice": 0.742496621632201
+        }
+      ]
+    },
+    {
+      "mode": "random",
+      "seed": 43,
+      "epochs": 6,
+      "best_val_lesion_dice": 0.676465654846075,
+      "val_dice": 0.5603558783873582,
+      "test_dice": 0.5212373505059594,
+      "test_lesion_dice": 0.6277267013832322,
+      "test_auc": null,
+      "history": [
+        {
+          "epoch": 0,
+          "val_lesion_dice": 0.5008095008271962
+        },
+        {
+          "epoch": 1,
+          "val_lesion_dice": 0.5360254493734303
+        },
+        {
+          "epoch": 2,
+          "val_lesion_dice": 0.5256461742211996
+        },
+        {
+          "epoch": 3,
+          "val_lesion_dice": 0.5771603558513666
+        },
+        {
+          "epoch": 4,
+          "val_lesion_dice": 0.6631786596574872
+        },
+        {
+          "epoch": 5,
+          "val_lesion_dice": 0.676465654846075
+        }
+      ]
+    },
+    {
+      "mode": "grouped",
+      "seed": 44,
+      "epochs": 6,
+      "best_val_lesion_dice": 0.6835679941450505,
+      "val_dice": 0.5811645332693459,
+      "test_dice": 0.5685429475965887,
+      "test_lesion_dice": 0.673944194200835,
+      "test_auc": null,
+      "history": [
+        {
+          "epoch": 0,
+          "val_lesion_dice": 0.3199005909185495
+        },
+        {
+          "epoch": 1,
+          "val_lesion_dice": 0.4488472512438651
+        },
+        {
+          "epoch": 2,
+          "val_lesion_dice": 0.44429573769100117
+        },
+        {
+          "epoch": 3,
+          "val_lesion_dice": 0.5912316325328154
+        },
+        {
+          "epoch": 4,
+          "val_lesion_dice": 0.5880279533952448
+        },
+        {
+          "epoch": 5,
+          "val_lesion_dice": 0.6835679941450505
+        }
+      ]
+    },
+    {
+      "mode": "random",
+      "seed": 44,
+      "epochs": 6,
+      "best_val_lesion_dice": 0.6967305953160352,
+      "val_dice": 0.5771425081659606,
+      "test_dice": 0.585617205097991,
+      "test_lesion_dice": 0.7052594296941785,
+      "test_auc": null,
+      "history": [
+        {
+          "epoch": 0,
+          "val_lesion_dice": 0.2533570613026364
+        },
+        {
+          "epoch": 1,
+          "val_lesion_dice": 0.43913288806197887
+        },
+        {
+          "epoch": 2,
+          "val_lesion_dice": 0.5540920551594289
+        },
+        {
+          "epoch": 3,
+          "val_lesion_dice": 0.5806463122284163
+        },
+        {
+          "epoch": 4,
+          "val_lesion_dice": 0.6967305953160352
+        },
+        {
+          "epoch": 5,
+          "val_lesion_dice": 0.6882568605632848
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "grouped_mean_val_lesion_dice": 0.7008127114968848,
+    "random_mean_val_lesion_dice": 0.6831060376497528,
+    "grouped_mean_test_dice": 0.5747858878389449,
+    "random_mean_test_dice": 0.5454216567863317,
+    "val_inflation_random_minus_grouped": -0.017706673847132093
+  },
+  "runtime_seconds": 910.9536232948303,
+  "note": "Short schedule for ablation cost; recipe matches v1 architecture. Served v1.0.0 unchanged."
+}

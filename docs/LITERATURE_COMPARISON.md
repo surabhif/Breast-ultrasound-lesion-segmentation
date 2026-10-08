@@ -24,8 +24,8 @@ Published BUSI numbers often use **random** train/test splits on a dataset with 
 ## Leakage / duplicates
 
 - Pawłowska 2023 documents **235** duplicated BUSI images and related quality issues.
-- This project's pHash cleaning (`results/cleaning_experiment.json`) grouped **601** near-dup clusters; **322** images sit in multi-member groups. Image-level precision/recall vs Pawłowska's Appendix B list is **not yet computed here** (list not machine-ingested); treat the 235 figure as the published reference and our pHash groups as an independent operational definition.
-- Leakage ablation (random vs grouped training, same grouped test): see `results/leakage_ablation.json` when the Phase 1 run finishes.
+- This project's pHash cleaning (`results/cleaning_experiment.json`) grouped **601** near-dup clusters; **322** images sit in multi-member groups. Image-level precision/recall vs Pawłowska's Appendix B list is **not computed here** (list not machine-ingested in this repo); treat the 235 figure as the published reference and our pHash groups as an independent operational definition.
+- **Leakage ablation** (`results/leakage_ablation.json`): ResNet-18 U-Net, 6 epochs × 3 seeds, train under **grouped** vs **random** splits, evaluate on the **same grouped held-out test**. Mean val lesion-Dice: grouped **0.701** vs random **0.683** (Δ random−grouped ≈ **−0.018**). Mean test Dice: grouped **0.575** vs random **0.545**. On this short schedule, random splits did **not** inflate validation Dice relative to grouped splits — consistent with the earlier tiny-U-Net proxy in `cleaning_experiment.json`. Leakage risk remains (near-dups exist); the inflation effect is run- and schedule-dependent.
 
 ## Takeaway for visitors
 

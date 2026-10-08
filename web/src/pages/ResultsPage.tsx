@@ -425,9 +425,15 @@ export default function ResultsPage() {
             Wang 2026 (classification) reports internal→external AUROC drops; our B/M AUC drop is
             in the same <em>direction</em>.
           </li>
+          <li>
+            Full-scale leakage ablation (6 ep × 3 seeds, same grouped test): random training did{' '}
+            <strong>not</strong> inflate val lesion-Dice vs grouped (Δ ≈ −0.018). See{' '}
+            <code>results/leakage_ablation.json</code>.
+          </li>
         </ul>
         <p className="muted tiny">
           Unverified paper numbers are marked in the markdown doc and are not quoted as facts here.
+          Pawłowska’s 235-duplicate list was not machine-ingested for pHash precision/recall.
         </p>
       </section>
 

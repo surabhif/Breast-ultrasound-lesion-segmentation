@@ -25,14 +25,14 @@
   },
   "longest_diameter_mm": {
     "bland_altman": {
-      "bias": -0.026948855106622063,
-      "sd": 0.21806349767677272,
-      "loa_low": -0.4543533105530966,
-      "loa_high": 0.4004556003398525,
+      "bias": -0.8891088110917755,
+      "sd": 7.437848508164678,
+      "loa_low": -15.467291887094545,
+      "loa_high": 13.689074264910994,
       "n": 252
     },
-    "pearson_proxy_for_icc": 0.707755980767319,
-    "t1_t2_20mm_discordance_rate": 0.0,
+    "pearson_proxy_for_icc": 0.6972069017939513,
+    "t1_t2_20mm_discordance_rate": 0.17063492063492064,
     "note": "Exploratory: fraction of cases where model and expert disagree on \u226520 mm longest diameter."
   },
   "per_image_path": "results/measurement_agreement_per_image.json"

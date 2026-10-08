@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 from PIL import Image
 
 REPO = Path(__file__).resolve().parents[1]
@@ -92,23 +93,38 @@ def main() -> None:
         gt = load_mask_binary(r["mask_path"], 160)
         pl, pp, pa = feret_and_perp(pred)
         gl, gp, ga = feret_and_perp(gt)
+        # pixel_size_mm is at original resolution (BrEaST Pixel_size was cm → ×10).
+        # Masks are measured at 160², so scale spacing by mean(orig)/160.
         spacing = r["pixel_size_mm"]
+        ow = r["orig_width"]
+        oh = r["orig_height"]
+        if spacing is not None and ow is not None and oh is not None and not (pd.isna(ow) or pd.isna(oh)):
+            ow_f, oh_f = float(ow), float(oh)
+            mm_per_mask_px = float(spacing) * ((ow_f + oh_f) / 2.0) / 160.0
+            area_mm2_scale = (float(spacing) * ow_f / 160.0) * (float(spacing) * oh_f / 160.0)
+        else:
+            ow_f = oh_f = None
+            mm_per_mask_px = None
+            area_mm2_scale = None
         rows.append(
             {
                 "case_id": r["case_id"],
                 "pixel_size_mm": spacing,
+                "orig_width": ow_f,
+                "orig_height": oh_f,
+                "mm_per_mask_px_160": mm_per_mask_px,
                 "pred_area_px": pa,
                 "gt_area_px": ga,
                 "pred_longest_px": pl,
                 "gt_longest_px": gl,
                 "pred_perp_px": pp,
                 "gt_perp_px": gp,
-                "pred_longest_mm": pl * spacing if spacing else None,
-                "gt_longest_mm": gl * spacing if spacing else None,
+                "pred_longest_mm": pl * mm_per_mask_px if mm_per_mask_px else None,
+                "gt_longest_mm": gl * mm_per_mask_px if mm_per_mask_px else None,
+                "pred_area_mm2": pa * area_mm2_scale if area_mm2_scale else None,
+                "gt_area_mm2": ga * area_mm2_scale if area_mm2_scale else None,
             }
         )
-
-    import pandas as pd
 
     df = pd.DataFrame(rows)
     # T1/T2 20 mm boundary discordance (exploratory)

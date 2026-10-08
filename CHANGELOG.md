@@ -11,7 +11,7 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 - Results sections: External validation + Comparison with published work; `docs/LITERATURE_COMPARISON.md`.
 - Demo: expert-vs-model compare modes + per-image Dice; lesion measurements (px / mm on BrEaST).
 - Offline measurement agreement on BrEaST (`results/measurement_agreement.json`).
-- Full-scale leakage ablation script (`scripts/run_leakage_ablation.py` → `results/leakage_ablation.json`).
+- Full-scale leakage ablation (`scripts/run_leakage_ablation.py` → `results/leakage_ablation.json`): 6 ep × 3 seeds; random splits did not inflate val Dice vs grouped on this schedule (Δ ≈ −0.018).
 - Private clinician review page `/review?k=…` + `docs/CLINICIAN_REVIEW.md` (no outreach from agents).
 - `docs/DECISION_LOG.md` (D1–D4); model-swap rule in `EXTERNAL_VALIDATION_PROTOCOL.md`.
 - Small CC BY BrEaST samples under `web/public/samples/external/` with attribution.

@@ -925,15 +925,78 @@
     },
     "longest_diameter_mm": {
       "bland_altman": {
-        "bias": -0.026948855106622063,
-        "sd": 0.21806349767677272,
-        "loa_low": -0.4543533105530966,
-        "loa_high": 0.4004556003398525,
+        "bias": -0.8891088110917755,
+        "sd": 7.437848508164678,
+        "loa_low": -15.467291887094545,
+        "loa_high": 13.689074264910994,
         "n": 252
       },
-      "pearson_proxy_for_icc": 0.707755980767319,
-      "t1_t2_20mm_discordance_rate": 0.0,
+      "pearson_proxy_for_icc": 0.6972069017939513,
+      "t1_t2_20mm_discordance_rate": 0.17063492063492064,
       "note": "Exploratory: fraction of cases where model and expert disagree on \u226520 mm longest diameter."
-    }
+    },
+    "spacing_note": "BrEaST Pixel_size is cm (Sci Data 2024); converted to mm and scaled by mean(orig)/160 for 160\u00b2 masks."
+  },
+  "leakage_ablation": {
+    "label": "Leakage ablation: random vs grouped splits (same grouped test)",
+    "epochs": 6,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "summary": {
+      "grouped_mean_val_lesion_dice": 0.7008127114968848,
+      "random_mean_val_lesion_dice": 0.6831060376497528,
+      "grouped_mean_test_dice": 0.5747858878389449,
+      "random_mean_test_dice": 0.5454216567863317,
+      "val_inflation_random_minus_grouped": -0.017706673847132093
+    },
+    "runtime_seconds": 910.9536232948303,
+    "note": "Short schedule for ablation cost; recipe matches v1 architecture. Served v1.0.0 unchanged.",
+    "runs": [
+      {
+        "mode": "grouped",
+        "seed": 42,
+        "best_val_lesion_dice": 0.6763735187134028,
+        "test_dice": 0.5598162200630087,
+        "test_lesion_dice": 0.674187275723356
+      },
+      {
+        "mode": "random",
+        "seed": 42,
+        "best_val_lesion_dice": 0.676121862787148,
+        "test_dice": 0.5294104147550448,
+        "test_lesion_dice": 0.6375695316123156
+      },
+      {
+        "mode": "grouped",
+        "seed": 43,
+        "best_val_lesion_dice": 0.742496621632201,
+        "test_dice": 0.5959984958572375,
+        "test_lesion_dice": 0.7177616290143656
+      },
+      {
+        "mode": "random",
+        "seed": 43,
+        "best_val_lesion_dice": 0.676465654846075,
+        "test_dice": 0.5212373505059594,
+        "test_lesion_dice": 0.6277267013832322
+      },
+      {
+        "mode": "grouped",
+        "seed": 44,
+        "best_val_lesion_dice": 0.6835679941450505,
+        "test_dice": 0.5685429475965887,
+        "test_lesion_dice": 0.673944194200835
+      },
+      {
+        "mode": "random",
+        "seed": 44,
+        "best_val_lesion_dice": 0.6967305953160352,
+        "test_dice": 0.585617205097991,
+        "test_lesion_dice": 0.7052594296941785
+      }
+    ]
   }
 }
