@@ -94,8 +94,12 @@ export default function ModelCardPage() {
 
       <h2 id="limitations">Limitations</h2>
       <ul>
-        <li>Single public dataset; scanner / population shift is untested (see pre-registered
-          external validation protocol — evaluation not run yet)</li>
+        <li>
+          Domain shift: frozen v1.0.0 INT8 on BUS-BRA Dice ≈ 0.714 (AUC ≈ 0.638) and BrEaST Dice ≈
+          0.627 (AUC ≈ 0.721) vs internal Dice ≈ 0.697 / AUC ≈ 0.931 — segmentation holds better
+          than classification. BUS-UCLM skipped (Mendeley access 403 in this environment). See
+          Results → External validation.
+        </li>
         <li>No patient IDs → residual leakage risk beyond near-duplicate hashing</li>
         <li>Caliper and HUD artifacts may still act as shortcuts</li>
         <li>160² resolution for CPU/browser practicality — fine detail is lost</li>

@@ -97,9 +97,13 @@ You can say:
 
 ---
 
+## External validation (Phase 1)
+
+The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA** and **BrEaST** with the pre-registered protocol (no tuning). Dice stayed in a similar ballpark to BUSI on BUS-BRA, but **benign-vs-malignant AUC dropped a lot** under shift. That is the honest headline: segmentation transferred better than the auxiliary classifier. BUS-UCLM was skipped when the Mendeley download was unavailable without interactive login.
+
 ## Limitations to volunteer before you’re asked
 
-- One public dataset; scanners/populations differ in the real world  
+- Domain shift: AUC falls externally even when Dice looks OK  
 - Heuristic flags ≠ perfect OCR of every annotation  
 - 160×160 loses fine detail  
 - Demo is **not** a medical device  

@@ -58,6 +58,36 @@ type Metrics = {
     dataset_counts?: Record<string, unknown>
   }
   model_artifact?: Record<string, unknown>
+  external?: {
+    protocol?: string
+    model_version?: string
+    internal_busi_int8?: {
+      test_dice?: number
+      lesion_dice?: number
+      cls_roc_auc?: number
+      n?: number
+    }
+    datasets?: Record<
+      string,
+      {
+        n?: number
+        n_patients?: number
+        test_dice?: number
+        test_dice_bootstrap_95ci?: [number, number]
+        lesion_dice?: number
+        lesion_dice_bootstrap_95ci?: [number, number]
+        cls_roc_auc?: number | null
+        cls_sensitivity?: number | null
+        cls_specificity?: number | null
+        cls_ece?: number | null
+        attribution?: string
+        normal_false_positive_count?: number | null
+        normal_n?: number
+        subgroups?: Record<string, Record<string, { n: number; dice_mean: number; dice_ci95: number[] }>>
+      }
+    >
+    skipped?: Record<string, string>
+  }
 }
 
 function fmt(n: number | null | undefined, digits = 3) {
@@ -272,6 +302,140 @@ export default function ResultsPage() {
           </p>
         </section>
       )}
+
+      {data.external && (
+        <section className="panel" style={{ marginTop: '1rem' }} id="external-validation">
+          <h2 className="section-title">External validation</h2>
+          <p>
+            Frozen <strong>v1.0.0 INT8</strong> scored on independent public sets with the
+            pre-registered protocol (<code>docs/EXTERNAL_VALIDATION_PROTOCOL.md</code>) — no
+            threshold or architecture tuning on external data. Bootstrap CIs are{' '}
+            <em>patient-clustered</em> where patient IDs exist. Images resized to 160² (same as the
+            browser).
+          </p>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Dataset</th>
+                  <th>N</th>
+                  <th>Dice</th>
+                  <th>Lesion Dice</th>
+                  <th>AUC</th>
+                  <th>Sens / Spec @ 0.5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>BUSI internal (served INT8)</td>
+                  <td>{data.external.internal_busi_int8?.n ?? 112}</td>
+                  <td>{fmt(data.external.internal_busi_int8?.test_dice)}</td>
+                  <td>{fmt(data.external.internal_busi_int8?.lesion_dice)}</td>
+                  <td>{fmt(data.external.internal_busi_int8?.cls_roc_auc)}</td>
+                  <td>—</td>
+                </tr>
+                {Object.entries(data.external.datasets ?? {})
+                  .filter(([, row]) => row.test_dice != null)
+                  .map(([name, row]) => (
+                  <tr key={name}>
+                    <td>{name === 'busbra' ? 'BUS-BRA' : name === 'breast' ? 'BrEaST' : name}</td>
+                    <td>
+                      {row.n}
+                      {row.n_patients != null ? ` / ${row.n_patients} pts` : ''}
+                    </td>
+                    <td>
+                      {fmt(row.test_dice)} [{fmt(row.test_dice_bootstrap_95ci?.[0])},{' '}
+                      {fmt(row.test_dice_bootstrap_95ci?.[1])}]
+                    </td>
+                    <td>{fmt(row.lesion_dice)}</td>
+                    <td>{fmt(row.cls_roc_auc ?? undefined)}</td>
+                    <td>
+                      {fmt(row.cls_sensitivity ?? undefined)} / {fmt(row.cls_specificity ?? undefined)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: '0.75rem' }}>
+            <p className="muted tiny">Dice forest (point = mean; bar scaled 0–1)</p>
+            {[
+              {
+                name: 'BUSI INT8',
+                dice: data.external.internal_busi_int8?.test_dice,
+              },
+              ...Object.entries(data.external.datasets ?? {})
+                .filter(([, row]) => row.test_dice != null)
+                .map(([name, row]) => ({
+                name: name === 'busbra' ? 'BUS-BRA' : name === 'breast' ? 'BrEaST' : name,
+                dice: row.test_dice,
+              })),
+            ].map((row) => (
+              <div className="forest-bar" key={row.name}>
+                <span style={{ width: '7rem' }}>{row.name}</span>
+                <div className="bar-track">
+                  <div
+                    className="bar-fill"
+                    style={{ width: `${Math.max(0, Math.min(100, (row.dice ?? 0) * 100))}%` }}
+                  />
+                </div>
+                <span>{fmt(row.dice)}</span>
+              </div>
+            ))}
+          </div>
+          <p>
+            <strong>Honest reading:</strong> overall Dice on BUS-BRA stays close to internal Dice,
+            but <strong>AUC drops sharply</strong> under dataset shift (BUS-BRA ~0.64, BrEaST
+            ~0.72 vs internal ~0.93). Segmentation transfers better than the auxiliary classifier
+            here. ECE also worsens externally.
+          </p>
+          {data.external.skipped && Object.keys(data.external.skipped).length > 0 && (
+            <p className="muted">
+              Skipped:{' '}
+              {Object.entries(data.external.skipped)
+                .map(([k, v]) => `${k} (${v.slice(0, 120)}…)`)
+                .join('; ')}
+            </p>
+          )}
+          <p className="muted tiny">
+            Attribution: Gómez-Flores et al. 2024 (BUS-BRA, Zenodo CC BY 4.0); Pawłowska et al. 2024
+            (BrEaST / TCIA CC BY 4.0). Images resized for evaluation — not redistributed in the repo
+            except small CC BY demo samples.
+          </p>
+        </section>
+      )}
+
+      <section className="panel" style={{ marginTop: '1rem' }} id="literature">
+        <h2 className="section-title">Comparison with published work</h2>
+        <p>
+          Full citation table with split/leakage notes lives in{' '}
+          <code>docs/LITERATURE_COMPARISON.md</code>. Highlights:
+        </p>
+        <ul>
+          <li>
+            Many BUSI papers use <strong>random</strong> 80/20 splits; Pawłowska et al. 2023 document
+            ~235 duplicates (~19%). Our numbers use <strong>grouped</strong> near-dup splits.
+          </li>
+          <li>
+            Musah et al. 2025 report BUSI→BrEaST Dice ~0.49 for a different, larger model — our
+            frozen v1 BrEaST Dice is ~0.63 (different recipe/resolution; still a real OOD drop vs
+            some in-domain papers claiming 0.8+ under random splits).
+          </li>
+          <li>
+            Wang 2026 (classification) reports internal→external AUROC drops; our B/M AUC drop is
+            in the same <em>direction</em>.
+          </li>
+          <li>
+            Full-scale leakage ablation (6 ep × 3 seeds, same grouped test): random training did{' '}
+            <strong>not</strong> inflate val lesion-Dice vs grouped (Δ ≈ −0.018). See{' '}
+            <code>results/leakage_ablation.json</code>.
+          </li>
+        </ul>
+        <p className="muted tiny">
+          Unverified paper numbers are marked in the markdown doc and are not quoted as facts here.
+          Pawłowska’s 235-duplicate list was not machine-ingested for pHash precision/recall.
+        </p>
+      </section>
 
       <section className="panel metrics-strip">
         <div>

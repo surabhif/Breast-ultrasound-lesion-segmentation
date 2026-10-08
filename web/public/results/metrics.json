@@ -600,5 +600,403 @@
   "metrics_source": {
     "fp32_pytorch": "results/full_run.json (training checkpoint)",
     "int8_served": "results/served_int8_test.json (onnxruntime CPU, same postprocess)"
+  },
+  "external": {
+    "protocol": "docs/EXTERNAL_VALIDATION_PROTOCOL.md",
+    "model_version": "1.0.0",
+    "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+    "internal_busi_int8": {
+      "test_dice": 0.6972011494235116,
+      "lesion_dice": 0.7643712765714284,
+      "cls_roc_auc": 0.9306878306878307,
+      "n": 112
+    },
+    "datasets": {
+      "busbra": {
+        "dataset": "busbra",
+        "model_version": "1.0.0",
+        "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+        "protocol": "docs/EXTERNAL_VALIDATION_PROTOCOL.md",
+        "n": 1875,
+        "n_patients": 1064,
+        "seg_threshold": 0.4,
+        "min_component_area": 40,
+        "cls_threshold": 0.5,
+        "test_dice": 0.7136202288207832,
+        "test_dice_bootstrap_95ci": [
+          0.6991090300120892,
+          0.7273477360554241
+        ],
+        "test_iou": 0.6089462137607652,
+        "test_iou_bootstrap_95ci": [
+          0.59467916744832,
+          0.622259380642315
+        ],
+        "lesion_dice": 0.7136202288207832,
+        "lesion_dice_bootstrap_95ci": [
+          0.6991090300120892,
+          0.7273477360554241
+        ],
+        "by_label": {
+          "benign": {
+            "n": 1268,
+            "dice_mean": 0.7101019425722215,
+            "dice_ci95": [
+              0.6908601949756059,
+              0.7278691042235937
+            ]
+          },
+          "malignant": {
+            "n": 607,
+            "dice_mean": 0.7209697954816996,
+            "dice_ci95": [
+              0.6966722238772856,
+              0.7430052543760288
+            ]
+          }
+        },
+        "normal_false_positive_count": null,
+        "normal_n": 0,
+        "cls_roc_auc": 0.6380587416003618,
+        "cls_sensitivity": 0.30971993410214166,
+        "cls_specificity": 0.8982649842271293,
+        "cls_ece": 0.21462513594627378,
+        "confusion_matrix": {
+          "labels": [
+            "benign",
+            "malignant"
+          ],
+          "matrix": [
+            [
+              1139,
+              129
+            ],
+            [
+              419,
+              188
+            ]
+          ]
+        },
+        "subgroups": {
+          "by_birads": {
+            "2": {
+              "n": 562,
+              "dice_mean": 0.7309639702080288,
+              "dice_ci95": [
+                0.6999137552138274,
+                0.7587396719075478
+              ]
+            },
+            "3": {
+              "n": 463,
+              "dice_mean": 0.6896829317923593,
+              "dice_ci95": [
+                0.6571022858797259,
+                0.7183818036114086
+              ]
+            },
+            "4": {
+              "n": 693,
+              "dice_mean": 0.7095555532153676,
+              "dice_ci95": [
+                0.6854336650938699,
+                0.7302601124892238
+              ]
+            },
+            "5": {
+              "n": 157,
+              "dice_mean": 0.7400699489423199,
+              "dice_ci95": [
+                0.7049934842112375,
+                0.7748937003906312
+              ]
+            }
+          },
+          "by_scanner": {
+            "GE Logiq 5 @10-12MHz": {
+              "n": 809,
+              "dice_mean": 0.7131492393684419,
+              "dice_ci95": [
+                0.68956609083426,
+                0.7365469265796847
+              ]
+            },
+            "GE Logiq 7 @10-14MHz": {
+              "n": 902,
+              "dice_mean": 0.7294405956800877,
+              "dice_ci95": [
+                0.7127625212134663,
+                0.747764998506936
+              ]
+            },
+            "Toshiba Aplio 300 @12-14 MHz": {
+              "n": 139,
+              "dice_mean": 0.6183381434671852,
+              "dice_ci95": [
+                0.5554796313602653,
+                0.6803497749418004
+              ]
+            },
+            "U-Systems @10-14MHz": {
+              "n": 25,
+              "dice_mean": 0.6878310057808519,
+              "dice_ci95": [
+                0.535138239477769,
+                0.8318860774766218
+              ]
+            }
+          }
+        },
+        "attribution": "G\u00f3mez-Flores et al., Med Phys 2024; Zenodo 8231412; CC BY 4.0",
+        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160\u00b2 (shared bilinear)."
+      },
+      "breast": {
+        "dataset": "breast",
+        "model_version": "1.0.0",
+        "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+        "protocol": "docs/EXTERNAL_VALIDATION_PROTOCOL.md",
+        "n": 256,
+        "n_patients": 256,
+        "seg_threshold": 0.4,
+        "min_component_area": 40,
+        "cls_threshold": 0.5,
+        "test_dice": 0.6265385719593876,
+        "test_dice_bootstrap_95ci": [
+          0.5808692692878173,
+          0.6696840634359242
+        ],
+        "test_iou": 0.5429766589527398,
+        "test_iou_bootstrap_95ci": [
+          0.500271066347354,
+          0.5831589028743634
+        ],
+        "lesion_dice": 0.6285471207148108,
+        "lesion_dice_bootstrap_95ci": [
+          0.5808381083638959,
+          0.6728557008031967
+        ],
+        "by_label": {
+          "benign": {
+            "n": 154,
+            "dice_mean": 0.5927804988768942,
+            "dice_ci95": [
+              0.5326378385598436,
+              0.6502769585791632
+            ]
+          },
+          "malignant": {
+            "n": 98,
+            "dice_mean": 0.6847518121743937,
+            "dice_ci95": [
+              0.6179889566146947,
+              0.744794132693891
+            ]
+          },
+          "normal": {
+            "n": 4,
+            "dice_mean": 0.5000000003677367,
+            "dice_ci95": [
+              7.354734564564104e-10,
+              1.0
+            ]
+          }
+        },
+        "normal_false_positive_count": 2,
+        "normal_n": 4,
+        "cls_roc_auc": 0.7206467002385369,
+        "cls_sensitivity": 0.7959183673469388,
+        "cls_specificity": 0.525974025974026,
+        "cls_ece": 0.3083113834025367,
+        "confusion_matrix": {
+          "labels": [
+            "benign",
+            "malignant"
+          ],
+          "matrix": [
+            [
+              81,
+              73
+            ],
+            [
+              20,
+              78
+            ]
+          ]
+        },
+        "subgroups": {
+          "by_birads": {
+            "1": {
+              "n": 4,
+              "dice_mean": 0.5000000003677367,
+              "dice_ci95": [
+                7.354734564564104e-10,
+                1.0
+              ]
+            },
+            "2": {
+              "n": 30,
+              "dice_mean": 0.600991676010594,
+              "dice_ci95": [
+                0.45906397956608147,
+                0.7415073427191986
+              ]
+            },
+            "3": {
+              "n": 37,
+              "dice_mean": 0.5743070983011956,
+              "dice_ci95": [
+                0.4426870488853754,
+                0.696992525930802
+              ]
+            },
+            "4a": {
+              "n": 44,
+              "dice_mean": 0.5973494581182617,
+              "dice_ci95": [
+                0.4852518551217522,
+                0.709497108351988
+              ]
+            },
+            "4b": {
+              "n": 46,
+              "dice_mean": 0.6294088070146767,
+              "dice_ci95": [
+                0.5296847057496823,
+                0.7259685605524036
+              ]
+            },
+            "4c": {
+              "n": 49,
+              "dice_mean": 0.6844909738336781,
+              "dice_ci95": [
+                0.5935013797372147,
+                0.773126034480403
+              ]
+            },
+            "5": {
+              "n": 46,
+              "dice_mean": 0.6595330979335079,
+              "dice_ci95": [
+                0.566530624305348,
+                0.7420834931320585
+              ]
+            }
+          }
+        },
+        "attribution": "Paw\u0142owska et al., Sci Data 2024; TCIA Breast-Lesions-USG; CC BY 4.0",
+        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160\u00b2 (shared bilinear)."
+      },
+      "busuclm": {
+        "dataset": "busuclm",
+        "reason": "BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) returned HTTP 403 without interactive login from this environment. Download manually, place under data/external/busuclm/, then re-run.",
+        "status": "skipped"
+      }
+    },
+    "skipped": {
+      "BUS-UCLM": "Mendeley Data (doi:10.17632/7fvgj4jsp7.3) returned HTTP 403 without interactive login; CC BY 4.0. Loader ready at scripts/external/busuclm.py.",
+      "UDIAT": "Institutional licence agreement required \u2014 skipped per D1.",
+      "BUSIS": "Signed release / no redistribution \u2014 skipped per D1."
+    }
+  },
+  "measurement_agreement": {
+    "label": "Measurement agreement on BrEaST (model vs expert masks @ 160\u00b2)",
+    "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+    "disclaimer": "Research only \u2014 imaging size is not pathological T-stage; not clinical measurements.",
+    "n": 252,
+    "area_px": {
+      "bland_altman": {
+        "bias": 120.31349206349206,
+        "sd": 1171.8278027676042,
+        "loa_low": -2176.469001361012,
+        "loa_high": 2417.095985487996,
+        "n": 252
+      },
+      "pearson_proxy_for_icc": 0.7633768516088141
+    },
+    "longest_diameter_px": {
+      "bland_altman": {
+        "bias": -2.9915872037949875,
+        "sd": 27.8244994793854,
+        "loa_low": -57.52760618339037,
+        "loa_high": 51.5444317758004,
+        "n": 252
+      },
+      "pearson_proxy_for_icc": 0.605556004150458
+    },
+    "longest_diameter_mm": {
+      "bland_altman": {
+        "bias": -0.8891088110917755,
+        "sd": 7.437848508164678,
+        "loa_low": -15.467291887094545,
+        "loa_high": 13.689074264910994,
+        "n": 252
+      },
+      "pearson_proxy_for_icc": 0.6972069017939513,
+      "t1_t2_20mm_discordance_rate": 0.17063492063492064,
+      "note": "Exploratory: fraction of cases where model and expert disagree on \u226520 mm longest diameter."
+    },
+    "spacing_note": "BrEaST Pixel_size is cm (Sci Data 2024); converted to mm and scaled by mean(orig)/160 for 160\u00b2 masks."
+  },
+  "leakage_ablation": {
+    "label": "Leakage ablation: random vs grouped splits (same grouped test)",
+    "epochs": 6,
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "summary": {
+      "grouped_mean_val_lesion_dice": 0.7008127114968848,
+      "random_mean_val_lesion_dice": 0.6831060376497528,
+      "grouped_mean_test_dice": 0.5747858878389449,
+      "random_mean_test_dice": 0.5454216567863317,
+      "val_inflation_random_minus_grouped": -0.017706673847132093
+    },
+    "runtime_seconds": 910.9536232948303,
+    "note": "Short schedule for ablation cost; recipe matches v1 architecture. Served v1.0.0 unchanged.",
+    "runs": [
+      {
+        "mode": "grouped",
+        "seed": 42,
+        "best_val_lesion_dice": 0.6763735187134028,
+        "test_dice": 0.5598162200630087,
+        "test_lesion_dice": 0.674187275723356
+      },
+      {
+        "mode": "random",
+        "seed": 42,
+        "best_val_lesion_dice": 0.676121862787148,
+        "test_dice": 0.5294104147550448,
+        "test_lesion_dice": 0.6375695316123156
+      },
+      {
+        "mode": "grouped",
+        "seed": 43,
+        "best_val_lesion_dice": 0.742496621632201,
+        "test_dice": 0.5959984958572375,
+        "test_lesion_dice": 0.7177616290143656
+      },
+      {
+        "mode": "random",
+        "seed": 43,
+        "best_val_lesion_dice": 0.676465654846075,
+        "test_dice": 0.5212373505059594,
+        "test_lesion_dice": 0.6277267013832322
+      },
+      {
+        "mode": "grouped",
+        "seed": 44,
+        "best_val_lesion_dice": 0.6835679941450505,
+        "test_dice": 0.5685429475965887,
+        "test_lesion_dice": 0.673944194200835
+      },
+      {
+        "mode": "random",
+        "seed": 44,
+        "best_val_lesion_dice": 0.6967305953160352,
+        "test_dice": 0.585617205097991,
+        "test_lesion_dice": 0.7052594296941785
+      }
+    ]
   }
 }

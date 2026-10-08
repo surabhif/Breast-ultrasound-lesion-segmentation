@@ -1,0 +1,4 @@
+{
+  "dataset": "busuclm",
+  "reason": "BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) returned HTTP 403 without interactive login from this environment. Download manually, place under data/external/busuclm/, then re-run."
+}
