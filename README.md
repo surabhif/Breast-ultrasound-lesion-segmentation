@@ -20,9 +20,8 @@ End-to-end student research project on the [BUSI](https://doi.org/10.1016/j.dib.
 | `results/` | Real run JSONs, split file, caliper/duplicate audit CSV |
 | `docs/HOW_IT_WORKS.md` | Plain-language walkthrough for interviews |
 | `docs/EXTERNAL_VALIDATION_PROTOCOL.md` | Pre-registered BUS-BRA / BrEaST protocol + MODEL_POLICY (v1 scored) |
-| `docs/DECISION_LOG.md` | Owner decisions D1–D4 (Phase 1) |
+| `docs/DECISION_LOG.md` | Owner decisions (D1–D3; D4 revoked) |
 | `docs/LITERATURE_COMPARISON.md` | Verified literature table + split/leakage notes |
-| `docs/CLINICIAN_REVIEW.md` | Private review protocol + outreach template (family sends) |
 | `CHANGELOG.md` | App + model version history |
 | `web/` | Vite + React + TypeScript demo (onnxruntime-web) |
 | `.github/workflows/ci.yml` | Lint, typecheck, build, smoke, parity |

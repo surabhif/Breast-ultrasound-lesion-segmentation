@@ -5,7 +5,7 @@ import DemoPage from './pages/DemoPage'
 import AboutPage from './pages/AboutPage'
 import ResultsPage from './pages/ResultsPage'
 import ModelCardPage from './pages/ModelCardPage'
-import ReviewPage from './pages/ReviewPage'
+import MistakesPage from './pages/MistakesPage'
 import { MODEL_STATUS, SITE } from './lib/constants'
 import './App.css'
 
@@ -13,9 +13,9 @@ const TITLES: Record<string, string> = {
   '/': SITE.title,
   '/demo': `Try the detector · ${SITE.shortTitle}`,
   '/results': `Results · ${SITE.shortTitle}`,
+  '/mistakes': `Mistakes explorer · ${SITE.shortTitle}`,
   '/about': `About · ${SITE.shortTitle}`,
   '/model-card': `Model card · ${SITE.shortTitle}`,
-  '/review': `Clinician review · ${SITE.shortTitle}`,
 }
 
 export default function App() {
@@ -56,6 +56,7 @@ export default function App() {
               </NavLink>
               <NavLink to="/demo">Demo</NavLink>
               <NavLink to="/results">Results</NavLink>
+              <NavLink to="/mistakes">Mistakes</NavLink>
               <NavLink to="/about">About</NavLink>
               <NavLink to="/model-card">Model card</NavLink>
             </nav>
@@ -68,9 +69,9 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/results" element={<ResultsPage />} />
+          <Route path="/mistakes" element={<MistakesPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/model-card" element={<ModelCardPage />} />
-          <Route path="/review" element={<ReviewPage />} />
         </Routes>
       </main>
 

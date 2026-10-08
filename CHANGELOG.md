@@ -3,7 +3,21 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
-## [Unreleased] — Phase 1 (2026-10-08)
+## [Unreleased] — Phase 2 (2026-10-08)
+
+### Removed
+
+- Clinician review / outreach (`/review`, `docs/CLINICIAN_REVIEW.md`, related tokens). **D4 revoked** (see `docs/DECISION_LOG.md`).
+
+### Added
+
+- Caliper/marker pixel masks + QA; inpainting experiments E-a/E-b/E-c; TTA uncertainty; Web Worker inference; Demo/Results threshold sliders; mistakes explorer.
+
+### Changed
+
+- Served model choice follows pre-registered MODEL_POLICY (v1.0.0 unless a v2 candidate passes the swap rule).
+
+## [Phase 1] — 2026-10-08
 
 ### Added
 
@@ -12,8 +26,7 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 - Demo: expert-vs-model compare modes + per-image Dice; lesion measurements (px / mm on BrEaST).
 - Offline measurement agreement on BrEaST (`results/measurement_agreement.json`).
 - Full-scale leakage ablation (`scripts/run_leakage_ablation.py` → `results/leakage_ablation.json`): 6 ep × 3 seeds; random splits did not inflate val Dice vs grouped on this schedule (Δ ≈ −0.018).
-- Private clinician review page `/review?k=…` + `docs/CLINICIAN_REVIEW.md` (no outreach from agents).
-- `docs/DECISION_LOG.md` (D1–D4); model-swap rule in `EXTERNAL_VALIDATION_PROTOCOL.md`.
+- `docs/DECISION_LOG.md` (D1–D3; D4 later revoked); model-swap rule in `EXTERNAL_VALIDATION_PROTOCOL.md`.
 - Small CC BY BrEaST samples under `web/public/samples/external/` with attribution.
 
 ### Changed

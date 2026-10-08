@@ -93,13 +93,23 @@ You can say:
 2. Prevented near-duplicate leakage with grouped splits (and said patient IDs are missing)
 3. Audited calipers/text and measured whether scores inflate on flagged images
 4. Shipped a GitHub Pages demo with real ONNX weights and real metrics
-5. Know Dice, IoU, AUC, calibration, and why shortcuts matter clinically
+5. Know Dice, IoU, AUC, calibration, and why annotation shortcuts matter for honest scores
 
 ---
 
 ## External validation (Phase 1)
 
 The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA** and **BrEaST** with the pre-registered protocol (no tuning). Dice stayed in a similar ballpark to BUSI on BUS-BRA, but **benign-vs-malignant AUC dropped a lot** under shift. That is the honest headline: segmentation transferred better than the auxiliary classifier. BUS-UCLM was skipped when the Mendeley download was unavailable without interactive login.
+
+## Phase 2 (robustness & uncertainty)
+
+- **Caliper inpainting:** detect marker pixels, erase them with Telea inpainting, and retrain (E-a/E-b/E-c). A new model only becomes the served version if it beats the pre-registered swap rule.
+- **TTA uncertainty:** run the model several times with small flips/brightness changes; show an agreement chip and optional heatmap. This is *not* a probability of being wrong.
+- **Web Worker:** inference (and TTA) leave the UI thread so the page stays responsive; WASM files are self-hosted.
+- **Threshold sliders:** change mask and class cut-offs live on the Demo; on Results, explore sensitivity/specificity trade-offs from saved scores.
+- **Mistakes explorer:** filter hard cases with outline-only silhouettes and clearly labelled AI-generated notes.
+
+This project does **not** include clinician outreach or review (D4 revoked).
 
 ## Limitations to volunteer before you’re asked
 

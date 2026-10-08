@@ -5,7 +5,7 @@
   "surabhi_prompts": [
     "Why do near-duplicate images inflate BUSI scores if they leak across splits?",
     "How could caliper marks act as a shortcut for benign vs malignant?",
-    "What does a poorly calibrated probability mean for a clinician?",
+    "What does a poorly calibrated probability mean for a careful reader?",
     "Why isn't a high Dice on normals (empty masks) very informative?"
   ],
   "config": {
@@ -998,5 +998,23 @@
         "test_lesion_dice": 0.7052594296941785
       }
     ]
+  },
+  "uncertainty": {
+    "spearman_rho": 0.6128315616481295,
+    "spearman_p": 6.895732078308738e-13,
+    "dice_at_80_coverage": 0.7778000527127059,
+    "interpretation": "Positive rho means higher TTA disagreement tends to co-occur with lower Dice. This is agreement under flips \u2014 not a calibrated error probability.",
+    "normal_fp": {
+      "n_normal": 19,
+      "n_fp_proxy": 12,
+      "mean_uncertainty_fp": 0.26632994850419117,
+      "mean_uncertainty_all_normal": 0.23838382695292118
+    }
+  },
+  "inpaint_experiment": {
+    "served_unchanged": true,
+    "swap_note": "E-c training in progress \u2014 swap decision pending.",
+    "table": [],
+    "before_after_note": "Demo before/after uses CC BY BrEaST sample with synthetic calipers (digitally altered), not BUSI pixels."
   }
 }

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { MODEL_VERSION } from '../lib/constants'
+import ThresholdExplorer from '../components/ThresholdExplorer'
 
 type MetricsBlock = {
   test_dice: number
@@ -88,6 +90,17 @@ type Metrics = {
     >
     skipped?: Record<string, string>
   }
+  inpaint_experiment?: {
+    served_unchanged?: boolean
+    swap_note?: string
+    before_after_note?: string
+    table?: { name: string; dice?: number; lesion_dice?: number; auc?: number }[]
+  }
+  uncertainty?: {
+    spearman_rho?: number
+    spearman_p?: number
+    dice_at_80_coverage?: number
+  }
 }
 
 function fmt(n: number | null | undefined, digits = 3) {
@@ -150,8 +163,21 @@ function CalibrationChart({ bins }: { bins: NonNullable<Metrics['calibration']> 
   )
 }
 
+type ScoresPayload = {
+  disclaimer: string
+  reported_threshold: number
+  rows: {
+    case_id: string
+    split: string
+    label: string
+    y_true: number
+    cls_prob: number
+  }[]
+}
+
 export default function ResultsPage() {
   const [data, setData] = useState<Metrics | null>(null)
+  const [scores, setScores] = useState<ScoresPayload | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -163,6 +189,10 @@ export default function ResultsPage() {
       })
       .then((j: Metrics) => setData(j))
       .catch((e: Error) => setError(e.message))
+    fetch(`${import.meta.env.BASE_URL}results/scores.json`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => j && setScores(j))
+      .catch(() => {})
   }, [])
 
   if (error) {
@@ -622,6 +652,88 @@ export default function ResultsPage() {
             {fmt(leak.val_dice_inflation_leaky_minus_grouped)}.
           </p>
         )}
+      </section>
+
+      {scores && <ThresholdExplorer data={scores} />}
+
+      {data.inpaint_experiment && (
+        <section className="panel" style={{ marginTop: '1rem' }} id="caliper-inpaint">
+          <h2 className="section-title">What if we erase the calipers?</h2>
+          <p>
+            Telea inpainting removes detected marker pixels (digitally altered images). E-a scores
+            frozen v1 on original vs inpainted test; E-b is a random-region control on clean images;
+            E-c retrains on inpainted training data. See <code>results/inpaint_experiment.json</code>.
+          </p>
+          {data.inpaint_experiment.served_unchanged !== false && (
+            <p>
+              <strong>Model-swap rule:</strong> v2 did not replace served v1.0.0
+              {data.inpaint_experiment.swap_note ? ` — ${data.inpaint_experiment.swap_note}` : '.'}
+            </p>
+          )}
+          {data.inpaint_experiment.table && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Setting</th>
+                    <th>Dice</th>
+                    <th>Lesion Dice</th>
+                    <th>AUC</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.inpaint_experiment.table.map((row) => (
+                    <tr key={row.name}>
+                      <td>{row.name}</td>
+                      <td>{fmt(row.dice)}</td>
+                      <td>{fmt(row.lesion_dice)}</td>
+                      <td>{fmt(row.auc)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <div className="before-after" style={{ marginTop: '0.75rem' }}>
+            <figure>
+              <img
+                src={`${import.meta.env.BASE_URL}samples/external/breast_03_with_synthetic_calipers.png`}
+                alt="BrEaST sample with synthetic calipers"
+              />
+              <figcaption className="muted tiny">Before (synthetic calipers · digitally altered)</figcaption>
+            </figure>
+            <figure>
+              <img
+                src={`${import.meta.env.BASE_URL}samples/external/breast_03_calipers_inpainted.png`}
+                alt="Same sample after Telea inpainting"
+              />
+              <figcaption className="muted tiny">After Telea inpaint · digitally altered · CC BY BrEaST</figcaption>
+            </figure>
+          </div>
+          {data.inpaint_experiment.before_after_note && (
+            <p className="muted tiny">{data.inpaint_experiment.before_after_note}</p>
+          )}
+        </section>
+      )}
+
+      {data.uncertainty && (
+        <section className="panel" style={{ marginTop: '1rem' }} id="uncertainty">
+          <h2 className="section-title">Uncertainty (TTA)</h2>
+          <p>
+            Offline flip-TTA: Spearman(uncertainty, 1−Dice) ρ ={' '}
+            {fmt(data.uncertainty.spearman_rho)} (p={fmt(data.uncertainty.spearman_p, 4)}). Risk–coverage
+            at 80% keep: mean Dice {fmt(data.uncertainty.dice_at_80_coverage)}. This is agreement under
+            small changes — not a diagnostic probability.
+          </p>
+        </section>
+      )}
+
+      <section className="panel" style={{ marginTop: '1rem' }}>
+        <h2 className="section-title">Mistakes explorer</h2>
+        <p>
+          Browse filterable error cases with AI-generated analysis notes (outline silhouettes only for
+          BUSI). <Link to="/mistakes">Open mistakes explorer →</Link>
+        </p>
       </section>
 
       {data.mistakes && data.mistakes.length > 0 && (

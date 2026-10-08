@@ -78,7 +78,10 @@ def test_external_protocol_preregistered():
 def test_external_results_or_skip_documented():
     ext = REPO / "results" / "external"
     assert (REPO / "docs" / "DECISION_LOG.md").exists()
-    assert (REPO / "docs" / "CLINICIAN_REVIEW.md").exists()
+    decision = (REPO / "docs" / "DECISION_LOG.md").read_text()
+    assert "D4 revoked" in decision or "REVOKED" in decision
+    assert not (REPO / "docs" / "CLINICIAN_REVIEW.md").exists()
+    assert not (REPO / "web" / "src" / "pages" / "ReviewPage.tsx").exists()
     assert (REPO / "docs" / "LITERATURE_COMPARISON.md").exists()
     # At least one primary external result, or an explicit skip file
     has_busbra = (ext / "busbra.json").exists()

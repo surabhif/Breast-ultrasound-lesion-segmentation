@@ -4,14 +4,17 @@ import samplesManifest from '../data/samples.json'
 import externalSamples from '../data/external_samples.json'
 import { MODEL_STATUS, SEG_THRESHOLD } from '../lib/constants'
 import {
-  getSession,
+  preloadModel,
   runInference,
+  runInferenceTta,
+  rethreshold,
   type InferenceResult,
   type LoadProgress,
 } from '../lib/inference'
 import { downsampleMaskNearest, diceScore, iouScore } from '../lib/metrics'
 import { measureLesion, type LesionMeasurements } from '../lib/measure'
 import { maskToOverlay } from '../lib/image'
+import { agreementLabel, type TtaResult } from '../lib/tta'
 
 type Sample = {
   id: string
@@ -75,6 +78,12 @@ export default function DemoPage() {
   const [browserIoU, setBrowserIoU] = useState<number | null>(null)
   const [measurements, setMeasurements] = useState<LesionMeasurements | null>(null)
   const [showMeasureOverlay, setShowMeasureOverlay] = useState(true)
+  const [segThr, setSegThr] = useState(SEG_THRESHOLD)
+  const [clsThr, setClsThr] = useState(0.5)
+  const [useTta, setUseTta] = useState(false)
+  const [tta, setTta] = useState<TtaResult | null>(null)
+  const [showUncertainty, setShowUncertainty] = useState(false)
+  const [ttaStep, setTtaStep] = useState<string | null>(null)
   const [loadProgress, setLoadProgress] = useState<LoadProgress>({
     status: 'idle',
     loadedBytes: 0,
@@ -86,7 +95,7 @@ export default function DemoPage() {
   const preloadDone = useRef(false)
 
   useEffect(() => {
-    void getSession(setLoadProgress).catch(() => {
+    void preloadModel(setLoadProgress).catch(() => {
       /* progress callback already records error */
     })
     return () => {
@@ -142,6 +151,23 @@ export default function DemoPage() {
         drawDifference(ctx, result.mask, expertMask, result.maskH, result.maskW, result.displayWidth, result.displayHeight)
       }
 
+      if (showUncertainty && tta) {
+        const heat = document.createElement('canvas')
+        heat.width = result.maskW
+        heat.height = result.maskH
+        const hctx = heat.getContext('2d')!
+        const imgData = hctx.createImageData(result.maskW, result.maskH)
+        for (let i = 0; i < tta.stdMask.length; i++) {
+          const v = Math.min(1, tta.stdMask[i]! * 4)
+          imgData.data[i * 4] = Math.round(255 * v)
+          imgData.data[i * 4 + 1] = Math.round(40 * (1 - v))
+          imgData.data[i * 4 + 2] = Math.round(180 * (1 - v))
+          imgData.data[i * 4 + 3] = Math.round(160 * v * opacity)
+        }
+        hctx.putImageData(imgData, 0, 0)
+        ctx.drawImage(heat, 0, 0, result.displayWidth, result.displayHeight)
+      }
+
       if (showMeasureOverlay && measurements?.diameterLine) {
         const sx = result.displayWidth / result.maskW
         const sy = result.displayHeight / result.maskH
@@ -173,6 +199,8 @@ export default function DemoPage() {
     selectedMeta,
     measurements,
     showMeasureOverlay,
+    showUncertainty,
+    tta,
   ])
 
   async function loadExpert(meta: Sample | undefined, maskH: number, maskW: number) {
@@ -204,6 +232,8 @@ export default function DemoPage() {
     setBrowserDice(null)
     setBrowserIoU(null)
     setMeasurements(null)
+    setTta(null)
+    setTtaStep(null)
     try {
       if (objectUrlRef.current) {
         URL.revokeObjectURL(objectUrlRef.current)
@@ -214,14 +244,24 @@ export default function DemoPage() {
       setSourceUrl(url)
       setSelectedId(meta?.id ?? null)
       setSelectedMeta(meta ?? null)
-      const out = await runInference(src, setLoadProgress)
+      let out: InferenceResult
+      if (useTta) {
+        const ttaOut = await runInferenceTta(src, setLoadProgress, (i, n) =>
+          setTtaStep(`TTA ${i}/${n}`),
+        )
+        setTta(ttaOut.tta)
+        out = ttaOut
+      } else {
+        out = await runInference(src, setLoadProgress, { segThreshold: segThr })
+      }
       setResult(out)
+      setTtaStep(null)
 
       const expert = await loadExpert(meta, out.maskH, out.maskW)
       if (expert) {
         setExpertMask(expert)
         const predBin = new Float32Array(out.mask.length)
-        for (let i = 0; i < out.mask.length; i++) predBin[i] = out.mask[i]! > SEG_THRESHOLD ? 1 : 0
+        for (let i = 0; i < out.mask.length; i++) predBin[i] = out.mask[i]! > segThr ? 1 : 0
         setBrowserDice(diceScore(predBin, expert, 0.5))
         setBrowserIoU(iouScore(predBin, expert, 0.5))
       }
@@ -498,6 +538,96 @@ export default function DemoPage() {
             />
             <span className="muted">{Math.round(opacity * 100)}%</span>
           </label>
+
+          <label className="opacity-control">
+            <span>Mask threshold {segThr.toFixed(2)}</span>
+            <input
+              type="range"
+              min={0.1}
+              max={0.9}
+              step={0.05}
+              value={segThr}
+              onChange={(e) => {
+                const t = Number(e.target.value)
+                setSegThr(t)
+                if (result?.softMask) {
+                  const next = rethreshold(
+                    result.softMask,
+                    result.maskH,
+                    result.maskW,
+                    result.displayWidth,
+                    result.displayHeight,
+                    t,
+                  )
+                  setResult({ ...result, mask: next.mask, overlay: next.overlay, maskMean: next.maskMean })
+                  if (expertMask) {
+                    const predBin = new Float32Array(next.mask.length)
+                    for (let i = 0; i < next.mask.length; i++) predBin[i] = next.mask[i]! > t ? 1 : 0
+                    setBrowserDice(diceScore(predBin, expertMask, 0.5))
+                    setBrowserIoU(iouScore(predBin, expertMask, 0.5))
+                  }
+                  setMeasurements(
+                    measureLesion(
+                      next.mask,
+                      result.maskH,
+                      result.maskW,
+                      selectedMeta?.mm_per_mask_px_160 ?? null,
+                      t,
+                    ),
+                  )
+                }
+              }}
+              disabled={!result}
+            />
+          </label>
+
+          <label className="opacity-control">
+            <span>
+              Class threshold {clsThr.toFixed(2)} →{' '}
+              {result ? (result.clsProb >= clsThr ? 'malignant' : 'benign') : '—'}
+            </span>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={clsThr}
+              onChange={(e) => setClsThr(Number(e.target.value))}
+              disabled={!result}
+            />
+          </label>
+
+          <div className="mistakes-filters" style={{ marginTop: '0.75rem' }}>
+            <label className="radio-inline">
+              <input
+                type="checkbox"
+                checked={useTta}
+                onChange={(e) => setUseTta(e.target.checked)}
+              />
+              Estimate uncertainty (8× TTA — runs in Web Worker)
+            </label>
+            <label className="radio-inline">
+              <input
+                type="checkbox"
+                checked={showUncertainty}
+                onChange={(e) => setShowUncertainty(e.target.checked)}
+                disabled={!tta}
+              />
+              Show uncertainty heatmap
+            </label>
+          </div>
+          {ttaStep && <p className="muted tiny">{ttaStep}</p>}
+          {tta && (
+            <div className="score-card" style={{ marginTop: '0.5rem' }}>
+              <strong>
+                Model agreement: {agreementLabel(tta.agreement)} ({tta.agreement.toFixed(2)})
+              </strong>
+              <p className="muted tiny">
+                Agreement under small flips/brightness changes — not a probability of being wrong.
+                Cls std {tta.clsStd.toFixed(3)}.
+              </p>
+            </div>
+          )}
 
           {measurements && (
             <div className="measure-card">

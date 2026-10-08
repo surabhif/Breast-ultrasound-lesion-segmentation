@@ -1,0 +1,43 @@
+{
+  "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "n": 112,
+  "spearman_uncertainty_vs_error": {
+    "rho": 0.6128315616481295,
+    "pvalue": 6.895732078308738e-13
+  },
+  "interpretation": "Positive rho means higher TTA disagreement tends to co-occur with lower Dice. This is agreement under flips \u2014 not a calibrated error probability.",
+  "risk_coverage": [
+    {
+      "coverage": 1.0,
+      "mean_dice": 0.6972011494235116,
+      "n": 112
+    },
+    {
+      "coverage": 0.9,
+      "mean_dice": 0.7462504950018325,
+      "n": 101
+    },
+    {
+      "coverage": 0.8,
+      "mean_dice": 0.7778000527127059,
+      "n": 90
+    },
+    {
+      "coverage": 0.7,
+      "mean_dice": 0.8208645994550048,
+      "n": 78
+    },
+    {
+      "coverage": 0.5,
+      "mean_dice": 0.864560731235301,
+      "n": 56
+    }
+  ],
+  "normal_fp": {
+    "n_normal": 19,
+    "n_fp_proxy": 12,
+    "mean_uncertainty_fp": 0.26632994850419117,
+    "mean_uncertainty_all_normal": 0.23838382695292118
+  },
+  "per_image_path": "results/uncertainty_per_image.json"
+}

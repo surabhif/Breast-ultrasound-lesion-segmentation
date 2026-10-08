@@ -216,7 +216,7 @@ def main() -> None:
         "surabhi_prompts": [
             "Why do near-duplicate images inflate BUSI scores if they leak across splits?",
             "How could caliper marks act as a shortcut for benign vs malignant?",
-            "What does a poorly calibrated probability mean for a clinician?",
+            "What does a poorly calibrated probability mean for a careful reader?",
             "Why isn't a high Dice on normals (empty masks) very informative?",
         ],
         "config": full_run.get("config")

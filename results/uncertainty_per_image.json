@@ -1,0 +1,1010 @@
+[
+  {
+    "case_id": "benign/benign (10).png",
+    "label": "benign",
+    "dice": 0.963403476678087,
+    "agreement": 0.9866645875695106,
+    "uncertainty": 0.013335412430489413,
+    "cls_std": 0.0004579837013728009,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (100).png",
+    "label": "benign",
+    "dice": 0.7926697808865721,
+    "agreement": 0.6242738856133443,
+    "uncertainty": 0.3757261143866557,
+    "cls_std": 0.050261799688022656,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (101).png",
+    "label": "benign",
+    "dice": 0.9376623377432957,
+    "agreement": 0.9828612197311065,
+    "uncertainty": 0.017138780268893483,
+    "cls_std": 0.00245260748273933,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (102).png",
+    "label": "benign",
+    "dice": 0.9626779530732289,
+    "agreement": 0.9773708692575465,
+    "uncertainty": 0.02262913074245354,
+    "cls_std": 0.03507427196992775,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (108).png",
+    "label": "benign",
+    "dice": 1.2594458422425116e-09,
+    "agreement": 0.5000000001544163,
+    "uncertainty": 0.49999999984558374,
+    "cls_std": 0.12138467105572029,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (114).png",
+    "label": "benign",
+    "dice": 7.710100225358442e-10,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.0681444331663127,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (116).png",
+    "label": "benign",
+    "dice": 3.2154340732622697e-09,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.15338200218277323,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (117).png",
+    "label": "benign",
+    "dice": 0.9327868853009944,
+    "agreement": 0.9839902327132671,
+    "uncertainty": 0.016009767286732868,
+    "cls_std": 0.013176719554858685,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (119).png",
+    "label": "benign",
+    "dice": 3.355704686725823e-09,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.23549710806217383,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (122).png",
+    "label": "benign",
+    "dice": 1.2239902065801832e-09,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.23077778915819588,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (125).png",
+    "label": "benign",
+    "dice": 0.9423728814536053,
+    "agreement": 0.9721799437295479,
+    "uncertainty": 0.027820056270452143,
+    "cls_std": 0.0030033289332195073,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (127).png",
+    "label": "benign",
+    "dice": 0.6979627992046388,
+    "agreement": 0.7192171292166996,
+    "uncertainty": 0.28078287078330044,
+    "cls_std": 0.23412643047050258,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (128).png",
+    "label": "benign",
+    "dice": 0.9122340426699015,
+    "agreement": 0.9786100643703083,
+    "uncertainty": 0.021389935629691714,
+    "cls_std": 0.009174033845577773,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (13).png",
+    "label": "benign",
+    "dice": 0.9733276280169266,
+    "agreement": 0.992696651552432,
+    "uncertainty": 0.00730334844756797,
+    "cls_std": 1.7136646350858452e-05,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (131).png",
+    "label": "benign",
+    "dice": 0.4301004806214394,
+    "agreement": 0.900095164322192,
+    "uncertainty": 0.09990483567780795,
+    "cls_std": 0.012849697283434977,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (162).png",
+    "label": "benign",
+    "dice": 0.9084249087603483,
+    "agreement": 0.9594967852596223,
+    "uncertainty": 0.04050321474037766,
+    "cls_std": 0.16200325474263555,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (165).png",
+    "label": "benign",
+    "dice": 0.902208202201236,
+    "agreement": 0.8915890070189999,
+    "uncertainty": 0.1084109929810001,
+    "cls_std": 0.16941320556171485,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (167).png",
+    "label": "benign",
+    "dice": 0.9371428572625851,
+    "agreement": 0.9660710431872491,
+    "uncertainty": 0.03392895681275088,
+    "cls_std": 0.0004569967733994943,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (179).png",
+    "label": "benign",
+    "dice": 0.8101265830796347,
+    "agreement": 0.9613477280302245,
+    "uncertainty": 0.0386522719697755,
+    "cls_std": 0.0036555667565930762,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (191).png",
+    "label": "benign",
+    "dice": 0.9153374234167639,
+    "agreement": 0.9817306684060095,
+    "uncertainty": 0.018269331593990468,
+    "cls_std": 0.00014921716802420774,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (194).png",
+    "label": "benign",
+    "dice": 0.8500707214638821,
+    "agreement": 0.9363790914387238,
+    "uncertainty": 0.06362090856127622,
+    "cls_std": 0.12987410960970683,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (208).png",
+    "label": "benign",
+    "dice": 0.9401408451758084,
+    "agreement": 0.9814562667534675,
+    "uncertainty": 0.018543733246532468,
+    "cls_std": 0.00047960324646188486,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (222).png",
+    "label": "benign",
+    "dice": 0.8987341772734556,
+    "agreement": 0.9401131293468792,
+    "uncertainty": 0.059886870653120816,
+    "cls_std": 0.010919690483017632,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (242).png",
+    "label": "benign",
+    "dice": 0.06101344388288174,
+    "agreement": 0.8291968985981097,
+    "uncertainty": 0.17080310140189026,
+    "cls_std": 0.010626953363495138,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (267).png",
+    "label": "benign",
+    "dice": 0.9578466226725004,
+    "agreement": 0.9486733515510529,
+    "uncertainty": 0.051326648448947076,
+    "cls_std": 0.006896683461339836,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (284).png",
+    "label": "benign",
+    "dice": 0.973768394122275,
+    "agreement": 0.9775578115836986,
+    "uncertainty": 0.022442188416301412,
+    "cls_std": 0.09730331449018709,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (285).png",
+    "label": "benign",
+    "dice": 0.9279742765504906,
+    "agreement": 0.9713839394258917,
+    "uncertainty": 0.02861606057410826,
+    "cls_std": 0.1758575824477282,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (288).png",
+    "label": "benign",
+    "dice": 0.6548856550052372,
+    "agreement": 0.6556990914577641,
+    "uncertainty": 0.34430090854223594,
+    "cls_std": 0.00958105769743532,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (291).png",
+    "label": "benign",
+    "dice": 0.9021739132206994,
+    "agreement": 0.9763480519670328,
+    "uncertainty": 0.023651948032967218,
+    "cls_std": 0.0002090835691030533,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (30).png",
+    "label": "benign",
+    "dice": 0.9400798935551533,
+    "agreement": 0.9768735679894737,
+    "uncertainty": 0.023126432010526332,
+    "cls_std": 0.010745199860035009,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (312).png",
+    "label": "benign",
+    "dice": 0.9209047292774634,
+    "agreement": 0.7915769689658229,
+    "uncertainty": 0.20842303103417714,
+    "cls_std": 0.3207374137993794,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (326).png",
+    "label": "benign",
+    "dice": 0.9594874693876979,
+    "agreement": 0.9876069537374742,
+    "uncertainty": 0.012393046262525798,
+    "cls_std": 1.0279195889945343e-05,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (327).png",
+    "label": "benign",
+    "dice": 0.9730091456674081,
+    "agreement": 0.987971967866908,
+    "uncertainty": 0.012028032133092004,
+    "cls_std": 0.0006494878857288914,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (330).png",
+    "label": "benign",
+    "dice": 0.9705552439749642,
+    "agreement": 0.99108205145051,
+    "uncertainty": 0.008917948549490018,
+    "cls_std": 1.697630607317507e-05,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (333).png",
+    "label": "benign",
+    "dice": 0.8880936890227564,
+    "agreement": 0.9481992192483779,
+    "uncertainty": 0.05180078075162209,
+    "cls_std": 0.08873631461305079,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (341).png",
+    "label": "benign",
+    "dice": 0.9789040732414881,
+    "agreement": 0.9825413766459777,
+    "uncertainty": 0.017458623354022262,
+    "cls_std": 0.023983903565733808,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (343).png",
+    "label": "benign",
+    "dice": 0.939481268026061,
+    "agreement": 0.964832025947271,
+    "uncertainty": 0.03516797405272898,
+    "cls_std": 0.2974936082318491,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (360).png",
+    "label": "benign",
+    "dice": 0.44273426902609003,
+    "agreement": 0.7640958752444388,
+    "uncertainty": 0.23590412475556122,
+    "cls_std": 0.032318855229305554,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (361).png",
+    "label": "benign",
+    "dice": 0.9350024073338944,
+    "agreement": 0.9695157289934396,
+    "uncertainty": 0.03048427100656037,
+    "cls_std": 0.08245236141482619,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (37).png",
+    "label": "benign",
+    "dice": 0.20860061791195042,
+    "agreement": 0.567542116386796,
+    "uncertainty": 0.43245788361320403,
+    "cls_std": 0.2558983674709857,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (379).png",
+    "label": "benign",
+    "dice": 0.8094981112738813,
+    "agreement": 0.8933754737095841,
+    "uncertainty": 0.10662452629041586,
+    "cls_std": 0.03657381908985448,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (383).png",
+    "label": "benign",
+    "dice": 0.34388646324023664,
+    "agreement": 0.44629708375364724,
+    "uncertainty": 0.5537029162463527,
+    "cls_std": 0.046609471722477085,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (388).png",
+    "label": "benign",
+    "dice": 0.9317507419072693,
+    "agreement": 0.976551583651352,
+    "uncertainty": 0.023448416348648027,
+    "cls_std": 0.010177034498677462,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (39).png",
+    "label": "benign",
+    "dice": 0.9173290938653982,
+    "agreement": 0.9840236942624129,
+    "uncertainty": 0.015976305737587126,
+    "cls_std": 0.010429852052325182,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (394).png",
+    "label": "benign",
+    "dice": 0.2718913567305289,
+    "agreement": 0.6615293824600208,
+    "uncertainty": 0.3384706175399792,
+    "cls_std": 0.020069196982278204,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (395).png",
+    "label": "benign",
+    "dice": 0.9688061407857577,
+    "agreement": 0.978141757268756,
+    "uncertainty": 0.021858242731244037,
+    "cls_std": 0.1934547319934577,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (411).png",
+    "label": "benign",
+    "dice": 0.9349460608148176,
+    "agreement": 0.9723431437947953,
+    "uncertainty": 0.02765685620520475,
+    "cls_std": 0.1804019675624436,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (42).png",
+    "label": "benign",
+    "dice": 0.7559854897808982,
+    "agreement": 0.9184173652038728,
+    "uncertainty": 0.08158263479612715,
+    "cls_std": 0.010724467418629412,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (420).png",
+    "label": "benign",
+    "dice": 0.8708326872583606,
+    "agreement": 0.9278939974583147,
+    "uncertainty": 0.07210600254168531,
+    "cls_std": 0.15611718540703742,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (421).png",
+    "label": "benign",
+    "dice": 0.9499057366078769,
+    "agreement": 0.6382758481445584,
+    "uncertainty": 0.3617241518554416,
+    "cls_std": 0.2146938853397043,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (429).png",
+    "label": "benign",
+    "dice": 0.8382838286496966,
+    "agreement": 0.9385672859192232,
+    "uncertainty": 0.061432714080776774,
+    "cls_std": 0.00040321710668548514,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (430).png",
+    "label": "benign",
+    "dice": 0.8610206298257217,
+    "agreement": 0.9074935212928343,
+    "uncertainty": 0.09250647870716566,
+    "cls_std": 0.00567727920606139,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (436).png",
+    "label": "benign",
+    "dice": 0.9302134647105473,
+    "agreement": 0.9594697225338144,
+    "uncertainty": 0.04053027746618565,
+    "cls_std": 0.0007206586367637809,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (46).png",
+    "label": "benign",
+    "dice": 0.9264069265662188,
+    "agreement": 0.9834440453593672,
+    "uncertainty": 0.016555954640632753,
+    "cls_std": 0.001086041110686194,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (59).png",
+    "label": "benign",
+    "dice": 0.9083790133483246,
+    "agreement": 0.9789624004308819,
+    "uncertainty": 0.021037599569118104,
+    "cls_std": 0.0015110697480347753,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (61).png",
+    "label": "benign",
+    "dice": 9.057971006288068e-10,
+    "agreement": 0.3982010348940849,
+    "uncertainty": 0.601798965105915,
+    "cls_std": 0.1590017894513239,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (66).png",
+    "label": "benign",
+    "dice": 0.9609423434836067,
+    "agreement": 0.9878524767794269,
+    "uncertainty": 0.012147523220573109,
+    "cls_std": 0.00041637900577828175,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (69).png",
+    "label": "benign",
+    "dice": 0.926605504755492,
+    "agreement": 0.9617127849327568,
+    "uncertainty": 0.0382872150672432,
+    "cls_std": 0.00018893501535210624,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (76).png",
+    "label": "benign",
+    "dice": 0.9444444445061728,
+    "agreement": 0.9825898948070745,
+    "uncertainty": 0.017410105192925518,
+    "cls_std": 4.4018668278754645e-05,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (78).png",
+    "label": "benign",
+    "dice": 0.8924889545029617,
+    "agreement": 0.9761802731170902,
+    "uncertainty": 0.023819726882909786,
+    "cls_std": 0.015679554924287995,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "benign/benign (9).png",
+    "label": "benign",
+    "dice": 0.9735412651176553,
+    "agreement": 0.9866409247509731,
+    "uncertainty": 0.013359075249026908,
+    "cls_std": 2.3290275410731007e-05,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (94).png",
+    "label": "benign",
+    "dice": 1.6920473744635407e-09,
+    "agreement": 0.5000000003412969,
+    "uncertainty": 0.4999999996587031,
+    "cls_std": 0.12731608035776854,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "benign/benign (98).png",
+    "label": "benign",
+    "dice": 0.9110347955737035,
+    "agreement": 0.9726875866266894,
+    "uncertainty": 0.027312413373310584,
+    "cls_std": 5.6438093925047275e-05,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (102).png",
+    "label": "malignant",
+    "dice": 0.9030283505310843,
+    "agreement": 0.9498024406368781,
+    "uncertainty": 0.05019755936312187,
+    "cls_std": 0.0001533231641455268,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (115).png",
+    "label": "malignant",
+    "dice": 0.7929223113649648,
+    "agreement": 0.9586785128522971,
+    "uncertainty": 0.041321487147702896,
+    "cls_std": 0.0008956245035600434,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (117).png",
+    "label": "malignant",
+    "dice": 0.8229293175071825,
+    "agreement": 0.8624373875014467,
+    "uncertainty": 0.13756261249855328,
+    "cls_std": 0.0070174060503726465,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (125).png",
+    "label": "malignant",
+    "dice": 0.9009819967671923,
+    "agreement": 0.9182640724264975,
+    "uncertainty": 0.08173592757350245,
+    "cls_std": 0.024543928694218533,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (126).png",
+    "label": "malignant",
+    "dice": 0.8833592535355026,
+    "agreement": 0.9383480536727747,
+    "uncertainty": 0.06165194632722526,
+    "cls_std": 0.19299248269561442,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (141).png",
+    "label": "malignant",
+    "dice": 0.8956228956619443,
+    "agreement": 0.9623438672167491,
+    "uncertainty": 0.03765613278325086,
+    "cls_std": 0.1343307035933635,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (142).png",
+    "label": "malignant",
+    "dice": 0.6767693316123223,
+    "agreement": 0.8466018215575284,
+    "uncertainty": 0.1533981784424716,
+    "cls_std": 0.020488230455919017,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (151).png",
+    "label": "malignant",
+    "dice": 0.7253814147335436,
+    "agreement": 0.8663807933365691,
+    "uncertainty": 0.13361920666343086,
+    "cls_std": 0.007899393139393545,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (16).png",
+    "label": "malignant",
+    "dice": 0.6620562471407458,
+    "agreement": 0.8867833829551731,
+    "uncertainty": 0.11321661704482688,
+    "cls_std": 0.14099455483018142,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (164).png",
+    "label": "malignant",
+    "dice": 0.9243190870949755,
+    "agreement": 0.9540184038249503,
+    "uncertainty": 0.04598159617504971,
+    "cls_std": 0.05882154877030387,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (171).png",
+    "label": "malignant",
+    "dice": 0.5356019112532803,
+    "agreement": 0.8369337978489861,
+    "uncertainty": 0.16306620215101386,
+    "cls_std": 0.10335715692559684,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (174).png",
+    "label": "malignant",
+    "dice": 0.6383409206477253,
+    "agreement": 0.7554918124404052,
+    "uncertainty": 0.2445081875595948,
+    "cls_std": 0.1079400924157225,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (177).png",
+    "label": "malignant",
+    "dice": 0.16274165209466243,
+    "agreement": 0.5973155708469567,
+    "uncertainty": 0.40268442915304326,
+    "cls_std": 0.0008777070702357705,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (206).png",
+    "label": "malignant",
+    "dice": 0.9374404194508198,
+    "agreement": 0.9806554765991443,
+    "uncertainty": 0.019344523400855684,
+    "cls_std": 0.2260595019703155,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (23).png",
+    "label": "malignant",
+    "dice": 0.8672692673723079,
+    "agreement": 0.9260902130731831,
+    "uncertainty": 0.07390978692681693,
+    "cls_std": 0.008929602873348935,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (27).png",
+    "label": "malignant",
+    "dice": 0.8857356236850369,
+    "agreement": 0.9661608035034402,
+    "uncertainty": 0.033839196496559754,
+    "cls_std": 0.08397095996510014,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (3).png",
+    "label": "malignant",
+    "dice": 0.8089631599662123,
+    "agreement": 0.8718769306342974,
+    "uncertainty": 0.1281230693657026,
+    "cls_std": 0.007955831781014493,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (33).png",
+    "label": "malignant",
+    "dice": 0.8527501909995464,
+    "agreement": 0.9393289280340397,
+    "uncertainty": 0.06067107196596033,
+    "cls_std": 0.0045164063913391015,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (34).png",
+    "label": "malignant",
+    "dice": 0.8451711804572452,
+    "agreement": 0.9318137310766174,
+    "uncertainty": 0.06818626892338264,
+    "cls_std": 0.0018715208555873041,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (4).png",
+    "label": "malignant",
+    "dice": 0.8320587336090368,
+    "agreement": 0.9080980324293396,
+    "uncertainty": 0.09190196757066038,
+    "cls_std": 0.005747227983375264,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (5).png",
+    "label": "malignant",
+    "dice": 0.8552368245979863,
+    "agreement": 0.8932846255287227,
+    "uncertainty": 0.10671537447127732,
+    "cls_std": 0.005639748348561729,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (51).png",
+    "label": "malignant",
+    "dice": 0.8579734219564009,
+    "agreement": 0.9228011304541558,
+    "uncertainty": 0.0771988695458442,
+    "cls_std": 0.011211220262419306,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (58).png",
+    "label": "malignant",
+    "dice": 0.7353430203328748,
+    "agreement": 0.9693688331111932,
+    "uncertainty": 0.03063116688880685,
+    "cls_std": 0.1917744781653324,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (62).png",
+    "label": "malignant",
+    "dice": 0.8951857741947108,
+    "agreement": 0.9251501981359856,
+    "uncertainty": 0.07484980186401435,
+    "cls_std": 0.002131016645234791,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (68).png",
+    "label": "malignant",
+    "dice": 0.7465875371134729,
+    "agreement": 0.9049167983853518,
+    "uncertainty": 0.09508320161464823,
+    "cls_std": 0.012464124447780636,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (73).png",
+    "label": "malignant",
+    "dice": 0.9107526882200254,
+    "agreement": 0.9697571402390005,
+    "uncertainty": 0.030242859760999496,
+    "cls_std": 0.23733467324847407,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (76).png",
+    "label": "malignant",
+    "dice": 0.7796429523341802,
+    "agreement": 0.8082016064505514,
+    "uncertainty": 0.1917983935494486,
+    "cls_std": 0.06484526647812275,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (77).png",
+    "label": "malignant",
+    "dice": 0.8935091278070472,
+    "agreement": 0.9552067225830206,
+    "uncertainty": 0.04479327741697936,
+    "cls_std": 0.10971837420661291,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "malignant/malignant (86).png",
+    "label": "malignant",
+    "dice": 0.9278244471174504,
+    "agreement": 0.9623523543129106,
+    "uncertainty": 0.03764764568708945,
+    "cls_std": 0.003351638532149966,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "malignant/malignant (92).png",
+    "label": "malignant",
+    "dice": 0.7609375000933839,
+    "agreement": 0.9358089681953586,
+    "uncertainty": 0.06419103180464136,
+    "cls_std": 0.003192515815739368,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (109).png",
+    "label": "normal",
+    "dice": 1.0,
+    "agreement": 0.5000000015243903,
+    "uncertainty": 0.4999999984756097,
+    "cls_std": 0.35135994488698136,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (116).png",
+    "label": "normal",
+    "dice": 7.867820607499747e-10,
+    "agreement": 0.7501402447353812,
+    "uncertainty": 0.2498597552646188,
+    "cls_std": 0.008716363741298333,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (126).png",
+    "label": "normal",
+    "dice": 2.1528525291382446e-10,
+    "agreement": 0.9359181326174483,
+    "uncertainty": 0.06408186738255173,
+    "cls_std": 0.0023724771115102216,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (21).png",
+    "label": "normal",
+    "dice": 1.0,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.12151921879418856,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (23).png",
+    "label": "normal",
+    "dice": 8.291873956640236e-10,
+    "agreement": 0.297158264754852,
+    "uncertainty": 0.7028417352451479,
+    "cls_std": 0.28713627329396474,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (28).png",
+    "label": "normal",
+    "dice": 2.1891418559130598e-10,
+    "agreement": 0.9409325531900299,
+    "uncertainty": 0.059067446809970114,
+    "cls_std": 0.0029418688605617345,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (58).png",
+    "label": "normal",
+    "dice": 3.0395136685729066e-09,
+    "agreement": 0.8253874198803639,
+    "uncertainty": 0.1746125801196361,
+    "cls_std": 0.09911017066592953,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (60).png",
+    "label": "normal",
+    "dice": 2.4330900184109732e-09,
+    "agreement": 0.6817950628714552,
+    "uncertainty": 0.3182049371285448,
+    "cls_std": 0.1533993563435684,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (63).png",
+    "label": "normal",
+    "dice": 1.0,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.18947572484148195,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (64).png",
+    "label": "normal",
+    "dice": 1.0,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.22065577020084803,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (69).png",
+    "label": "normal",
+    "dice": 2.724795632902464e-09,
+    "agreement": 0.855853863129815,
+    "uncertainty": 0.14414613687018496,
+    "cls_std": 0.1882903542422178,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (71).png",
+    "label": "normal",
+    "dice": 1.0,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.13899257889492647,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (77).png",
+    "label": "normal",
+    "dice": 1.5174506805501507e-09,
+    "agreement": 0.5580049804103191,
+    "uncertainty": 0.4419950195896809,
+    "cls_std": 0.0006049269177963412,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (80).png",
+    "label": "normal",
+    "dice": 1.0351966862989682e-09,
+    "agreement": 0.9400935478623653,
+    "uncertainty": 0.05990645213763468,
+    "cls_std": 0.03847979329192217,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (81).png",
+    "label": "normal",
+    "dice": 7.974481652332948e-10,
+    "agreement": 0.38034452587071854,
+    "uncertainty": 0.6196554741292815,
+    "cls_std": 0.2548059237594062,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (84).png",
+    "label": "normal",
+    "dice": 1.0,
+    "agreement": 0.16666666842040115,
+    "uncertainty": 0.8333333315795989,
+    "cls_std": 0.23525430614976453,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (92).png",
+    "label": "normal",
+    "dice": 4.35540069496716e-10,
+    "agreement": 0.7811016879245503,
+    "uncertainty": 0.21889831207544974,
+    "cls_std": 0.007269079468112914,
+    "annotation_flag": false
+  },
+  {
+    "case_id": "normal/normal (94).png",
+    "label": "normal",
+    "dice": 2.5726781573005717e-10,
+    "agreement": 0.8573103347024075,
+    "uncertainty": 0.14268966529759253,
+    "cls_std": 0.06754169140548776,
+    "annotation_flag": true
+  },
+  {
+    "case_id": "normal/normal (96).png",
+    "label": "normal",
+    "dice": 1.0,
+    "agreement": 1.0,
+    "uncertainty": 0.0,
+    "cls_std": 0.11654583956225513,
+    "annotation_flag": true
+  }
+]

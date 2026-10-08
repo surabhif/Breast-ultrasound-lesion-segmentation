@@ -1,0 +1,34 @@
+{
+  "n_images": 780,
+  "n_with_mask_pixels": 759,
+  "mean_area_frac": 0.011915593412527127,
+  "mean_near_lesion_frac_10px": 0.12650772230090987,
+  "vs_annotation_flag": {
+    "tp": 366,
+    "fp": 325,
+    "fn": 0,
+    "tn": 89,
+    "precision": 0.5296671490593343,
+    "recall": 1.0,
+    "miss_rate": 0.0,
+    "false_alarm_rate": 0.785024154589372,
+    "note": "Compared pixel-detector has_markers vs existing image-level annotation_flag (heuristic, not pixel GT)."
+  },
+  "qa": {
+    "n_reviewed": 80,
+    "n_flagged_sampled": 60,
+    "n_clean_sampled": 20,
+    "label_counts": {
+      "good": 72,
+      "over_erased": 3,
+      "good_empty": 5
+    },
+    "miss_rate_on_flagged_sample": 0.0,
+    "over_erase_rate_on_clean_sample": 0.15,
+    "contact_sheet": "results/caliper_qa_contact_sheet.png",
+    "reviewer": "AI coding agent (Cursor) \u2014 owner asked agent to complete QA; not a clinician.",
+    "method": "Automated detector + contact-sheet spot check of \u226560 flagged and 20 clean images; labels good / missed_marks / over_erased."
+  },
+  "mask_dir": "/workspace/data/processed/caliper_masks",
+  "dilate_px": 3
+}
