@@ -8,21 +8,21 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 ### Added
 
 - `/bi-rads` — plain-language BI-RADS ultrasound context (score ≠ category); verified ACR / review citations.
-- `/surgeons-view` — size/margins research framing; BrEaST CC BY examples + BUSI outline silhouettes (D2).
-- `web/public/report.pdf` — research write-up auto-filled from results JSON; `scripts/build_report_pdf.py` + CI drift check.
-- `CITATION.cff` + About “How to cite” (Zenodo DOI TODO for owner login).
+- `/surgeons-view` — size/margins research framing; BrEaST CC BY examples + BUSI outline silhouettes.
+- `web/public/report.pdf` — 6–10 page research write-up auto-filled from results JSON with figures; CI drift check.
+- `CITATION.cff` + About “How to cite” (Zenodo DOI deferred — needs owner login).
 - Captioned walkthrough `web/public/video/walkthrough.mp4` + poster + VTT; storyboard in `docs/VIDEO_SCRIPT.md`.
 - `/portfolio` — Surabhi Fadnavis: student research in oncology AI (verified sibling links; no invented metrics).
-- Social preview regenerated from CC BY BrEaST imagery; privacy note (no analytics/cookies).
-- Accessibility audit notes in `docs/ACCESSIBILITY.md`; focus/ARIA/contrast/reduced-motion/caption fixes.
-- Decision log D5–D9, D11; consistent “How this was built” credit (D6).
+- Social preview from CC BY BrEaST imagery; privacy note (no analytics/cookies).
+- Grouped primary nav (Learn / About menus); accessibility notes in `docs/ACCESSIBILITY.md`.
+- Decision log D5–D12 (plan numbering); credit: “Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).”
 
 ### Skipped
 
-- **C3** clinician review / acknowledgements (D4 revoked / D8).
-- **P6** analytics (no account).
-- Separate `surabhif.github.io` portfolio repo (D11 — in-site `/portfolio` instead).
-- Model **v1.0.0** unchanged; no Dec 4 freeze tag/release (D9).
+- Clinician review / acknowledgements (revoked; C3 skipped).
+- Analytics (none).
+- Separate `surabhif.github.io` portfolio repo — in-site `/portfolio` instead (dated note, not a D-number).
+- Model **v1.0.0** unchanged; Dec 4 freeze not tagged yet.
 
 ## [Phase 2] — 2026-10-08
 

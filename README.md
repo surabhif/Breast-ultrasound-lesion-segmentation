@@ -152,7 +152,7 @@ Cite with `CITATION.cff` / About → How to cite. **TODO (owner):** Zenodo DOI (
 
 ## How this was built
 
-The code, analysis scripts, and most site and report text were produced with AI coding tools (**Cursor**). Surabhi Fadnavis owns the research questions, interpretation, presentation choices, and final review. High-school research project — not clinician-reviewed and **not for clinical use**.
+Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (**Cursor**). High-school research project — not clinician-reviewed and **not for clinical use**.
 
 ## Credits
 

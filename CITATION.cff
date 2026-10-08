@@ -13,6 +13,8 @@ license: MIT
 abstract: >-
   High-school research demo: in-browser ResNet-18 U-Net lesion segmentation on
   BUSI with external BUS-BRA / BrEaST validation. Not for clinical use.
+  Project by Surabhi Fadnavis. The code, analysis, text, and video were produced
+  with AI tools (Cursor).
 keywords:
   - breast ultrasound
   - lesion segmentation

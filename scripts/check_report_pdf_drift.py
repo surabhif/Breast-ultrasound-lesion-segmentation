@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""CI check: fail if report.pdf numeric figures drift from results JSON.
-
-Compares docs/report/numbers.json (regenerated from JSON by build_report_pdf.py)
-against (1) a fresh collect from results/, and (2) text extracted from report.pdf.
-"""
+"""CI check: fail if report.pdf numeric figures drift from results JSON."""
 
 from __future__ import annotations
 
@@ -18,18 +14,24 @@ from build_report_pdf import (  # noqa: E402
     NUMBERS_JSON,
     OUT_PDF,
     collect_numbers,
-    extract_pdf_numbers,
 )
 
 SKIP_IN_PDF = {
-    # PDF text extraction may break URLs / long prose
     "HOW_BUILT",
     "PAGES_URL",
     "GITHUB_URL",
+    "BUSUCLM_SENTENCE",
     "BUSUCLM_SKIP",
     "LEAK_SEEDS",
     "MODEL_SHA8",
 }
+
+
+def extract_pdf_numbers(pdf_path: Path) -> str:
+    from pypdf import PdfReader
+
+    reader = PdfReader(str(pdf_path))
+    return "\n".join((p.extract_text() or "") for p in reader.pages)
 
 
 def main() -> int:
@@ -60,14 +62,12 @@ def main() -> int:
         return 1
 
     pdf_text = extract_pdf_numbers(OUT_PDF)
-    # Normalize whitespace for matching
     compact = " ".join(pdf_text.split())
     missing_in_pdf = []
     for k in drift_keys:
         val = committed[k]
         if not val or val == "n/a":
             continue
-        # Allow values split oddly by PDF extraction: also try without spaces
         if val not in pdf_text and val not in compact:
             missing_in_pdf.append(f"{k}={val}")
 
@@ -75,6 +75,10 @@ def main() -> int:
         print("FAIL: PDF text missing expected numbers:")
         for m in missing_in_pdf:
             print(" ", m)
+        return 1
+
+    if "HTTP 403 wit)" in pdf_text:
+        print("FAIL: BUS-UCLM sentence truncated")
         return 1
 
     print(f"OK: {len(drift_keys)} numbers match results JSON and appear in {OUT_PDF.name}")

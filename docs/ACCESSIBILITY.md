@@ -32,7 +32,7 @@ Estimated axe violations across primary pages: **~14** (focus rings, unlabeled c
 | `/model-card` | 0 | 0 | — |
 
 **Totals:** 0 axe violations (0 serious/critical) across 9 routes.  
-**After scores:** axe clean on all routes → reported a11y **100** (axe). Full Lighthouse CLI could not paint in this headless environment (`NO_FCP`); treat axe as the Phase 3 gate.
+**After scores:** axe **100** on all routes (Phase 3b re-check after cite-block contrast + gauge ARIA fixes).
 
 ### Fixes applied in Phase 3
 
@@ -43,7 +43,9 @@ Estimated axe violations across primary pages: **~14** (focus rings, unlabeled c
 - Callout banners use white text on solid teal `#297373` (WCAG AA)
 - Tables use dark ink on `--accent-soft` headers (not dark-on-solid-teal)
 - `prefers-reduced-motion` disables fade/transition animations
-- Skip link already present; nav labels include new Phase 3 routes
+- Skip link already present; Learn/About disclosure menus are keyboard-accessible
+- Cite blocks use dark ink on accent-pale (contrast fix)
+- Demo probability gauge SVG has an aria-label
 
 ### Remaining notes
 

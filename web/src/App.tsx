@@ -9,6 +9,7 @@ import MistakesPage from './pages/MistakesPage'
 import BiradsPage from './pages/BiradsPage'
 import SurgeonsViewPage from './pages/SurgeonsViewPage'
 import PortfolioPage from './pages/PortfolioPage'
+import NavMenu from './components/NavMenu'
 import { MODEL_STATUS, SITE } from './lib/constants'
 import './App.css'
 
@@ -63,11 +64,21 @@ export default function App() {
               <NavLink to="/demo">Demo</NavLink>
               <NavLink to="/results">Results</NavLink>
               <NavLink to="/mistakes">Mistakes</NavLink>
-              <NavLink to="/bi-rads">BI-RADS</NavLink>
-              <NavLink to="/surgeons-view">Surgeon&apos;s view</NavLink>
-              <NavLink to="/portfolio">Portfolio</NavLink>
-              <NavLink to="/about">About</NavLink>
-              <NavLink to="/model-card">Model card</NavLink>
+              <NavMenu
+                label="Learn"
+                items={[
+                  { to: '/bi-rads', label: 'BI-RADS' },
+                  { to: '/surgeons-view', label: "Surgeon's view" },
+                ]}
+              />
+              <NavMenu
+                label="About"
+                items={[
+                  { to: '/about', label: 'About' },
+                  { to: '/model-card', label: 'Model card' },
+                  { to: '/portfolio', label: 'Portfolio' },
+                ]}
+              />
             </nav>
           </div>
         </header>

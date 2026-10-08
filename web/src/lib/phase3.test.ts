@@ -5,10 +5,11 @@ import { HOW_BUILT_STATEMENT } from '../components/HowBuilt'
 import measurement from '../data/measurement_agreement.json'
 
 describe('Phase 3 honesty + data wiring', () => {
-  it('HowBuilt statement names Cursor and research-only framing', () => {
+  it('HowBuilt statement names Cursor and Surabhi without task claims', () => {
     expect(HOW_BUILT_STATEMENT).toMatch(/Cursor/)
-    expect(HOW_BUILT_STATEMENT).toMatch(/not for clinical use/i)
-    expect(HOW_BUILT_STATEMENT).toMatch(/Surabhi/)
+    expect(HOW_BUILT_STATEMENT).toMatch(/Surabhi Fadnavis/)
+    expect(HOW_BUILT_STATEMENT).toMatch(/code, analysis, text, and video/)
+    expect(HOW_BUILT_STATEMENT).not.toMatch(/owns the research/)
   })
 
   it('measurement_agreement copy matches repo results JSON on key fields', () => {

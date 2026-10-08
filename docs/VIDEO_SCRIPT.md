@@ -8,53 +8,32 @@
 
 Research demo — not for clinical use.
 
----
-
-## Title card (0–4s)
-
-**On-screen:** Breast Ultrasound Lesion Segmentation  
-**Caption:** Research demo · not for clinical use · Surabhi Fadnavis
-
-## Home (4–14s)
-
-**Action:** Open Home; show hero + disclaimer.  
-**Caption:** Educational tour and in-browser lesion segmentation on BUSI
-
-## Demo (14–34s)
-
-**Action:** Navigate to Demo; select a BrEaST CC BY sample; wait for mask overlay.  
-**Caption:** Try the detector — mask overlay and benign vs malignant score in your browser
-
-## Measurements (34–44s)
-
-**Action:** Show measurement card / diameter lines if visible.  
-**Caption:** Research-only size estimates — not pathologic T-stage or surgical margins
-
-## Results (44–56s)
-
-**Action:** Open Results; scroll to external validation headline.  
-**Caption:** Internal and external metrics from committed results JSON
-
-## BI-RADS + surgeon’s view (56–68s)
-
-**Action:** Brief view of BI-RADS page, then surgeon’s-view examples.  
-**Caption:** A model score is not a BI-RADS category · imaging size is not staging
-
-## Portfolio + About (68–78s)
-
-**Action:** Portfolio cards, then About cite / privacy.  
-**Caption:** Related oncology-AI student projects · no analytics · cite the repo
-
-## End card (78–88s)
-
-**On-screen:** How this was built  
-**Caption:** Code, analysis, and text produced with AI tools (Cursor). Surabhi owns the research questions and review. Not for clinical use.
+**Credit:** Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).
 
 ---
+
+## Scenes
+
+| t (approx) | Scene | Caption |
+|------------|-------|---------|
+| 0–4s | Title card | Research demo · not for clinical use · Surabhi Fadnavis |
+| 4–10s | Home | Home — educational tour and in-browser lesion segmentation |
+| 10–17s | Demo gallery | Demo gallery — BUSI samples and CC BY BrEaST images |
+| 17–29s | Demo overlay | Mask overlay and benign vs malignant score — fully in the browser |
+| 29–37s | Demo controls | Expert compare, threshold sliders, and research measurements |
+| 37–45s | Results charts | Results — Dice, ROC, and calibration from committed JSON |
+| 45–52s | External table | External validation on BUS-BRA and BrEaST |
+| 52–58s | Mistakes | Mistakes explorer — outline-only silhouettes for hard cases |
+| 58–64s | BI-RADS | BI-RADS context — a model score is not a BI-RADS category |
+| 64–70s | Surgeon’s view | Surgeon's view — imaging size is not pathologic T-stage |
+| 70–75s | Portfolio | Portfolio — related oncology-AI student research demos |
+| 75–82s | End card | Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor). |
 
 ## Production notes
 
-- Prefer live Pages or local `vite preview` with `VITE_BASE`.
-- Keep file under ~15 MB (H.264, 1280×720, CRF ~28).
-- Burn captions with ffmpeg `drawtext` / `subtitles` filter; also ship WebVTT for the HTML `<track>`.
-- Imagery in the recording may show CC BY BrEaST samples and BUSI outline silhouettes only for new failure visuals (D2).
+- Wait for `networkidle` **and** a visible element on each route.
+- Demo scenes wait until the model loads and `.score-card` / `canvas` are visible.
+- Prefer local `vite preview` with matching `base`.
+- Keep file under ~15 MB (H.264, 1280×720).
+- Before commit: extract one frame every 5 s; reject blank whites; save contact sheet as `phase3b-video-contact.png`.
+- Poster labels the **actual** duration (not “60–90s”).

@@ -1,7 +1,7 @@
 /** Shared §8.5 honesty credit — keep wording consistent across the site. */
 
 export const HOW_BUILT_STATEMENT =
-  'How this was built: The code, analysis scripts, and most site and report text were produced with AI coding tools (Cursor). Surabhi Fadnavis owns the research questions, interpretation, presentation choices, and final review. This is a high-school research project — not clinician-reviewed and not for clinical use.'
+  'Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).'
 
 type Props = {
   as?: 'p' | 'div'

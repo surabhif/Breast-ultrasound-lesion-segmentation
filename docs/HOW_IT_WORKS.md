@@ -121,7 +121,7 @@ This project does **not** include expert medical review or outreach (D4 revoked)
 
 ## How this was built
 
-The code, analysis scripts, and most site and report text were produced with AI coding tools (Cursor). Surabhi owns the research questions, interpretation, presentation choices, and final review. Not clinician-reviewed. Not for clinical use.
+Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor). Not clinician-reviewed. Not for clinical use.
 
 ## Limitations to volunteer before you’re asked
 

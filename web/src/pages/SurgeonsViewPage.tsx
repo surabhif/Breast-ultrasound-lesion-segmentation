@@ -23,12 +23,12 @@ const BUSI_SILHOUETTES = [
   {
     id: 'busi_benign',
     src: 'results/mistakes_silhouettes/benign__benign_100.png',
-    label: 'BUSI outline-only silhouette (no ultrasound pixels · D2)',
+    label: 'BUSI outline-only silhouette (no ultrasound pixels)',
   },
   {
     id: 'busi_mal',
     src: 'results/mistakes_silhouettes/malignant__malignant_102.png',
-    label: 'BUSI outline-only silhouette (no ultrasound pixels · D2)',
+    label: 'BUSI outline-only silhouette (no ultrasound pixels)',
   },
 ] as const
 
@@ -111,8 +111,8 @@ export default function SurgeonsViewPage() {
 
       <h2>Examples (licensing-aware)</h2>
       <p>
-        Per owner decision <strong>D2</strong>: full ultrasound pixels on new pages use CC BY
-        external imagery; BUSI rows use outline-only silhouettes.
+        Full ultrasound pixels on new pages use CC BY external imagery; BUSI rows use outline-only
+        silhouettes.
       </p>
 
       <div className="example-grid" role="list">

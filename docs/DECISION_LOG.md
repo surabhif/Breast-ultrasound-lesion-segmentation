@@ -1,14 +1,16 @@
 # Decision log
 
-Dated owner decisions for this research demo. Implementation assistance from an AI coding agent (Cursor); Surabhi owns the research questions, interpretation, and presentation.
+Dated owner decisions for this research demo.
 
 Research demo, not for clinical use.
 
+**Credit (site-facing wording):** Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).
+
 ---
 
-## 2026-10-08 — Phase 3 decisions (D5–D9, D11)
+## 2026-10-08 — Phase 3 decisions (plan numbering D5–D12)
 
-Applied at Phase 3 start (PR draft; owner merges).
+Applied at Phase 3 (draft PR; owner merges). Numbering follows the enhancement plan.
 
 ### D5 — Write-up venue
 
@@ -16,29 +18,49 @@ Applied at Phase 3 start (PR draft; owner merges).
 
 ### D6 — Credit / “How this was built”
 
-**Decided:** Adopt the honesty statement consistently on the site, README, report, video end card, and portfolio: code, analysis, and text were produced with AI tools (Cursor); Surabhi owns research questions, interpretation, presentation, and review.
+**Decided:** Use consistently on the site, README, report, video end card, and portfolio:
+
+> Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).
+
+Do not claim specific tasks Surabhi personally drafted or recorded.
 
 ### D7 — Personal info on the site
 
 **Decided:** Publish **name** and **“high-school senior, Georgia”** only. No school name, photo, email, or personal contact.
 
-### D8 — Clinician involvement
+### D8 — Zenodo DOI
 
-**Decided:** **None** (extends D4 revocation). Skip plan item **C3** entirely. Do not add reviewer or acknowledgement sections.
+**Decided:** **Deferred.** Minting a DOI needs the owner’s Zenodo login. Document as a TODO in cite docs / `CITATION.cff` only — agents cannot complete it.
 
-### D9 — Served model / Dec 4 freeze
+### D9 — Walkthrough video
 
-**Decided:** Served model stays **v1.0.0**. Do **not** create the Dec 4 freeze tag or GitHub release yet.
+**Decided:** AI-made captioned walkthrough (no voiceover, no person on camera), self-hosted under `web/public/video/`. Target 60–90 s.
 
-### D11 — Portfolio hosting
+### D10 — Compute / storage
 
-**Decided:** The plan’s separate `surabhif.github.io` repo needs the owner to create it. For Phase 3, ship an in-site **`/portfolio`** page instead. Do not modify sibling repositories.
+**Decided:** Keep training and artifacts within the existing repo / CPU-friendly workflow already used for v1.0.0 (no new paid compute tier required for Phase 3 polish).
+
+### D11 — Analytics
+
+**Decided:** **None.** No analytics account. About page states the site uses no analytics or cookies and processes images in the browser only.
+
+### D12 — Model freeze date
+
+**Decided:** Target freeze is **4 December** (Dec 4). **Do not** create the freeze tag or GitHub release yet; served model stays **v1.0.0** until the owner tags it.
+
+### Portfolio hosting (separate note — not a D-number)
+
+**Decided 2026-10-08:** The plan’s separate `surabhif.github.io` portfolio repo needs the owner to create it. For Phase 3, ship an in-site **`/portfolio`** page instead. Do not modify sibling repositories.
+
+### Clinician involvement (extends D4 revocation)
+
+**Decided:** **None.** Skip plan item **C3** entirely. Do not add reviewer or acknowledgement sections. (See D4 revoked below.)
 
 ---
 
 ## 2026-10-08 — D4 revoked (no clinician review)
 
-**Decided:** The earlier Phase 1 decision **D4 (clinician review / outreach)** is **revoked**. This project will **not** involve clinician review, outreach emails, reviewer acknowledgements, or a private `/review` page. Related docs and UI were removed in Phase 2. Reaffirmed as **D8** for Phase 3 (skip C3).
+**Decided:** The earlier Phase 1 decision **D4 (clinician review / outreach)** is **revoked**. This project will **not** involve clinician review, outreach emails, reviewer acknowledgements, or a private `/review` page. Related docs and UI were removed in Phase 2. Reaffirmed for Phase 3 (skip C3).
 
 ---
 
@@ -60,7 +82,7 @@ Applied at Phase 3 start (PR draft; owner merges).
 
 ### D4 — Clinician review (REVOKED)
 
-~~Build a static private review page…~~ **Revoked 2026-10-08** — see entry at top of this file.
+~~Build a static private review page…~~ **Revoked 2026-10-08** — see entry above.
 
 ---
 

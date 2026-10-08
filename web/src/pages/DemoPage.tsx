@@ -489,7 +489,12 @@ export default function DemoPage() {
 
           <div className="result-row">
             <div className="gauge" aria-label="Predicted malignant probability">
-              <svg viewBox="0 0 120 70" className="gauge-svg" role="img">
+              <svg
+                viewBox="0 0 120 70"
+                className="gauge-svg"
+                role="img"
+                aria-label="Gauge showing predicted malignant probability"
+              >
                 <path
                   d="M10 60 A50 50 0 0 1 110 60"
                   fill="none"

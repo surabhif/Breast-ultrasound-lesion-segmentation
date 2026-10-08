@@ -126,7 +126,7 @@ export default function ModelCardPage() {
         Educational BI-RADS and surgeon&apos;s-view pages explain what the model does <em>not</em>{' '}
         claim. A site-only research PDF auto-fills numbers from results JSON. Served model remains{' '}
         <strong>v{MODEL_STATUS.version}</strong> (no Dec 4 freeze tag yet). No clinician
-        involvement (D4 revoked; C3 skipped).
+        involvement on this project.
       </p>
 
       <h2>Ethical considerations</h2>
@@ -145,10 +145,8 @@ export default function ModelCardPage() {
 
       <h2 id="how-built">How this was built</h2>
       <p>
-        The code, analysis scripts, and most site and report text were produced with AI coding tools
-        (Cursor). Surabhi Fadnavis owns the research questions, interpretation, presentation
-        choices, and final review. High-school research project — not clinician-reviewed and not for
-        clinical use.
+        Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools
+        (Cursor). High-school research project — not clinician-reviewed and not for clinical use.
       </p>
     </article>
   )

@@ -165,7 +165,7 @@ export default function AboutPage() {
       <HowBuilt />
       <p className="muted tiny">
         Personal info on this site is limited to name and “high-school senior, Georgia.” No school
-        name, photo, email, or personal contact is published (D7).
+        name, photo, email, or personal contact is published.
       </p>
       <p className="muted tiny">MIT license for code. BUSI images remain under their original terms.</p>
     </article>
