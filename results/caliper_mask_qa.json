@@ -11,7 +11,7 @@
     "miss_rate_on_flagged_sample": 0.0,
     "over_erase_rate_on_clean_sample": 0.15,
     "contact_sheet": "results/caliper_qa_contact_sheet.png",
-    "reviewer": "AI coding agent (Cursor) \u2014 owner asked agent to complete QA; not a clinician.",
+    "reviewer": "AI coding agent (Cursor) \u2014 owner asked agent to complete QA; not expert medical review.",
     "method": "Automated detector + contact-sheet spot check of \u226560 flagged and 20 clean images; labels good / missed_marks / over_erased."
   },
   "rows": [

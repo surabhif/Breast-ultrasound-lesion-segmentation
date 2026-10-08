@@ -92,7 +92,15 @@ type Metrics = {
   }
   inpaint_experiment?: {
     served_unchanged?: boolean
+    decision_sentence?: string
     swap_note?: string
+    swap_criteria?: {
+      criterion: string
+      rule: string
+      v1?: number | null
+      v2?: number | null
+      passed: boolean
+    }[]
     before_after_note?: string
     table?: { name: string; dice?: number; lesion_dice?: number; auc?: number }[]
   }
@@ -664,12 +672,41 @@ export default function ResultsPage() {
             frozen v1 on original vs inpainted test; E-b is a random-region control on clean images;
             E-c retrains on inpainted training data. See <code>results/inpaint_experiment.json</code>.
           </p>
-          {data.inpaint_experiment.served_unchanged !== false && (
-            <p>
-              <strong>Model-swap rule:</strong> v2 did not replace served v1.0.0
-              {data.inpaint_experiment.swap_note ? ` — ${data.inpaint_experiment.swap_note}` : '.'}
-            </p>
+          <h3 className="section-title" style={{ fontSize: '1.05rem' }}>
+            Model-swap rule
+          </h3>
+          {data.inpaint_experiment.swap_criteria && data.inpaint_experiment.swap_criteria.length > 0 && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Criterion</th>
+                    <th>Rule</th>
+                    <th>v1</th>
+                    <th>v2</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.inpaint_experiment.swap_criteria.map((row) => (
+                    <tr key={row.criterion}>
+                      <td>{row.criterion}</td>
+                      <td>{row.rule}</td>
+                      <td>{row.v1 == null ? '—' : row.v1.toFixed(3)}</td>
+                      <td>{row.v2 == null ? '—' : row.v2.toFixed(3)}</td>
+                      <td>{row.passed ? 'Pass' : 'Fail'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
+          <p>
+            {data.inpaint_experiment.decision_sentence ??
+              (data.inpaint_experiment.served_unchanged !== false
+                ? 'v2 did not meet the rule, so the site keeps serving v1.0.0.'
+                : 'v2 met the rule, so the site serves v2.0.0.')}
+          </p>
           {data.inpaint_experiment.table && (
             <div className="table-wrap">
               <table>

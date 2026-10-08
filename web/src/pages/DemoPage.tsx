@@ -14,7 +14,8 @@ import {
 import { downsampleMaskNearest, diceScore, iouScore } from '../lib/metrics'
 import { measureLesion, type LesionMeasurements } from '../lib/measure'
 import { maskToOverlay } from '../lib/image'
-import { agreementLabel, type TtaResult } from '../lib/tta'
+import { overallUncertaintySummary, type TtaResult } from '../lib/tta'
+import { sampleHasExpert, sampleSourceLabel, sampleSpacingMm } from '../lib/sampleMeta'
 
 type Sample = {
   id: string
@@ -93,6 +94,7 @@ export default function DemoPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const objectUrlRef = useRef<string | null>(null)
   const preloadDone = useRef(false)
+  const analyzeGen = useRef(0)
 
   useEffect(() => {
     void preloadModel(setLoadProgress).catch(() => {
@@ -225,6 +227,10 @@ export default function DemoPage() {
   }
 
   async function analyze(src: string | File, meta?: Sample) {
+    const gen = ++analyzeGen.current
+    // Bind selection immediately so GT / spacing cannot lag behind a prior sample.
+    setSelectedId(meta?.id ?? null)
+    setSelectedMeta(meta ?? null)
     setBusy(true)
     setError(null)
     setResult(null)
@@ -242,22 +248,23 @@ export default function DemoPage() {
       const url = typeof src === 'string' ? src : URL.createObjectURL(src)
       if (typeof src !== 'string') objectUrlRef.current = url
       setSourceUrl(url)
-      setSelectedId(meta?.id ?? null)
-      setSelectedMeta(meta ?? null)
       let out: InferenceResult
       if (useTta) {
-        const ttaOut = await runInferenceTta(src, setLoadProgress, (i, n) =>
-          setTtaStep(`TTA ${i}/${n}`),
-        )
+        const ttaOut = await runInferenceTta(src, setLoadProgress, (i, n) => {
+          if (gen === analyzeGen.current) setTtaStep(`TTA ${i}/${n}`)
+        })
+        if (gen !== analyzeGen.current) return
         setTta(ttaOut.tta)
         out = ttaOut
       } else {
         out = await runInference(src, setLoadProgress, { segThreshold: segThr })
+        if (gen !== analyzeGen.current) return
       }
       setResult(out)
       setTtaStep(null)
 
       const expert = await loadExpert(meta, out.maskH, out.maskW)
+      if (gen !== analyzeGen.current) return
       if (expert) {
         setExpertMask(expert)
         const predBin = new Float32Array(out.mask.length)
@@ -266,18 +273,14 @@ export default function DemoPage() {
         setBrowserIoU(iouScore(predBin, expert, 0.5))
       }
 
-      // BrEaST Pixel_size is cm at original res → we store mm/px @ orig; convert to 160².
-      const spacing =
-        meta?.mm_per_mask_px_160 ??
-        (meta?.pixel_size_mm != null && meta.orig_width && meta.orig_height
-          ? meta.pixel_size_mm * ((meta.orig_width + meta.orig_height) / 2) / out.maskW
-          : null)
-      setMeasurements(measureLesion(out.mask, out.maskH, out.maskW, spacing, SEG_THRESHOLD))
+      const spacing = sampleSpacingMm(meta ?? null, out.maskW)
+      setMeasurements(measureLesion(out.mask, out.maskH, out.maskW, spacing, segThr))
     } catch (err) {
+      if (gen !== analyzeGen.current) return
       console.error(err)
       setError(err instanceof Error ? err.message : 'Inference failed')
     } finally {
-      setBusy(false)
+      if (gen === analyzeGen.current) setBusy(false)
     }
   }
 
@@ -300,7 +303,7 @@ export default function DemoPage() {
           ? 15
           : 0
 
-  const hasExpert = Boolean(selectedMeta?.mask_src)
+  const hasExpert = sampleHasExpert(selectedMeta)
 
   return (
     <div className="fade-in demo-page">
@@ -457,14 +460,16 @@ export default function DemoPage() {
           <div className="score-card" aria-live="polite">
             {hasExpert && browserDice != null ? (
               <>
-                <strong>
-                  Dice {browserDice.toFixed(2)} · IoU {browserIoU?.toFixed(2)}
-                </strong>
-                <span className="muted tiny">
+                <p className="score-card-metrics">
+                  <strong>
+                    Dice {browserDice.toFixed(2)} · IoU {browserIoU?.toFixed(2)}
+                  </strong>
+                </p>
+                <p className="muted tiny score-card-caption">
                   Browser INT8 vs expert @ 160²
                   {selectedMeta?.reported_dice_int8 != null &&
                     ` · reported INT8 ${selectedMeta.reported_dice_int8.toFixed(2)}`}
-                </span>
+                </p>
                 {selectedMeta?.label === 'normal' && (
                   <p className="tiny">
                     {result && result.maskMean < 0.01
@@ -474,7 +479,11 @@ export default function DemoPage() {
                 )}
               </>
             ) : (
-              <span className="muted tiny">Per-image Dice appears for samples with expert masks.</span>
+              <p className="muted tiny">
+                {selectedMeta
+                  ? 'Per-image Dice appears for samples with expert masks.'
+                  : 'Upload has no expert outline — Dice is not shown.'}
+              </p>
             )}
           </div>
 
@@ -508,10 +517,10 @@ export default function DemoPage() {
               {selectedMeta ? (
                 <p>
                   <span className={`badge ${selectedMeta.label}`}>{selectedMeta.label}</span>{' '}
-                  {selectedMeta.dataset === 'breast' ? 'BrEaST CC BY' : 'BUSI test sample'}
+                  {sampleSourceLabel(selectedMeta)}
                 </p>
               ) : (
-                <p className="muted">Available for gallery samples only.</p>
+                <p className="muted">No ground truth for uploads.</p>
               )}
               <p className="tiny muted">
                 Mean mask activation: {result ? result.maskMean.toFixed(3) : '—'}
@@ -571,7 +580,7 @@ export default function DemoPage() {
                       next.mask,
                       result.maskH,
                       result.maskW,
-                      selectedMeta?.mm_per_mask_px_160 ?? null,
+                      sampleSpacingMm(selectedMeta, result.maskW),
                       t,
                     ),
                   )
@@ -619,13 +628,29 @@ export default function DemoPage() {
           {ttaStep && <p className="muted tiny">{ttaStep}</p>}
           {tta && (
             <div className="score-card" style={{ marginTop: '0.5rem' }}>
-              <strong>
-                Model agreement: {agreementLabel(tta.agreement)} ({tta.agreement.toFixed(2)})
-              </strong>
-              <p className="muted tiny">
-                Agreement under small flips/brightness changes — not a probability of being wrong.
-                Cls std {tta.clsStd.toFixed(3)}.
-              </p>
+              {(() => {
+                const u = overallUncertaintySummary(tta.agreement, tta.clsStd)
+                return (
+                  <>
+                    <p className="score-card-metrics">
+                      <strong>Outline agreement: {u.outline}</strong>
+                      <span className="muted tiny"> ({tta.agreement.toFixed(2)} pairwise Dice)</span>
+                    </p>
+                    <p className="score-card-metrics">
+                      <strong>Score stability: {u.score}</strong>
+                      <span className="muted tiny">
+                        {' '}
+                        (class-score spread {tta.clsStd.toFixed(3)} across TTA passes)
+                      </span>
+                    </p>
+                    <p className="muted tiny">
+                      These describe agreement under small flips/brightness changes — not a
+                      probability of being wrong.
+                    </p>
+                    {u.warning && <p className="tiny">{u.warning}</p>}
+                  </>
+                )
+              })()}
             </div>
           )}
 

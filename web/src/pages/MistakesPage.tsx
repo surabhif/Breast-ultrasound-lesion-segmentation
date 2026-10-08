@@ -18,6 +18,7 @@ type MistakeRow = {
 type MistakesPayload = {
   disclaimer: string
   notes_label: string
+  legend?: { expert?: string; model?: string; overlap?: string }
   rows: MistakeRow[]
 }
 
@@ -141,6 +142,20 @@ export default function MistakesPage() {
         <p className="muted tiny">
           Showing {filtered.length} / {data.rows.length}. Notes marked “{data.notes_label}”.
         </p>
+        <ul className="mistakes-legend" aria-label="Silhouette legend">
+          <li>
+            <span className="legend-swatch legend-expert" />{' '}
+            {data.legend?.expert ?? 'Expert outline (blue)'}
+          </li>
+          <li>
+            <span className="legend-swatch legend-model" />{' '}
+            {data.legend?.model ?? 'Model outline (orange)'}
+          </li>
+          <li>
+            <span className="legend-swatch legend-overlap" />{' '}
+            {data.legend?.overlap ?? 'Agreement fill (teal)'}
+          </li>
+        </ul>
         <div className="mistakes-grid">
           {filtered.map((row) => (
             <article key={row.case_id} className="mistake-card">

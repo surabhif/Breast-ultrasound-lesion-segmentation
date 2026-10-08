@@ -91,6 +91,29 @@ export function agreementLabel(agreement: number): 'high' | 'medium' | 'low' {
   return 'low'
 }
 
+export function scoreStabilityLabel(clsStd: number): 'stable' | 'moderate' | 'spread' {
+  if (clsStd <= 0.05) return 'stable'
+  if (clsStd <= 0.15) return 'moderate'
+  return 'spread'
+}
+
+/** Overall chip: high outline agreement can still warn when class scores spread. */
+export function overallUncertaintySummary(
+  agreement: number,
+  clsStd: number,
+): { outline: string; score: string; warning: string | null } {
+  const outline = agreementLabel(agreement)
+  const score = scoreStabilityLabel(clsStd)
+  let warning: string | null = null
+  if (outline === 'high' && score === 'spread') {
+    warning =
+      'Outline stayed similar under small changes, but the benign/malignant score moved a lot — treat the score cautiously.'
+  } else if (outline === 'low') {
+    warning = 'Outline changed under small flips/brightness — the mask is less stable here.'
+  }
+  return { outline, score, warning }
+}
+
 /** Deterministic TTA specs (identity + flips + mild brightness). Geometry inverted by caller. */
 export const TTA_SPECS = [
   { id: 'id', hflip: false, vflip: false, brightness: 1 },

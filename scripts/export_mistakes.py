@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build mistakes explorer JSON + outline-only silhouettes (no BUSI ultrasound pixels)."""
+"""Build mistakes explorer JSON + outline silhouettes (expert + model; no BUSI pixels)."""
 
 from __future__ import annotations
 
@@ -8,45 +8,49 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import onnxruntime as ort
 from PIL import Image, ImageDraw
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "scripts"))
 
-from busi_data import RESULTS, WEB_PUBLIC, load_manifest  # noqa: E402
+from busi_data import (  # noqa: E402
+    RESULTS,
+    WEB_PUBLIC,
+    imagenet_tensor_from_rgb,
+    load_manifest,
+    remove_small_components,
+)
 
 OUT_JSON = WEB_PUBLIC / "results" / "mistakes.json"
 OUT_DIR = WEB_PUBLIC / "results" / "mistakes_silhouettes"
 NOTES_MD = REPO / "docs" / "ERROR_NOTES.md"
+ONNX = WEB_PUBLIC / "models" / "v1.0.0" / "busi_unet.onnx"
+SEG_THRESH = 0.4
+MIN_AREA = 40
 
 
-def error_type(row: dict, pred_area: float | None = None, gt_area: float | None = None) -> str:
+def error_type(row: dict, pred_area: float, gt_area: float) -> str:
     label = row["label"]
     dice = float(row.get("dice", row.get("dice_score", 0)))
     cls = float(row["cls_prob"])
     y = 1 if label == "malignant" else (0 if label == "benign" else None)
     if label == "normal":
-        # FP lesion if dice defined against empty — use mask activation proxy
-        if dice < 0.99 and row.get("pred_area", pred_area or 1) and float(row.get("pred_nonzero", 1)) > 0:
-            return "false_lesion_on_normal"
-        return "false_lesion_on_normal" if dice < 1.0 else "boundary_disagreement"
+        return "false_lesion_on_normal" if pred_area > 0 else "boundary_disagreement"
     if dice < 0.1:
         return "missed_lesion"
     if y is not None and abs(cls - y) > 0.5:
         return "wrong_class"
-    pa = pred_area
-    ga = gt_area
-    if pa is not None and ga is not None and ga > 0:
-        if pa < 0.6 * ga:
+    if gt_area > 0:
+        if pred_area < 0.6 * gt_area:
             return "under_segmentation"
-        if pa > 1.5 * ga:
+        if pred_area > 1.5 * gt_area:
             return "over_segmentation"
     if dice < 0.7:
         return "boundary_disagreement"
     return "boundary_disagreement"
 
 
-# AI-generated analysis notes (≥20). Clearly labelled.
 AI_NOTES = {
     "false_lesion_on_normal": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
     "missed_lesion": "Near-zero Dice: lesion was essentially missed. Low contrast or small lesion size is a common cause in BUSI.",
@@ -57,35 +61,71 @@ AI_NOTES = {
 }
 
 
-def silhouette(mask_path: str, pred: np.ndarray | None, out_path: Path, size: int = 160) -> None:
-    gt = np.array(Image.open(mask_path).convert("L").resize((size, size), Image.NEAREST)) > 127
-    img = Image.new("RGB", (size, size), (40, 44, 48))
-    arr = np.array(img)
-    # expert = blue outline fill
-    arr[gt] = (60, 110, 180)
-    if pred is not None:
-        p = pred.astype(bool)
-        if p.shape != gt.shape:
-            p = np.array(Image.fromarray((p.astype(np.uint8) * 255)).resize((size, size), Image.NEAREST)) > 127
-        only_m = p & ~gt
-        only_e = gt & ~p
-        both = p & gt
-        arr[both] = (41, 115, 115)
-        arr[only_m] = (200, 120, 60)
-        arr[only_e] = (80, 140, 200)
+def _outline(mask: np.ndarray) -> np.ndarray:
+    """4-neighbour boundary pixels of a boolean mask."""
+    m = mask.astype(bool)
+    if not m.any():
+        return m
+    up = np.zeros_like(m)
+    down = np.zeros_like(m)
+    left = np.zeros_like(m)
+    right = np.zeros_like(m)
+    up[1:] = m[:-1]
+    down[:-1] = m[1:]
+    left[:, 1:] = m[:, :-1]
+    right[:, :-1] = m[:, 1:]
+    return m & ~(up & down & left & right)
+
+
+def silhouette(gt: np.ndarray, pred: np.ndarray, out_path: Path, size: int = 160) -> None:
+    """Gray background; teal fill = agreement; blue = expert-only; orange = model-only; outlines bold."""
+    if gt.shape != (size, size):
+        gt = (
+            np.array(Image.fromarray((gt.astype(np.uint8) * 255)).resize((size, size), Image.NEAREST))
+            > 127
+        )
+    if pred.shape != (size, size):
+        pred = (
+            np.array(
+                Image.fromarray((pred.astype(np.uint8) * 255)).resize((size, size), Image.NEAREST)
+            )
+            > 127
+        )
+    arr = np.full((size, size, 3), 48, dtype=np.uint8)
+    both = gt & pred
+    only_e = gt & ~pred
+    only_m = pred & ~gt
+    arr[both] = (41, 115, 115)
+    arr[only_e] = (70, 120, 190)
+    arr[only_m] = (210, 130, 55)
+    # Distinct outlines on top
+    e_edge = _outline(gt)
+    m_edge = _outline(pred)
+    arr[e_edge] = (90, 160, 255)
+    arr[m_edge] = (255, 170, 60)
     Image.fromarray(arr).save(out_path)
+
+
+def predict_mask(sess: ort.InferenceSession, image_path: str, size: int = 160) -> np.ndarray:
+    rgb = np.asarray(Image.open(image_path).convert("RGB"))
+    x = imagenet_tensor_from_rgb(rgb, size)
+    outs = sess.run(None, {"input": x})
+    names = [o.name for o in sess.get_outputs()]
+    seg = outs[names.index("seg_mask")] if "seg_mask" in names else outs[0]
+    return remove_small_components(seg[0, 0] > SEG_THRESH, MIN_AREA)
 
 
 def main() -> None:
     per = json.loads((RESULTS / "served_int8_per_image.json").read_text())
     manifest = load_manifest().set_index("case_id")
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    sess = ort.InferenceSession(str(ONNX), providers=["CPUExecutionProvider"])
 
     rows = []
     notes_md = [
         "# Error notes (mistakes explorer)",
         "",
-        "**Source:** AI-generated analysis (Cursor agent), not clinician-authored. Research demo only.",
+        "**Source:** AI-generated analysis (Cursor agent). Research demo only.",
         "",
     ]
     noted = 0
@@ -95,25 +135,31 @@ def main() -> None:
             continue
         mrow = manifest.loc[cid]
         dice = float(r.get("dice", r.get("dice_score", 0)))
-        # Prefer interesting mistakes
-        et = error_type(r)
-        if r["label"] == "normal" and dice >= 0.99:
-            # skip perfect normals unless we know FP — check pred if present
-            if float(r.get("mask_mean", 1)) < 0.01:
-                continue
-            et = "false_lesion_on_normal"
+        pred_area = float(r.get("pred_area", 0))
+        gt_area = float(r.get("gt_area", 0))
+        et = error_type(r, pred_area, gt_area)
+        if r["label"] == "normal" and dice >= 0.99 and pred_area <= 0:
+            continue
 
         sil_name = cid.replace("/", "__").replace(" ", "_").replace("(", "").replace(")", "")
         if not sil_name.endswith(".png"):
             sil_name += ".png"
         sil_path = OUT_DIR / sil_name
+
+        gt = np.array(Image.open(mrow["merged_mask_path"]).convert("L").resize((160, 160), Image.NEAREST)) > 127
         try:
-            silhouette(str(mrow["merged_mask_path"]), None, sil_path)
-        except Exception:
+            pred = predict_mask(sess, str(mrow["image_path"]))
+        except Exception as e:
+            print("predict failed", cid, e)
             continue
+        silhouette(gt, pred, sil_path)
 
         note = None
-        if noted < 24 and (dice < 0.75 or r["label"] == "normal" or abs(float(r["cls_prob"]) - (1 if r["label"] == "malignant" else 0)) > 0.4):
+        if noted < 24 and (
+            dice < 0.75
+            or r["label"] == "normal"
+            or abs(float(r["cls_prob"]) - (1 if r["label"] == "malignant" else 0)) > 0.4
+        ):
             note = AI_NOTES.get(et, AI_NOTES["boundary_disagreement"])
             notes_md.append(f"- `{cid}` ({et}, Dice {dice:.2f}): {note}")
             noted += 1
@@ -133,7 +179,6 @@ def main() -> None:
             }
         )
 
-    # Ensure ≥20 notes by filling remaining worst cases
     for r in rows:
         if noted >= 20:
             break
@@ -145,8 +190,13 @@ def main() -> None:
         noted += 1
 
     payload = {
-        "disclaimer": "Research demo — not for clinical use. BUSI ultrasound pixels omitted (outline silhouettes only). Notes are AI-generated analysis, not clinician review.",
+        "disclaimer": "Research demo — not for clinical use. BUSI ultrasound pixels omitted (outline silhouettes only). Notes are AI-generated analysis.",
         "notes_label": "AI-generated analysis",
+        "legend": {
+            "expert": "Expert outline (blue)",
+            "model": "Model outline (orange)",
+            "overlap": "Agreement fill (teal)",
+        },
         "n_notes": noted,
         "rows": rows,
     }

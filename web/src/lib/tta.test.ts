@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { aggregateTta, agreementLabel } from './tta'
+import { aggregateTta, agreementLabel, overallUncertaintySummary, scoreStabilityLabel } from './tta'
 
 describe('aggregateTta', () => {
   it('gives perfect agreement for identical masks', () => {
@@ -17,5 +17,15 @@ describe('aggregateTta', () => {
     expect(r.agreement).toBeLessThan(0.2)
     expect(agreementLabel(r.agreement)).toBe('low')
     expect(r.clsStd).toBeGreaterThan(0.3)
+  })
+})
+
+describe('overallUncertaintySummary', () => {
+  it('warns when outline is high but score spreads', () => {
+    expect(scoreStabilityLabel(0.357)).toBe('spread')
+    const s = overallUncertaintySummary(0.97, 0.357)
+    expect(s.outline).toBe('high')
+    expect(s.score).toBe('spread')
+    expect(s.warning).toMatch(/score moved/i)
   })
 })

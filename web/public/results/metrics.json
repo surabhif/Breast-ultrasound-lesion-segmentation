@@ -1013,6 +1013,37 @@
   },
   "inpaint_experiment": {
     "served_unchanged": true,
+    "decision_sentence": "v2 did not meet the rule, so the site keeps serving v1.0.0.",
+    "swap_criteria": [
+      {
+        "criterion": "Clean-subset Dice (BUSI)",
+        "rule": "v2 \u2265 v1",
+        "v1": 0.623,
+        "v2": 0.626,
+        "passed": true
+      },
+      {
+        "criterion": "External Dice (BUS-BRA)",
+        "rule": "v2 \u2265 v1",
+        "v1": 0.714,
+        "v2": 0.626,
+        "passed": false
+      },
+      {
+        "criterion": "External Dice (BrEaST)",
+        "rule": "v2 \u2265 v1",
+        "v1": 0.627,
+        "v2": 0.608,
+        "passed": false
+      },
+      {
+        "criterion": "BUSI test AUC",
+        "rule": "drop \u2264 0.02",
+        "v1": 0.931,
+        "v2": 0.945,
+        "passed": true
+      }
+    ],
     "swap_note": "seed 44: clean 0.626 vs v1 0.623; BUS-BRA 0.6260342097470627 vs 0.7136202288207832; BrEaST 0.6077195969381051 vs 0.6265385719593876; AUC 0.944973544973545 vs 0.9306878306878307; checks={'clean_dice_ok': True, 'busbra_ok': False, 'breast_ok': False, 'auc_ok': True}",
     "table": [
       {

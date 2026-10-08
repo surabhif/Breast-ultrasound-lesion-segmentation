@@ -96,6 +96,48 @@ def main() -> None:
             }
         )
 
+    # Structured criteria for the Results page (plain language; 3-decimal values).
+    def r3(x: float | None) -> float | None:
+        return None if x is None else round(float(x), 3)
+
+    if best:
+        c_clean = (best.get("test_clean_subset_original") or {}).get("dice_mean")
+        c_auc = (best.get("test_original") or {}).get("cls_roc_auc")
+        c_busbra = (best.get("external_busbra") or {}).get("dice_mean")
+        c_breast = (best.get("external_breast") or {}).get("dice_mean")
+        swap_criteria = [
+            {
+                "criterion": "Clean-subset Dice (BUSI)",
+                "rule": "v2 ≥ v1",
+                "v1": r3(v1_clean),
+                "v2": r3(c_clean),
+                "passed": bool(c_clean is not None and v1_clean is not None and c_clean >= v1_clean - 1e-9),
+            },
+            {
+                "criterion": "External Dice (BUS-BRA)",
+                "rule": "v2 ≥ v1",
+                "v1": r3(v1_busbra),
+                "v2": r3(c_busbra),
+                "passed": bool(c_busbra is not None and v1_busbra is not None and c_busbra >= v1_busbra - 1e-9),
+            },
+            {
+                "criterion": "External Dice (BrEaST)",
+                "rule": "v2 ≥ v1",
+                "v1": r3(v1_breast),
+                "v2": r3(c_breast),
+                "passed": bool(c_breast is not None and v1_breast is not None and c_breast >= v1_breast - 1e-9),
+            },
+            {
+                "criterion": "BUSI test AUC",
+                "rule": "drop ≤ 0.02",
+                "v1": r3(v1_auc),
+                "v2": r3(c_auc),
+                "passed": bool(c_auc is not None and v1_auc is not None and (v1_auc - c_auc) <= 0.02 + 1e-9),
+            },
+        ]
+    else:
+        swap_criteria = []
+
     if swap_ok and best:
         v2_dir = WEB / "models" / "v2.0.0"
         v2_dir.mkdir(parents=True, exist_ok=True)
@@ -121,13 +163,17 @@ def main() -> None:
         (WEB / "models" / "current.json").write_text(json.dumps(current, indent=2) + "\n")
         print("PROMOTED v2.0.0", swap_note)
         served_unchanged = False
+        decision_sentence = "v2 met the rule, so the site serves v2.0.0."
     else:
         print("KEEP v1.0.0 —", swap_note)
         served_unchanged = True
+        decision_sentence = "v2 did not meet the rule, so the site keeps serving v1.0.0."
 
     metrics["inpaint_experiment"] = {
         "served_unchanged": served_unchanged,
-        "swap_note": swap_note,
+        "decision_sentence": decision_sentence,
+        "swap_criteria": swap_criteria,
+        "swap_note": swap_note,  # raw debug string; UI prefers swap_criteria
         "table": table,
         "before_after_note": "Demo before/after uses CC BY BrEaST sample with synthetic calipers (digitally altered), not BUSI pixels.",
         "source": "results/inpaint_experiment.json",

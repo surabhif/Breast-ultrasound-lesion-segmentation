@@ -1548,6 +1548,13 @@ td {
   background: rgba(41, 115, 115, 0.08);
   border-left: 3px solid var(--accent);
 }
+.score-card-metrics {
+  margin: 0 0 0.25rem;
+}
+.score-card-caption {
+  display: block;
+  margin: 0;
+}
 .measure-card {
   margin-top: 1rem;
   padding-top: 0.75rem;
@@ -1632,6 +1639,31 @@ td {
 .mistake-note {
   font-size: 0.9rem;
   margin-top: 0.35rem;
+}
+.mistakes-legend {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  padding: 0;
+  margin: 0 0 0.85rem;
+  font-size: 0.9rem;
+}
+.legend-swatch {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  vertical-align: -0.1rem;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+.legend-expert {
+  background: #5aa0ff;
+}
+.legend-model {
+  background: #ffaa3c;
+}
+.legend-overlap {
+  background: #297373;
 }
 .before-after {
   display: grid;

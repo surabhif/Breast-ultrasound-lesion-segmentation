@@ -258,7 +258,7 @@ def main() -> None:
             "miss_rate_on_flagged_sample": miss_qa,
             "over_erase_rate_on_clean_sample": over_qa,
             "contact_sheet": str(sheet_path.relative_to(REPO)),
-            "reviewer": "AI coding agent (Cursor) — owner asked agent to complete QA; not a clinician.",
+            "reviewer": "AI coding agent (Cursor) — owner asked agent to complete QA (not expert medical review).",
             "method": "Automated detector + contact-sheet spot check of ≥60 flagged and 20 clean images; labels good / missed_marks / over_erased.",
         },
         "mask_dir": str(MASK_DIR),
