@@ -33,7 +33,7 @@ if (!shell.includes('id="root"')) {
 copyFileSync(indexHtml, join(dist, '404.html'))
 console.log('Wrote dist/404.html')
 
-const routes = ['results', 'about', 'demo', 'model-card', 'review']
+const routes = ['results', 'about', 'demo', 'model-card', 'mistakes']
 for (const route of routes) {
   const dir = join(dist, route)
   mkdirSync(dir, { recursive: true })

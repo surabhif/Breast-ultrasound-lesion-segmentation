@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import globals from 'globals'
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', 'scripts'] },
+  { ignores: ['dist', 'node_modules', 'scripts', 'public/ort/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -27,6 +27,12 @@ export default tseslint.config(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+    },
+  },
+  {
+    files: ['src/workers/**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.worker },
     },
   },
 )

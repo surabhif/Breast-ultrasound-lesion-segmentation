@@ -6,9 +6,15 @@ Research demo, not for clinical use.
 
 ---
 
+## 2026-10-08 — D4 revoked (no clinician review)
+
+**Decided:** The earlier Phase 1 decision **D4 (clinician review / outreach)** is **revoked**. This project will **not** involve clinician review, outreach emails, reviewer acknowledgements, or a private `/review` page. Related docs and UI were removed in Phase 2.
+
+---
+
 ## 2026-10-08 — Phase 1 go-ahead (D1–D4)
 
-**Context:** Phase 0 (model v1.0.0, CI, parity, external-validation pre-registration) is merged. Owner approved decisions D1–D4 exactly as recommended in the enhancement plan §9 and authorized Phase 1.
+**Context:** Phase 0 (model v1.0.0, CI, parity, external-validation pre-registration) is merged. Owner approved decisions D1–D4 exactly as recommended in the enhancement plan §9 and authorized Phase 1. **D4 was later revoked the same day** (see entry above).
 
 ### D1 — External datasets
 
@@ -16,15 +22,15 @@ Research demo, not for clinical use.
 
 ### D2 — BUSI imagery on the site
 
-**Decided:** Keep BUSI pixels limited to the samples and failure cases already shipped. New visuals (explorer, social preview, clinician review) use **CC BY external** images. Elsewhere, BUSI rows may show metrics plus **outline-only silhouettes** (no ultrasound pixels).
+**Decided:** Keep BUSI pixels limited to the samples and failure cases already shipped. New visuals (explorer, social preview) use **CC BY external** images. Elsewhere, BUSI rows may show metrics plus **outline-only silhouettes** (no ultrasound pixels).
 
 ### D3 — Model-swap rule (pre-registered)
 
-**Decided:** A retrained `v2` may replace served `v1.0.0` before the Dec 4 freeze **only if** it matches or beats v1 on (a) clean-subset Dice and (b) external Dice, and AUC drops by **no more than 0.02**. Otherwise keep v1 served and publish v2 as an experiment. Written into `docs/EXTERNAL_VALIDATION_PROTOCOL.md` (§ MODEL_POLICY). **No retraining in Phase 1.**
+**Decided:** A retrained `v2` may replace served `v1.0.0` before the Dec 4 freeze **only if** it matches or beats v1 on (a) clean-subset Dice and (b) external Dice, and AUC drops by **no more than 0.02**. Otherwise keep v1 served and publish v2 as an experiment. Written into `docs/EXTERNAL_VALIDATION_PROTOCOL.md` (§ MODEL_POLICY).
 
-### D4 — Clinician review
+### D4 — Clinician review (REVOKED)
 
-**Decided:** Build a static private review page (`/review?k=<token>`, not in nav); answers in `localStorage` + CSV export; no server / analytics. Reviewers acknowledged by default (not co-authors). Outreach template and protocol in `docs/CLINICIAN_REVIEW.md`. Ask the school counselor about any review requirement. **Do not contact clinicians from this agent.**
+~~Build a static private review page…~~ **Revoked 2026-10-08** — see entry at top of this file.
 
 ---
 

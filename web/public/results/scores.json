@@ -1,0 +1,938 @@
+{
+  "disclaimer": "Research only. PPV/NPV depend on prevalence; test set is not a screening population.",
+  "reported_threshold": 0.5,
+  "source": "results/served_int8_per_image.json",
+  "n_test_bm": 93,
+  "rows": [
+    {
+      "case_id": "benign/benign (10).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0013220012187957764,
+      "dice": 0.963403476678087,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.00043837158591486514
+    },
+    {
+      "case_id": "benign/benign (100).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.00653606653213501,
+      "dice": 0.7926697808865721,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.003915267996490002
+    },
+    {
+      "case_id": "benign/benign (101).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.004008591175079346,
+      "dice": 0.9376623377432957,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.0012439170386642218
+    },
+    {
+      "case_id": "benign/benign (102).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.05458962917327881,
+      "dice": 0.9626779530732289,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.006201833486557007
+    },
+    {
+      "case_id": "benign/benign (108).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.48341870307922363,
+      "dice": 1.2594458422425116e-09,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.19903837144374847
+    },
+    {
+      "case_id": "benign/benign (114).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.15029260516166687,
+      "dice": 7.710100225358442e-10,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.03657671809196472
+    },
+    {
+      "case_id": "benign/benign (116).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.08296617865562439,
+      "dice": 3.2154340732622697e-09,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.04610207676887512
+    },
+    {
+      "case_id": "benign/benign (117).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.03605550527572632,
+      "dice": 0.9327868853009944,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.014069697819650173
+    },
+    {
+      "case_id": "benign/benign (119).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.672448456287384,
+      "dice": 3.355704686725823e-09,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.4817366898059845
+    },
+    {
+      "case_id": "benign/benign (122).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.7725609540939331,
+      "dice": 1.2239902065801832e-09,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.7970264554023743
+    },
+    {
+      "case_id": "benign/benign (125).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.005750805139541626,
+      "dice": 0.9423728814536053,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.0009756259969435632
+    },
+    {
+      "case_id": "benign/benign (127).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.10776698589324951,
+      "dice": 0.6979627992046388,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.14788953959941864
+    },
+    {
+      "case_id": "benign/benign (128).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.02563917636871338,
+      "dice": 0.9122340426699015,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.019940339028835297
+    },
+    {
+      "case_id": "benign/benign (13).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 1.6808509826660156e-05,
+      "dice": 0.9733276280169266,
+      "annotation_flag": false,
+      "fp32_cls_prob": 2.929494257841725e-06
+    },
+    {
+      "case_id": "benign/benign (131).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.9885695576667786,
+      "dice": 0.4301004806214394,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.9759123921394348
+    },
+    {
+      "case_id": "benign/benign (162).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.03367134928703308,
+      "dice": 0.9084249087603483,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.006409035995602608
+    },
+    {
+      "case_id": "benign/benign (165).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.6807506084442139,
+      "dice": 0.902208202201236,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.8172246217727661
+    },
+    {
+      "case_id": "benign/benign (167).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0012257397174835205,
+      "dice": 0.9371428572625851,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.0008108573965728283
+    },
+    {
+      "case_id": "benign/benign (179).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.013247072696685791,
+      "dice": 0.8101265830796347,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.0038251904770731926
+    },
+    {
+      "case_id": "benign/benign (191).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0004157125949859619,
+      "dice": 0.9153374234167639,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.0004077349731232971
+    },
+    {
+      "case_id": "benign/benign (194).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.5065976977348328,
+      "dice": 0.8500707214638821,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.1631525605916977
+    },
+    {
+      "case_id": "benign/benign (208).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.00015100836753845215,
+      "dice": 0.9401408451758084,
+      "annotation_flag": false,
+      "fp32_cls_prob": 5.350300853024237e-05
+    },
+    {
+      "case_id": "benign/benign (222).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.005240738391876221,
+      "dice": 0.8987341772734556,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.0011750964913517237
+    },
+    {
+      "case_id": "benign/benign (242).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.021316468715667725,
+      "dice": 0.06101344388288174,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.019526856020092964
+    },
+    {
+      "case_id": "benign/benign (267).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.004096925258636475,
+      "dice": 0.9578466226725004,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.00043096955050714314
+    },
+    {
+      "case_id": "benign/benign (284).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.12011295557022095,
+      "dice": 0.973768394122275,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.008871556259691715
+    },
+    {
+      "case_id": "benign/benign (285).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.2100001871585846,
+      "dice": 0.9279742765504906,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.007072258275002241
+    },
+    {
+      "case_id": "benign/benign (288).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.027971237897872925,
+      "dice": 0.6548856550052372,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.018644394353032112
+    },
+    {
+      "case_id": "benign/benign (291).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 8.979439735412598e-05,
+      "dice": 0.9021739132206994,
+      "annotation_flag": false,
+      "fp32_cls_prob": 4.0881361201172695e-05
+    },
+    {
+      "case_id": "benign/benign (30).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.02865701913833618,
+      "dice": 0.9400798935551533,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.023022517561912537
+    },
+    {
+      "case_id": "benign/benign (312).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.16682323813438416,
+      "dice": 0.9209047292774634,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.6599206924438477
+    },
+    {
+      "case_id": "benign/benign (326).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 4.559755325317383e-06,
+      "dice": 0.9594874693876979,
+      "annotation_flag": true,
+      "fp32_cls_prob": 2.220155693066772e-06
+    },
+    {
+      "case_id": "benign/benign (327).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.001630932092666626,
+      "dice": 0.9730091456674081,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.0005471003241837025
+    },
+    {
+      "case_id": "benign/benign (330).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 2.181529998779297e-05,
+      "dice": 0.9705552439749642,
+      "annotation_flag": false,
+      "fp32_cls_prob": 3.2084230952023063e-06
+    },
+    {
+      "case_id": "benign/benign (333).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.8454291820526123,
+      "dice": 0.8880936890227564,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.7371217608451843
+    },
+    {
+      "case_id": "benign/benign (341).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.009904325008392334,
+      "dice": 0.9789040732414881,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.008669787086546421
+    },
+    {
+      "case_id": "benign/benign (343).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.03593379259109497,
+      "dice": 0.939481268026061,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.07738716155290604
+    },
+    {
+      "case_id": "benign/benign (360).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.9752709865570068,
+      "dice": 0.44273426902609003,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9552616477012634
+    },
+    {
+      "case_id": "benign/benign (361).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.007582545280456543,
+      "dice": 0.9350024073338944,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.006731780245900154
+    },
+    {
+      "case_id": "benign/benign (37).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.5539756417274475,
+      "dice": 0.20860061791195042,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.39784330129623413
+    },
+    {
+      "case_id": "benign/benign (379).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.06607529520988464,
+      "dice": 0.8094981112738813,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.055725984275341034
+    },
+    {
+      "case_id": "benign/benign (383).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.16723844408988953,
+      "dice": 0.34388646324023664,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.005332794971764088
+    },
+    {
+      "case_id": "benign/benign (388).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0005408823490142822,
+      "dice": 0.9317507419072693,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.00011728303070412949
+    },
+    {
+      "case_id": "benign/benign (39).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0011224746704101562,
+      "dice": 0.9173290938653982,
+      "annotation_flag": true,
+      "fp32_cls_prob": 2.2897702365298755e-05
+    },
+    {
+      "case_id": "benign/benign (394).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.06986495852470398,
+      "dice": 0.2718913567305289,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.023259559646248817
+    },
+    {
+      "case_id": "benign/benign (395).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.3821689486503601,
+      "dice": 0.9688061407857577,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.4260694980621338
+    },
+    {
+      "case_id": "benign/benign (411).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.43000176548957825,
+      "dice": 0.9349460608148176,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.4102829098701477
+    },
+    {
+      "case_id": "benign/benign (42).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.9842369556427002,
+      "dice": 0.7559854897808982,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9683045148849487
+    },
+    {
+      "case_id": "benign/benign (420).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.040974199771881104,
+      "dice": 0.8708326872583606,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.0985594168305397
+    },
+    {
+      "case_id": "benign/benign (421).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.4580429494380951,
+      "dice": 0.9499057366078769,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.6394436359405518
+    },
+    {
+      "case_id": "benign/benign (429).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.001043945550918579,
+      "dice": 0.8382838286496966,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.00030748939025215805
+    },
+    {
+      "case_id": "benign/benign (430).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.014449834823608398,
+      "dice": 0.8610206298257217,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.00260313693434
+    },
+    {
+      "case_id": "benign/benign (436).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0019072890281677246,
+      "dice": 0.9302134647105473,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.0005943986470811069
+    },
+    {
+      "case_id": "benign/benign (46).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0027160346508026123,
+      "dice": 0.9264069265662188,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.0009595050942152739
+    },
+    {
+      "case_id": "benign/benign (59).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0036377310752868652,
+      "dice": 0.9083790133483246,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.001718522165901959
+    },
+    {
+      "case_id": "benign/benign (61).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.07316243648529053,
+      "dice": 9.057971006288068e-10,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.05795010179281235
+    },
+    {
+      "case_id": "benign/benign (66).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0001074671745300293,
+      "dice": 0.9609423434836067,
+      "annotation_flag": true,
+      "fp32_cls_prob": 5.410103767644614e-05
+    },
+    {
+      "case_id": "benign/benign (69).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.00033912062644958496,
+      "dice": 0.926605504755492,
+      "annotation_flag": false,
+      "fp32_cls_prob": 3.706290226546116e-05
+    },
+    {
+      "case_id": "benign/benign (76).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 4.0531158447265625e-05,
+      "dice": 0.9444444445061728,
+      "annotation_flag": false,
+      "fp32_cls_prob": 2.220702072008862e-06
+    },
+    {
+      "case_id": "benign/benign (78).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.03372427821159363,
+      "dice": 0.8924889545029617,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.012241050601005554
+    },
+    {
+      "case_id": "benign/benign (9).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 4.0531158447265625e-06,
+      "dice": 0.9735412651176553,
+      "annotation_flag": false,
+      "fp32_cls_prob": 1.8450841707817744e-06
+    },
+    {
+      "case_id": "benign/benign (94).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.5863412022590637,
+      "dice": 1.6920473744635407e-09,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.47098076343536377
+    },
+    {
+      "case_id": "benign/benign (98).png",
+      "split": "test",
+      "label": "benign",
+      "y_true": 0,
+      "cls_prob": 0.0001424849033355713,
+      "dice": 0.9110347955737035,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.00014990627823863178
+    },
+    {
+      "case_id": "malignant/malignant (102).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9994112849235535,
+      "dice": 0.9030283505310843,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9990537762641907
+    },
+    {
+      "case_id": "malignant/malignant (115).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9962277412414551,
+      "dice": 0.7929223113649648,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.9952821135520935
+    },
+    {
+      "case_id": "malignant/malignant (117).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9963480234146118,
+      "dice": 0.8229293175071825,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.9965401887893677
+    },
+    {
+      "case_id": "malignant/malignant (125).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9107798337936401,
+      "dice": 0.9009819967671923,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.9642565846443176
+    },
+    {
+      "case_id": "malignant/malignant (126).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.7787923812866211,
+      "dice": 0.8833592535355026,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.7852826118469238
+    },
+    {
+      "case_id": "malignant/malignant (141).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.412284255027771,
+      "dice": 0.8956228956619443,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.23917201161384583
+    },
+    {
+      "case_id": "malignant/malignant (142).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9447245597839355,
+      "dice": 0.6767693316123223,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.951522171497345
+    },
+    {
+      "case_id": "malignant/malignant (151).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9963405132293701,
+      "dice": 0.7253814147335436,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9955165982246399
+    },
+    {
+      "case_id": "malignant/malignant (16).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9431948661804199,
+      "dice": 0.6620562471407458,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.8142474293708801
+    },
+    {
+      "case_id": "malignant/malignant (164).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9061951041221619,
+      "dice": 0.9243190870949755,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.8042877912521362
+    },
+    {
+      "case_id": "malignant/malignant (171).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.8970410227775574,
+      "dice": 0.5356019112532803,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.7389158010482788
+    },
+    {
+      "case_id": "malignant/malignant (174).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.01546427607536316,
+      "dice": 0.6383409206477253,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.0087991151958704
+    },
+    {
+      "case_id": "malignant/malignant (177).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9973183870315552,
+      "dice": 0.16274165209466243,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9951304197311401
+    },
+    {
+      "case_id": "malignant/malignant (206).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.0711047351360321,
+      "dice": 0.9374404194508198,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.2982511520385742
+    },
+    {
+      "case_id": "malignant/malignant (23).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9758051037788391,
+      "dice": 0.8672692673723079,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9848082065582275
+    },
+    {
+      "case_id": "malignant/malignant (27).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.09531179070472717,
+      "dice": 0.8857356236850369,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.03651438653469086
+    },
+    {
+      "case_id": "malignant/malignant (3).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9874070286750793,
+      "dice": 0.8089631599662123,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9882303476333618
+    },
+    {
+      "case_id": "malignant/malignant (33).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9873298406600952,
+      "dice": 0.8527501909995464,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9790127277374268
+    },
+    {
+      "case_id": "malignant/malignant (34).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9944511651992798,
+      "dice": 0.8451711804572452,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.9924001693725586
+    },
+    {
+      "case_id": "malignant/malignant (4).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9890698790550232,
+      "dice": 0.8320587336090368,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9808712601661682
+    },
+    {
+      "case_id": "malignant/malignant (5).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9874966144561768,
+      "dice": 0.8552368245979863,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.9821717143058777
+    },
+    {
+      "case_id": "malignant/malignant (51).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9863221645355225,
+      "dice": 0.8579734219564009,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.9736108779907227
+    },
+    {
+      "case_id": "malignant/malignant (58).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9919936656951904,
+      "dice": 0.7353430203328748,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9791734218597412
+    },
+    {
+      "case_id": "malignant/malignant (62).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9963911175727844,
+      "dice": 0.8951857741947108,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9881722331047058
+    },
+    {
+      "case_id": "malignant/malignant (68).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9658406972885132,
+      "dice": 0.7465875371134729,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9596279859542847
+    },
+    {
+      "case_id": "malignant/malignant (73).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.6318023204803467,
+      "dice": 0.9107526882200254,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.7544472217559814
+    },
+    {
+      "case_id": "malignant/malignant (76).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.8085489273071289,
+      "dice": 0.7796429523341802,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.8273484706878662
+    },
+    {
+      "case_id": "malignant/malignant (77).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.8774803876876831,
+      "dice": 0.8935091278070472,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.8506522178649902
+    },
+    {
+      "case_id": "malignant/malignant (86).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.999064564704895,
+      "dice": 0.9278244471174504,
+      "annotation_flag": false,
+      "fp32_cls_prob": 0.9980375170707703
+    },
+    {
+      "case_id": "malignant/malignant (92).png",
+      "split": "test",
+      "label": "malignant",
+      "y_true": 1,
+      "cls_prob": 0.9936214685440063,
+      "dice": 0.7609375000933839,
+      "annotation_flag": true,
+      "fp32_cls_prob": 0.9926215410232544
+    }
+  ]
+}

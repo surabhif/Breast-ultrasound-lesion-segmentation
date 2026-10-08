@@ -3,7 +3,40 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
-## [Unreleased] — Phase 1 (2026-10-08)
+## [Unreleased] — Phase 2 (2026-10-08)
+
+### Removed
+
+- Clinician review / outreach (`/review`, `docs/CLINICIAN_REVIEW.md`, related tokens). **D4 revoked** (see `docs/DECISION_LOG.md`).
+
+### Added
+
+- Caliper/marker pixel masks + agent QA (≥60 flagged + 20 clean); Telea inpaint E-a/E-b/E-c (3 seeds).
+- Offline TTA uncertainty (`results/uncertainty.json`) + Demo agreement/heatmap.
+- Web Worker inference + self-hosted ORT WASM under `web/public/ort/`.
+- Demo mask/class threshold sliders; Results operating-point explorer; `/mistakes` explorer (≥20 AI notes).
+- CC BY BrEaST before/after (synthetic calipers) on Results.
+
+### Changed
+
+- **Served model remains v1.0.0.** MODEL_POLICY swap failed: best E-c seed improved clean Dice slightly and kept AUC, but **external Dice dropped** (BUS-BRA 0.626 vs v1 0.714; BrEaST 0.608 vs 0.627). Published as experiment only.
+
+### Inpaint experiment (honest)
+
+| Setting | Dice | Lesion Dice | AUC |
+|---|---|---|---|
+| v1 original test | 0.697 | 0.764 | 0.931 |
+| v1 on inpainted test (E-a) | 0.702 | 0.760 | 0.918 |
+| E-b random inpaint (clean) | 0.626 | — | — |
+| E-c best seed 44 (original test) | 0.671 | 0.776 | 0.945 |
+
+E-a: erasing markers did **not** drop flagged Dice toward clean (flagged Dice stayed ~0.76–0.77). E-b control Δ≈−0.002.
+
+### TTA
+
+- Spearman(uncertainty, 1−Dice) ρ ≈ 0.61 on BUSI test; risk–coverage at 80% keep ≈ Dice 0.78.
+
+## [Phase 1] — 2026-10-08
 
 ### Added
 
@@ -12,8 +45,7 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 - Demo: expert-vs-model compare modes + per-image Dice; lesion measurements (px / mm on BrEaST).
 - Offline measurement agreement on BrEaST (`results/measurement_agreement.json`).
 - Full-scale leakage ablation (`scripts/run_leakage_ablation.py` → `results/leakage_ablation.json`): 6 ep × 3 seeds; random splits did not inflate val Dice vs grouped on this schedule (Δ ≈ −0.018).
-- Private clinician review page `/review?k=…` + `docs/CLINICIAN_REVIEW.md` (no outreach from agents).
-- `docs/DECISION_LOG.md` (D1–D4); model-swap rule in `EXTERNAL_VALIDATION_PROTOCOL.md`.
+- `docs/DECISION_LOG.md` (D1–D3; D4 later revoked); model-swap rule in `EXTERNAL_VALIDATION_PROTOCOL.md`.
 - Small CC BY BrEaST samples under `web/public/samples/external/` with attribution.
 
 ### Changed
