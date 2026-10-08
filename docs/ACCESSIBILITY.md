@@ -17,7 +17,7 @@ Pre–Phase-3 baseline approximated from Phase-2 Pages build (manual Lighthouse 
 
 Estimated axe violations across primary pages: **~14** (focus rings, unlabeled checkboxes/sliders, a few contrast notes).
 
-## After (this PR)
+## After (this PR / Phase 3b)
 
 | Route | Violations | Serious/critical | Rules |
 |-------|------------|------------------|-------|
@@ -42,11 +42,11 @@ Estimated axe violations across primary pages: **~14** (focus rings, unlabeled c
 - Video embeds include `<track kind="captions">` + poster + `aria-label`
 - Callout banners use white text on solid teal `#297373` (WCAG AA)
 - Tables use dark ink on `--accent-soft` headers (not dark-on-solid-teal)
-- `prefers-reduced-motion` disables fade/transition animations
-- Skip link already present; Learn/About disclosure menus are keyboard-accessible
 - Cite blocks use dark ink on accent-pale (contrast fix)
 - Demo probability gauge SVG has an aria-label
+- `prefers-reduced-motion` disables fade/transition animations
+- Skip link present; Learn/About disclosure menus are keyboard-accessible
 
 ### Remaining notes
 
-Any residual axe findings above should be treated as follow-ups (third-party canvas without text alternative is expected for the ultrasound viewer — canvas has an `aria-label`).
+Canvas ultrasound viewer uses an `aria-label`. Full Lighthouse CLI could not paint in this headless environment (`NO_FCP`); axe is the Phase 3 gate.
