@@ -92,6 +92,14 @@ export default function ModelCardPage() {
         <code>results/served_int8_test.json</code>.
       </p>
 
+      <h2 id="phase-2">Phase 2 (robustness)</h2>
+      <p>
+        Caliper Telea-inpainting retrain (E-c, 3 seeds) did <strong>not</strong> replace served{' '}
+        <strong>v1.0.0</strong>: clean Dice and AUC met the pre-registered bar, but external Dice on
+        BUS-BRA / BrEaST did not. TTA uncertainty (Spearman ρ≈0.61 vs error) is available in the Demo
+        via a Web Worker. See Results and CHANGELOG.
+      </p>
+
       <h2 id="limitations">Limitations</h2>
       <ul>
         <li>

@@ -11,11 +11,30 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 
 ### Added
 
-- Caliper/marker pixel masks + QA; inpainting experiments E-a/E-b/E-c; TTA uncertainty; Web Worker inference; Demo/Results threshold sliders; mistakes explorer.
+- Caliper/marker pixel masks + agent QA (≥60 flagged + 20 clean); Telea inpaint E-a/E-b/E-c (3 seeds).
+- Offline TTA uncertainty (`results/uncertainty.json`) + Demo agreement/heatmap.
+- Web Worker inference + self-hosted ORT WASM under `web/public/ort/`.
+- Demo mask/class threshold sliders; Results operating-point explorer; `/mistakes` explorer (≥20 AI notes).
+- CC BY BrEaST before/after (synthetic calipers) on Results.
 
 ### Changed
 
-- Served model choice follows pre-registered MODEL_POLICY (v1.0.0 unless a v2 candidate passes the swap rule).
+- **Served model remains v1.0.0.** MODEL_POLICY swap failed: best E-c seed improved clean Dice slightly and kept AUC, but **external Dice dropped** (BUS-BRA 0.626 vs v1 0.714; BrEaST 0.608 vs 0.627). Published as experiment only.
+
+### Inpaint experiment (honest)
+
+| Setting | Dice | Lesion Dice | AUC |
+|---|---|---|---|
+| v1 original test | 0.697 | 0.764 | 0.931 |
+| v1 on inpainted test (E-a) | 0.702 | 0.760 | 0.918 |
+| E-b random inpaint (clean) | 0.626 | — | — |
+| E-c best seed 44 (original test) | 0.671 | 0.776 | 0.945 |
+
+E-a: erasing markers did **not** drop flagged Dice toward clean (flagged Dice stayed ~0.76–0.77). E-b control Δ≈−0.002.
+
+### TTA
+
+- Spearman(uncertainty, 1−Dice) ρ ≈ 0.61 on BUSI test; risk–coverage at 80% keep ≈ Dice 0.78.
 
 ## [Phase 1] — 2026-10-08
 

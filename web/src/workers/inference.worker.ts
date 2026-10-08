@@ -17,14 +17,10 @@ let session: ort.InferenceSession | null = null
 let cancelled = false
 
 function configure(wasmPaths: string) {
-  ort.env.wasm.wasmPaths = wasmPaths
+  // Self-hosted under /ort/ (must include matching .wasm + .mjs companions).
+  ort.env.wasm.wasmPaths = wasmPaths.endsWith('/') ? wasmPaths : `${wasmPaths}/`
   ort.env.wasm.numThreads = 1
-  // Move ORT compute off the worker's sync path when supported.
-  try {
-    ;(ort.env.wasm as { proxy?: boolean }).proxy = true
-  } catch {
-    // optional
-  }
+  // Do not enable wasm.proxy inside a Worker — that nests another worker and breaks.
 }
 
 self.onmessage = async (ev: MessageEvent<WorkerRequest>) => {

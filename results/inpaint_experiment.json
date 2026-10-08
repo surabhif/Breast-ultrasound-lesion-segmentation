@@ -1,0 +1,252 @@
+{
+  "label": "Caliper inpainting experiments E-a / E-b / E-c",
+  "v1_onnx_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "seg_threshold": 0.4,
+  "min_component_area": 40,
+  "E_a": {
+    "description": "Frozen v1 INT8 on original vs Telea marker-inpainted test images",
+    "original": {
+      "n": 112,
+      "dice_mean": 0.6972011494235116,
+      "lesion_dice_mean": 0.7643712765714284,
+      "dice_flagged": 0.7637812818931331,
+      "dice_clean": 0.6281999212277223,
+      "cls_roc_auc": 0.9306878306878307
+    },
+    "inpainted": {
+      "n": 112,
+      "dice_mean": 0.7023821132040778,
+      "lesion_dice_mean": 0.7598580286052956,
+      "dice_flagged": 0.772529351678302,
+      "dice_clean": 0.6296840660580638,
+      "cls_roc_auc": 0.9179894179894179
+    },
+    "flagged_original": {
+      "n": 57,
+      "dice_mean": 0.7637812818931331,
+      "lesion_dice_mean": 0.8411815545252183,
+      "dice_flagged": 0.7637812818931331,
+      "dice_clean": null,
+      "cls_roc_auc": 0.9366515837104071
+    },
+    "flagged_inpainted": {
+      "n": 57,
+      "dice_mean": 0.772529351678302,
+      "lesion_dice_mean": 0.8305143199245423,
+      "dice_flagged": 0.772529351678302,
+      "dice_clean": null,
+      "cls_roc_auc": 0.9072398190045249
+    },
+    "clean_original": {
+      "n": 55,
+      "dice_mean": 0.6281999212277223,
+      "lesion_dice_mean": 0.6858912099664692,
+      "dice_flagged": null,
+      "dice_clean": 0.6281999212277223,
+      "cls_roc_auc": 0.9269776876267748
+    },
+    "delta_dice_inpainted_minus_original": 0.005180963780566206
+  },
+  "E_b": {
+    "description": "Control: random-region Telea inpaint on clean (unflagged) test images",
+    "clean_original": {
+      "n": 55,
+      "dice_mean": 0.6281999212277223,
+      "lesion_dice_mean": 0.6858912099664692,
+      "dice_flagged": null,
+      "dice_clean": 0.6281999212277223,
+      "cls_roc_auc": 0.9269776876267748
+    },
+    "clean_random_inpaint": {
+      "n": 55,
+      "dice_mean": 0.6260400318613721,
+      "lesion_dice_mean": 0.6833087335528817,
+      "dice_flagged": null,
+      "dice_clean": 0.6260400318613721,
+      "cls_roc_auc": 0.9249492900608519
+    },
+    "delta_dice_random_minus_original": -0.002159889366350143
+  },
+  "E_c": {
+    "seeds": [
+      {
+        "seed": 42,
+        "best_val_lesion_dice": -1.0,
+        "onnx": "/workspace/export/inpaint_seed42_int8.onnx",
+        "sha256": "34f72b234e35609bb5937715501e46ca55e134159c0d947bd3e46fedc30a9337",
+        "test_original": {
+          "n": 112,
+          "dice_mean": 0.640284828410567,
+          "lesion_dice_mean": 0.7710957070958833,
+          "dice_flagged": 0.6702595966140243,
+          "dice_clean": 0.6092200686360747,
+          "cls_roc_auc": 0.9544973544973545
+        },
+        "test_inpainted": {
+          "n": 112,
+          "dice_mean": 0.6409231111898601,
+          "lesion_dice_mean": 0.7718643918644156,
+          "dice_flagged": 0.6698550717825835,
+          "dice_clean": 0.6109390793028558,
+          "cls_roc_auc": 0.953968253968254
+        },
+        "test_clean_subset_original": {
+          "n": 55,
+          "dice_mean": 0.6092200686360747,
+          "lesion_dice_mean": 0.7284152994141241,
+          "dice_flagged": null,
+          "dice_clean": 0.6092200686360747,
+          "cls_roc_auc": 0.9675456389452333
+        },
+        "external_busbra": {
+          "n": 1875,
+          "dice_mean": 0.6046993168141089,
+          "lesion_dice_mean": 0.6046993168141089,
+          "cls_roc_auc": 0.6934398370223316
+        },
+        "external_breast": {
+          "n": 252,
+          "dice_mean": 0.6521565966349929,
+          "lesion_dice_mean": 0.6521565966349929,
+          "cls_roc_auc": 0.7894248608534322
+        }
+      },
+      {
+        "seed": 43,
+        "best_val_lesion_dice": 0.7958578037166657,
+        "onnx": "/workspace/export/inpaint_seed43_int8.onnx",
+        "sha256": "7058cb18d4b7aba493dbd084c93aaa198e2204d13ae618098244a3d908183c35",
+        "test_original": {
+          "n": 112,
+          "dice_mean": 0.6362521695847655,
+          "lesion_dice_mean": 0.7554864835456874,
+          "dice_flagged": 0.655705113391166,
+          "dice_clean": 0.616091846003587,
+          "cls_roc_auc": 0.9015873015873016
+        },
+        "test_inpainted": {
+          "n": 112,
+          "dice_mean": 0.631252907986865,
+          "lesion_dice_mean": 0.7494658674025535,
+          "dice_flagged": 0.6459189997964968,
+          "dice_clean": 0.6160535037477921,
+          "cls_roc_auc": 0.8941798941798942
+        },
+        "test_clean_subset_original": {
+          "n": 55,
+          "dice_mean": 0.616091846003587,
+          "lesion_dice_mean": 0.7148924244936915,
+          "dice_flagged": null,
+          "dice_clean": 0.616091846003587,
+          "cls_roc_auc": 0.8864097363083164
+        },
+        "external_busbra": {
+          "n": 1875,
+          "dice_mean": 0.6463251117676553,
+          "lesion_dice_mean": 0.6463251117676553,
+          "cls_roc_auc": 0.7447614320831103
+        },
+        "external_breast": {
+          "n": 252,
+          "dice_mean": 0.648859929419479,
+          "lesion_dice_mean": 0.648859929419479,
+          "cls_roc_auc": 0.7871720116618076
+        }
+      },
+      {
+        "seed": 44,
+        "best_val_lesion_dice": 0.8042404223565736,
+        "onnx": "/workspace/export/inpaint_seed44_int8.onnx",
+        "sha256": "c19773ba086772e6e768a4bb61a157546024283c51b14e9f6927c36d273ff72c",
+        "test_original": {
+          "n": 112,
+          "dice_mean": 0.6713016137105853,
+          "lesion_dice_mean": 0.7761911905620082,
+          "dice_flagged": 0.7146731841725097,
+          "dice_clean": 0.6263528952318635,
+          "cls_roc_auc": 0.944973544973545
+        },
+        "test_inpainted": {
+          "n": 112,
+          "dice_mean": 0.6793787687388871,
+          "lesion_dice_mean": 0.7751658289307448,
+          "dice_flagged": 0.7299818874421727,
+          "dice_clean": 0.6269355366282093,
+          "cls_roc_auc": 0.9428571428571428
+        },
+        "test_clean_subset_original": {
+          "n": 55,
+          "dice_mean": 0.6263528952318635,
+          "lesion_dice_mean": 0.7271610703267026,
+          "dice_flagged": null,
+          "dice_clean": 0.6263528952318635,
+          "cls_roc_auc": 0.9553752535496958
+        },
+        "external_busbra": {
+          "n": 1875,
+          "dice_mean": 0.6260342097470627,
+          "lesion_dice_mean": 0.6260342097470627,
+          "cls_roc_auc": 0.6580885983192928
+        },
+        "external_breast": {
+          "n": 252,
+          "dice_mean": 0.6077195969381051,
+          "lesion_dice_mean": 0.6077195969381051,
+          "cls_roc_auc": 0.7676252319109462
+        }
+      }
+    ],
+    "note": "Retrain on marker-inpainted train/val; evaluate INT8",
+    "best_seed": 44,
+    "best": {
+      "seed": 44,
+      "best_val_lesion_dice": 0.8042404223565736,
+      "onnx": "/workspace/export/inpaint_seed44_int8.onnx",
+      "sha256": "c19773ba086772e6e768a4bb61a157546024283c51b14e9f6927c36d273ff72c",
+      "test_original": {
+        "n": 112,
+        "dice_mean": 0.6713016137105853,
+        "lesion_dice_mean": 0.7761911905620082,
+        "dice_flagged": 0.7146731841725097,
+        "dice_clean": 0.6263528952318635,
+        "cls_roc_auc": 0.944973544973545
+      },
+      "test_inpainted": {
+        "n": 112,
+        "dice_mean": 0.6793787687388871,
+        "lesion_dice_mean": 0.7751658289307448,
+        "dice_flagged": 0.7299818874421727,
+        "dice_clean": 0.6269355366282093,
+        "cls_roc_auc": 0.9428571428571428
+      },
+      "test_clean_subset_original": {
+        "n": 55,
+        "dice_mean": 0.6263528952318635,
+        "lesion_dice_mean": 0.7271610703267026,
+        "dice_flagged": null,
+        "dice_clean": 0.6263528952318635,
+        "cls_roc_auc": 0.9553752535496958
+      },
+      "external_busbra": {
+        "n": 1875,
+        "dice_mean": 0.6260342097470627,
+        "lesion_dice_mean": 0.6260342097470627,
+        "cls_roc_auc": 0.6580885983192928
+      },
+      "external_breast": {
+        "n": 252,
+        "dice_mean": 0.6077195969381051,
+        "lesion_dice_mean": 0.6077195969381051,
+        "cls_roc_auc": 0.7676252319109462
+      }
+    },
+    "mean_test_dice_original": 0.649279537235306,
+    "mean_clean_dice": 0.6172216032905085
+  },
+  "runtime_seconds": 1141.177785396576,
+  "model_policy_decision": {
+    "swap_ok": false,
+    "served_unchanged": true,
+    "note": "seed 44: clean 0.626 vs v1 0.623; BUS-BRA 0.6260342097470627 vs 0.7136202288207832; BrEaST 0.6077195969381051 vs 0.6265385719593876; AUC 0.944973544973545 vs 0.9306878306878307; checks={'clean_dice_ok': True, 'busbra_ok': False, 'breast_ok': False, 'auc_ok': True}"
+  }
+}

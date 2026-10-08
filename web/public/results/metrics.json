@@ -1013,8 +1013,34 @@
   },
   "inpaint_experiment": {
     "served_unchanged": true,
-    "swap_note": "E-c training in progress \u2014 swap decision pending.",
-    "table": [],
-    "before_after_note": "Demo before/after uses CC BY BrEaST sample with synthetic calipers (digitally altered), not BUSI pixels."
+    "swap_note": "seed 44: clean 0.626 vs v1 0.623; BUS-BRA 0.6260342097470627 vs 0.7136202288207832; BrEaST 0.6077195969381051 vs 0.6265385719593876; AUC 0.944973544973545 vs 0.9306878306878307; checks={'clean_dice_ok': True, 'busbra_ok': False, 'breast_ok': False, 'auc_ok': True}",
+    "table": [
+      {
+        "name": "v1 original test",
+        "dice": 0.6972011494235116,
+        "lesion_dice": 0.7643712765714284,
+        "auc": 0.9306878306878307
+      },
+      {
+        "name": "v1 on inpainted test (E-a)",
+        "dice": 0.7023821132040778,
+        "lesion_dice": 0.7598580286052956,
+        "auc": 0.9179894179894179
+      },
+      {
+        "name": "E-b random inpaint (clean)",
+        "dice": 0.6260400318613721,
+        "lesion_dice": 0.6833087335528817,
+        "auc": 0.9249492900608519
+      },
+      {
+        "name": "E-c best seed 44 (original test)",
+        "dice": 0.6713016137105853,
+        "lesion_dice": 0.7761911905620082,
+        "auc": 0.944973544973545
+      }
+    ],
+    "before_after_note": "Demo before/after uses CC BY BrEaST sample with synthetic calipers (digitally altered), not BUSI pixels.",
+    "source": "results/inpaint_experiment.json"
   }
 }

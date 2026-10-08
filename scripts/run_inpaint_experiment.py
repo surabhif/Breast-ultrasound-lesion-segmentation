@@ -45,7 +45,6 @@ from busi_data import (  # noqa: E402
 from caliper_masks import safe_name  # noqa: E402
 from inpaint_calipers import INPAINT_DIR, RANDOM_DIR  # noqa: E402
 from model_def import (  # noqa: E402
-    OnnxExportWrapper,
     build_model,
     classification_loss,
     combined_seg_loss,
@@ -53,6 +52,7 @@ from model_def import (  # noqa: E402
 from train_full import (  # noqa: E402
     DEVICE,
     evaluate_detailed,
+    export_onnx,
     set_encoder_requires_grad,
     set_seed,
 )
@@ -122,6 +122,7 @@ def train_one_seed(
     epochs: int,
     img_size: int,
     batch_size: int,
+    reuse_only: bool = False,
 ) -> dict:
     """Train ResNet-18 U-Net on (possibly remapped) manifest; return metrics + onnx path."""
     set_seed(seed)
@@ -130,69 +131,65 @@ def train_one_seed(
     train_ids, val_ids = fold["train_ids"], fold["val_ids"]
     # Training uses remapped (inpainted) paths; eval also needs original for comparison
     orig = load_manifest()
-    train_ds = BusiDataset(train_manifest, train_ids, img_size=img_size, augment=True)
-    val_ds = BusiDataset(train_manifest, val_ids, img_size=img_size, augment=False)
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0)
-    val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0)
-
-    model = build_model("resnet18", pretrained=True).to(DEVICE)
-    set_encoder_requires_grad(model, False)
-    opt = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-3, weight_decay=1e-4)
-    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs, eta_min=1e-5)
     best_path = EXPORT_DIR / f"inpaint_seed{seed}_best.pt"
     EXPORT_DIR.mkdir(parents=True, exist_ok=True)
-    best_lesion, stale, patience = -1.0, 0, 6
-    freeze_epochs = 2
-    encoder_unfrozen = False
+    model = build_model("resnet18", pretrained=True).to(DEVICE)
+    best_lesion = -1.0
 
-    for epoch in range(1, epochs + 1):
-        if (not encoder_unfrozen) and epoch > freeze_epochs:
-            set_encoder_requires_grad(model, True)
-            opt = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-4)
-            sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs - epoch + 1, eta_min=1e-5)
-            encoder_unfrozen = True
-        model.train()
-        for batch in train_loader:
-            images = batch["image"].to(DEVICE)
-            masks = batch["mask"].to(DEVICE)
-            cls_t = batch["cls_target"].to(DEVICE)
-            seg_logits, cls_logits = model(images)
-            loss = combined_seg_loss(seg_logits, masks) + 0.3 * classification_loss(cls_logits, cls_t)
-            opt.zero_grad()
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
-            opt.step()
-        sched.step()
-        val = evaluate_detailed(model, val_loader, seg_thresh=0.5, min_area=0)
-        print(f"  seed {seed} ep {epoch}: val lesion Dice {val['lesion_dice_mean']:.3f}")
-        if val["lesion_dice_mean"] > best_lesion:
-            best_lesion = val["lesion_dice_mean"]
-            stale = 0
-            torch.save({"state_dict": model.state_dict(), "seed": seed, "epoch": epoch}, best_path)
-        else:
-            stale += 1
-            if stale >= patience:
-                print(f"  early stop seed {seed} at epoch {epoch}")
-                break
+    if reuse_only and best_path.exists():
+        print(f"  loading {best_path}")
+    else:
+        train_ds = BusiDataset(train_manifest, train_ids, img_size=img_size, augment=True)
+        val_ds = BusiDataset(train_manifest, val_ids, img_size=img_size, augment=False)
+        train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=0)
+        val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0)
+
+        set_encoder_requires_grad(model, False)
+        opt = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-3, weight_decay=1e-4)
+        sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=max(epochs, 1), eta_min=1e-5)
+        stale, patience = 0, 6
+        freeze_epochs = 2
+        encoder_unfrozen = False
+
+        for epoch in range(1, epochs + 1):
+            if (not encoder_unfrozen) and epoch > freeze_epochs:
+                set_encoder_requires_grad(model, True)
+                opt = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-4)
+                sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs - epoch + 1, eta_min=1e-5)
+                encoder_unfrozen = True
+            model.train()
+            for batch in train_loader:
+                images = batch["image"].to(DEVICE)
+                masks = batch["mask"].to(DEVICE)
+                cls_t = batch["cls_target"].to(DEVICE)
+                seg_logits, cls_logits = model(images)
+                loss = combined_seg_loss(seg_logits, masks) + 0.3 * classification_loss(cls_logits, cls_t)
+                opt.zero_grad()
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
+                opt.step()
+            sched.step()
+            val = evaluate_detailed(model, val_loader, seg_thresh=0.5, min_area=0)
+            print(f"  seed {seed} ep {epoch}: val lesion Dice {val['lesion_dice_mean']:.3f}")
+            if val["lesion_dice_mean"] > best_lesion:
+                best_lesion = val["lesion_dice_mean"]
+                stale = 0
+                torch.save({"state_dict": model.state_dict(), "seed": seed, "epoch": epoch}, best_path)
+            else:
+                stale += 1
+                if stale >= patience:
+                    print(f"  early stop seed {seed} at epoch {epoch}")
+                    break
 
     ckpt = torch.load(best_path, map_location=DEVICE, weights_only=False)
     model.load_state_dict(ckpt["state_dict"])
     model.eval()
+    if best_lesion < 0:
+        best_lesion = float(ckpt.get("best_val_lesion_dice", -1)) if isinstance(ckpt, dict) else -1.0
 
-    # Export ONNX for this seed
+    # Export ONNX for this seed (legacy exporter; dynamo=False)
     onnx_path = EXPORT_DIR / f"inpaint_seed{seed}.onnx"
-    wrapper = OnnxExportWrapper(model)
-    wrapper.eval()
-    dummy = torch.randn(1, 3, img_size, img_size, device=DEVICE)
-    torch.onnx.export(
-        wrapper,
-        dummy,
-        str(onnx_path),
-        input_names=["input"],
-        output_names=["seg_mask", "cls_prob"],
-        dynamic_axes={"input": {0: "batch"}, "seg_mask": {0: "batch"}, "cls_prob": {0: "batch"}},
-        opset_version=17,
-    )
+    export_onnx(model, onnx_path, img_size)
 
     # Quantize dynamically like v1
     try:
@@ -269,6 +266,11 @@ def main() -> None:
     ap.add_argument("--skip-train", action="store_true", help="Only E-a/E-b (no E-c retrain)")
     ap.add_argument("--epochs", type=int, default=25)
     ap.add_argument("--seeds", type=int, nargs="+", default=[42, 43, 44])
+    ap.add_argument(
+        "--reuse-checkpoint",
+        action="store_true",
+        help="If export/inpaint_seed{N}_best.pt exists, skip training and only export/eval",
+    )
     ap.add_argument("--batch-size", type=int, default=8)
     ap.add_argument("--img-size", type=int, default=160)
     args = ap.parse_args()
@@ -333,14 +335,26 @@ def main() -> None:
         train_man = remap_manifest(orig, INPAINT_DIR)
         seed_runs = []
         for seed in args.seeds:
-            print(f"--- training seed {seed} ---")
-            m = train_one_seed(
-                seed,
-                train_man,
-                epochs=args.epochs,
-                img_size=args.img_size,
-                batch_size=args.batch_size,
-            )
+            ckpt_path = EXPORT_DIR / f"inpaint_seed{seed}_best.pt"
+            if args.reuse_checkpoint and ckpt_path.exists():
+                print(f"--- reuse checkpoint seed {seed} ---")
+                m = train_one_seed(
+                    seed,
+                    train_man,
+                    epochs=0,  # signal: load only
+                    img_size=args.img_size,
+                    batch_size=args.batch_size,
+                    reuse_only=True,
+                )
+            else:
+                print(f"--- training seed {seed} ---")
+                m = train_one_seed(
+                    seed,
+                    train_man,
+                    epochs=args.epochs,
+                    img_size=args.img_size,
+                    batch_size=args.batch_size,
+                )
             # External eval for this seed
             sess = ort.InferenceSession(m["onnx"], providers=["CPUExecutionProvider"])
             m["external_busbra"] = eval_external_quick(sess, "busbra")
