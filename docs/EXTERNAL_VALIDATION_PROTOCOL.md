@@ -1,7 +1,19 @@
 # External validation protocol (pre-registration)
 
 **Status:** Pre-registered · **Model freeze:** `v1.0.0` · **Date:** 2026-10-08  
-**Evaluation:** Not run yet. This document freezes the protocol *before* any external images are scored.
+**Evaluation:** Phase 1 scoring of frozen v1.0.0 INT8 is authorized after this protocol was committed (see git history). No tuning on external data.
+
+---
+
+## MODEL_POLICY — when may v2 replace served v1.0.0? (D3, 2026-10-08)
+
+Pre-registered **before** any Phase 1/2 retraining. A candidate `v2` (e.g. inpainted or multi-dataset) may **replace** the served `v1.0.0` weights on the site **before the Dec 4 freeze** only if **all** of the following hold on committed JSON:
+
+1. **Clean-subset Dice** (BUSI held-out test images with `annotation_flag == false`) ≥ v1.0.0 clean-subset Dice.
+2. **External Dice** (mean overall Dice on each primary external set that was scored for v1 — BUS-BRA and BrEaST) ≥ the corresponding v1.0.0 external Dice.
+3. **AUC** (B vs M on BUSI held-out test) drops by **no more than 0.02** relative to v1.0.0.
+
+If any criterion fails, keep **v1.0.0 served** and publish v2 only as an experiment / Results sidebar. Thresholds, min-area, and architecture operating points for the v1 external report remain frozen (§4). **Phase 1 does not retrain.**
 
 Research demo only — not for clinical use.
 
@@ -58,7 +70,13 @@ From `results/postprocess.json` / training val lesion-Dice selection — **not**
 - Map only tumour masks; check clinical spreadsheet for multi-region annotations
 - Script stub: `scripts/download_breast.py` (does not commit data)
 
-**Secondary (optional later, not required for first external report):** BUS-UCLM (Vallez et al., 2025). UDIAT / BUSIS skipped for access friction.
+### 5.3 BUS-UCLM (secondary)
+
+- Citation: Vallez et al., *Sci Data* 2025;12:242 ([doi:10.1038/s41597-025-04564-2](https://doi.org/10.1038/s41597-025-04564-2) / [PubMed 39934113](https://pubmed.ncbi.nlm.nih.gov/39934113/))
+- Download: Mendeley Data [doi:10.17632/7fvgj4jsp7.3](https://doi.org/10.17632/7fvgj4jsp7.3) — dataset **CC BY 4.0**
+- Many normals; exclude Doppler/combined frames when flagged in metadata; patient-cluster bootstrap (38 patients)
+
+**Skipped:** UDIAT (institutional licence agreement); BUSIS (signed release / no redistribution). See `docs/DECISION_LOG.md` D1.
 
 ## 6. Metrics (per dataset)
 

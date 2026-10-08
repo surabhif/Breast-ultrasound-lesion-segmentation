@@ -5,6 +5,7 @@ import DemoPage from './pages/DemoPage'
 import AboutPage from './pages/AboutPage'
 import ResultsPage from './pages/ResultsPage'
 import ModelCardPage from './pages/ModelCardPage'
+import ReviewPage from './pages/ReviewPage'
 import { MODEL_STATUS, SITE } from './lib/constants'
 import './App.css'
 
@@ -14,6 +15,7 @@ const TITLES: Record<string, string> = {
   '/results': `Results · ${SITE.shortTitle}`,
   '/about': `About · ${SITE.shortTitle}`,
   '/model-card': `Model card · ${SITE.shortTitle}`,
+  '/review': `Clinician review · ${SITE.shortTitle}`,
 }
 
 export default function App() {
@@ -68,6 +70,7 @@ export default function App() {
           <Route path="/results" element={<ResultsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/model-card" element={<ModelCardPage />} />
+          <Route path="/review" element={<ReviewPage />} />
         </Routes>
       </main>
 
@@ -76,8 +79,8 @@ export default function App() {
           <div>
             <p className="footer-brand">{SITE.title}</p>
             <p>
-              Dataset: BUSI (Al-Dhabyani et al., Data in Brief 2020). Inference runs locally in your
-              browser via ONNX Runtime Web. Not for diagnosis or screening.
+              BUSI (Al-Dhabyani et al., 2020). External CC BY sets: BUS-BRA, BrEaST (see Results).
+              Inference runs locally via ONNX Runtime Web. Not for diagnosis or screening.
             </p>
           </div>
           <div>

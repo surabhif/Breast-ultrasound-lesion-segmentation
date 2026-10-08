@@ -1,0 +1,39 @@
+{
+  "label": "Measurement agreement on BrEaST (model vs expert masks @ 160\u00b2)",
+  "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "disclaimer": "Research only \u2014 imaging size is not pathological T-stage; not clinical measurements.",
+  "n": 252,
+  "area_px": {
+    "bland_altman": {
+      "bias": 120.31349206349206,
+      "sd": 1171.8278027676042,
+      "loa_low": -2176.469001361012,
+      "loa_high": 2417.095985487996,
+      "n": 252
+    },
+    "pearson_proxy_for_icc": 0.7633768516088141
+  },
+  "longest_diameter_px": {
+    "bland_altman": {
+      "bias": -2.9915872037949875,
+      "sd": 27.8244994793854,
+      "loa_low": -57.52760618339037,
+      "loa_high": 51.5444317758004,
+      "n": 252
+    },
+    "pearson_proxy_for_icc": 0.605556004150458
+  },
+  "longest_diameter_mm": {
+    "bland_altman": {
+      "bias": -0.026948855106622063,
+      "sd": 0.21806349767677272,
+      "loa_low": -0.4543533105530966,
+      "loa_high": 0.4004556003398525,
+      "n": 252
+    },
+    "pearson_proxy_for_icc": 0.707755980767319,
+    "t1_t2_20mm_discordance_rate": 0.0,
+    "note": "Exploratory: fraction of cases where model and expert disagree on \u226520 mm longest diameter."
+  },
+  "per_image_path": "results/measurement_agreement_per_image.json"
+}

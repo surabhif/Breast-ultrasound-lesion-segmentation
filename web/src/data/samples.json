@@ -13,7 +13,9 @@
       "case_id": "benign/benign (343).png",
       "kind": "ultrasound",
       "annotation_flag": true,
-      "note": "Held-out BUSI test image (grouped split)."
+      "note": "Held-out BUSI test image (grouped split).",
+      "reported_dice_int8": 0.939481268026061,
+      "reported_cls_prob_int8": 0.03593379259109497
     },
     {
       "id": "busi-test-01",
@@ -25,7 +27,9 @@
       "case_id": "benign/benign (208).png",
       "kind": "ultrasound",
       "annotation_flag": false,
-      "note": "Held-out BUSI test image (grouped split)."
+      "note": "Held-out BUSI test image (grouped split).",
+      "reported_dice_int8": 0.9401408451758084,
+      "reported_cls_prob_int8": 0.00015100836753845215
     },
     {
       "id": "busi-test-02",
@@ -37,7 +41,9 @@
       "case_id": "malignant/malignant (142).png",
       "kind": "ultrasound",
       "annotation_flag": true,
-      "note": "Held-out BUSI test image (grouped split)."
+      "note": "Held-out BUSI test image (grouped split).",
+      "reported_dice_int8": 0.6767693316123223,
+      "reported_cls_prob_int8": 0.9447245597839355
     },
     {
       "id": "busi-test-03",
@@ -49,7 +55,9 @@
       "case_id": "malignant/malignant (102).png",
       "kind": "ultrasound",
       "annotation_flag": false,
-      "note": "Held-out BUSI test image (grouped split)."
+      "note": "Held-out BUSI test image (grouped split).",
+      "reported_dice_int8": 0.9030283505310843,
+      "reported_cls_prob_int8": 0.9994112849235535
     },
     {
       "id": "busi-test-04",
@@ -61,7 +69,9 @@
       "case_id": "normal/normal (126).png",
       "kind": "ultrasound",
       "annotation_flag": false,
-      "note": "Held-out BUSI test image (grouped split)."
+      "note": "Held-out BUSI test image (grouped split).",
+      "reported_dice_int8": 2.1528525291382446e-10,
+      "reported_cls_prob_int8": 0.9842665195465088
     },
     {
       "id": "busi-test-05",
@@ -73,7 +83,9 @@
       "case_id": "normal/normal (96).png",
       "kind": "ultrasound",
       "annotation_flag": true,
-      "note": "Held-out BUSI test image (grouped split)."
+      "note": "Held-out BUSI test image (grouped split).",
+      "reported_dice_int8": 1.0,
+      "reported_cls_prob_int8": 0.9716366529464722
     }
   ]
 }

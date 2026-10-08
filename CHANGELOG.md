@@ -3,6 +3,32 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
+## [Unreleased] — Phase 1 (2026-10-08)
+
+### Added
+
+- External validation of frozen **v1.0.0 INT8** on **BUS-BRA** and **BrEaST** (`results/external/*`); BUS-UCLM skipped (Mendeley HTTP 403 without interactive login).
+- Results sections: External validation + Comparison with published work; `docs/LITERATURE_COMPARISON.md`.
+- Demo: expert-vs-model compare modes + per-image Dice; lesion measurements (px / mm on BrEaST).
+- Offline measurement agreement on BrEaST (`results/measurement_agreement.json`).
+- Full-scale leakage ablation script (`scripts/run_leakage_ablation.py` → `results/leakage_ablation.json`).
+- Private clinician review page `/review?k=…` + `docs/CLINICIAN_REVIEW.md` (no outreach from agents).
+- `docs/DECISION_LOG.md` (D1–D4); model-swap rule in `EXTERNAL_VALIDATION_PROTOCOL.md`.
+- Small CC BY BrEaST samples under `web/public/samples/external/` with attribution.
+
+### Changed
+
+- Model card / README limitations updated with external Dice/AUC (honest AUC drop).
+- Served model remains **v1.0.0** (unchanged).
+
+### External metrics (v1.0.0 INT8)
+
+| Set | Dice | Lesion Dice | AUC |
+|---|---|---|---|
+| BUSI internal | 0.697 | 0.764 | 0.931 |
+| BUS-BRA | 0.714 | 0.714 | 0.638 |
+| BrEaST | 0.627 | 0.629 | 0.721 |
+
 ## [model-v1.0.0] — 2026-10-08
 
 ### Added

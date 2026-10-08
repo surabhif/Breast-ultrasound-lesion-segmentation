@@ -71,7 +71,23 @@ def test_external_protocol_preregistered():
     assert "v1.0.0" in text
     assert "0bbf529d" in text
     assert "BUS-BRA" in text and "BrEaST" in text
-    assert "Not run yet" in text or "not run yet" in text.lower()
+    assert "MODEL_POLICY" in text
+    assert "no more than 0.02" in text or "no more than **0.02**" in text
+
+
+def test_external_results_or_skip_documented():
+    ext = REPO / "results" / "external"
+    assert (REPO / "docs" / "DECISION_LOG.md").exists()
+    assert (REPO / "docs" / "CLINICIAN_REVIEW.md").exists()
+    assert (REPO / "docs" / "LITERATURE_COMPARISON.md").exists()
+    # At least one primary external result, or an explicit skip file
+    has_busbra = (ext / "busbra.json").exists()
+    has_breast = (ext / "breast.json").exists()
+    assert has_busbra and has_breast, "Phase 1 expects BUS-BRA and BrEaST results"
+    metrics = json.loads((REPO / "web" / "public" / "results" / "metrics.json").read_text())
+    assert "external" in metrics and "datasets" in metrics["external"]
+    assert "busbra" in metrics["external"]["datasets"]
+    assert "breast" in metrics["external"]["datasets"]
 
 
 if __name__ == "__main__":
@@ -80,4 +96,5 @@ if __name__ == "__main__":
     test_audit_and_splits_exist()
     test_onnx_runs()
     test_external_protocol_preregistered()
+    test_external_results_or_skip_documented()
     print("All smoke tests passed.")

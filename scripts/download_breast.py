@@ -1,64 +1,53 @@
 #!/usr/bin/env python3
-"""Download helper notes for BrEaST (TCIA BREAST-LESIONS-USG).
+"""Download BrEaST (TCIA BREAST-LESIONS-USG), CC BY 4.0.
 
-TCIA often requires interactive / NBIA download. This script records the
-canonical DOI and optional local path; it does **not** scrape private APIs.
-
-Licence: CC BY 4.0 — cite Pawłowska et al., Sci Data 2024.
-See docs/EXTERNAL_VALIDATION_PROTOCOL.md — do not score until protocol is committed.
+Direct zip + clinical XLSX from cancerimagingarchive.net (no NBIA required).
+Does not commit data. See docs/EXTERNAL_VALIDATION_PROTOCOL.md.
 """
-
 from __future__ import annotations
-
-import argparse
+import argparse, hashlib, zipfile
 from pathlib import Path
+from urllib.request import urlretrieve
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "data" / "external" / "breast"
+ZIP_URL = "https://www.cancerimagingarchive.net/wp-content/uploads/BrEaST-Lesions_USG-images_and_masks-Dec-15-2023.zip"
+XLSX_URL = "https://www.cancerimagingarchive.net/wp-content/uploads/BrEaST-Lesions-USG-clinical-data-Dec-15-2023.xlsx"
 
-TCIA_DOI = "10.7937/9WKK-Q141"
-TCIA_URL = "https://www.cancerimagingarchive.net/collection/breast-lesions-usg/"
-PAPER_DOI = "10.1038/s41597-024-02984-z"
-
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", type=Path, default=OUT)
-    ap.add_argument(
-        "--local-zip",
-        type=Path,
-        default=None,
-        help="If you already downloaded a TCIA zip, copy/link it here.",
-    )
     args = ap.parse_args()
-
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "SOURCE.txt").write_text(
         "dataset: BrEaST / BREAST-LESIONS-USG\n"
-        f"doi_paper: {PAPER_DOI}\n"
-        f"doi_data: {TCIA_DOI}\n"
-        f"url: {TCIA_URL}\n"
+        "doi_paper: 10.1038/s41597-024-02984-z\n"
+        "doi_data: 10.7937/9WKK-Q141\n"
+        f"zip: {ZIP_URL}\n"
+        f"clinical: {XLSX_URL}\n"
         "licence: CC BY 4.0\n"
-        "protocol: docs/EXTERNAL_VALIDATION_PROTOCOL.md\n"
-        "note: Download via TCIA/NBIA Data Retriever; place archive under this folder.\n"
     )
-
-    if args.local_zip:
-        dest = args.out / args.local_zip.name
-        if not args.local_zip.exists():
-            raise SystemExit(f"Missing {args.local_zip}")
-        if not dest.exists():
-            dest.write_bytes(args.local_zip.read_bytes())
-        print(f"Copied {args.local_zip} → {dest}")
-    else:
-        print(
-            "Wrote SOURCE.txt. Download the collection from TCIA, then re-run with "
-            f"--local-zip /path/to/archive.zip (output dir: {args.out})."
-        )
-        print(f"  {TCIA_URL}")
-
-    print("Done. Data is gitignored; do not commit. Do not run evaluation yet.")
-
+    zpath = args.out / "BrEaST-Lesions_USG-images_and_masks.zip"
+    if not zpath.exists():
+        print("Downloading images zip…")
+        urlretrieve(ZIP_URL, zpath)
+    xlsx = args.out / "BrEaST-Lesions-USG-clinical-data.xlsx"
+    if not xlsx.exists():
+        print("Downloading clinical XLSX…")
+        urlretrieve(XLSX_URL, xlsx)
+    digest = sha256_file(zpath)
+    (args.out / "BrEaST.zip.sha256").write_text(digest + "\n")
+    print("sha256", digest)
+    with zipfile.ZipFile(zpath) as zf:
+        zf.extractall(args.out / "raw")
+    print("Done. Data is gitignored.")
 
 if __name__ == "__main__":
     main()

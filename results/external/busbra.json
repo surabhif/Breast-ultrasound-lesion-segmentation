@@ -1,0 +1,138 @@
+{
+  "dataset": "busbra",
+  "model_version": "1.0.0",
+  "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "protocol": "docs/EXTERNAL_VALIDATION_PROTOCOL.md",
+  "n": 1875,
+  "n_patients": 1064,
+  "seg_threshold": 0.4,
+  "min_component_area": 40,
+  "cls_threshold": 0.5,
+  "test_dice": 0.7136202288207832,
+  "test_dice_bootstrap_95ci": [
+    0.6991090300120892,
+    0.7273477360554241
+  ],
+  "test_iou": 0.6089462137607652,
+  "test_iou_bootstrap_95ci": [
+    0.59467916744832,
+    0.622259380642315
+  ],
+  "lesion_dice": 0.7136202288207832,
+  "lesion_dice_bootstrap_95ci": [
+    0.6991090300120892,
+    0.7273477360554241
+  ],
+  "by_label": {
+    "benign": {
+      "n": 1268,
+      "dice_mean": 0.7101019425722215,
+      "dice_ci95": [
+        0.6908601949756059,
+        0.7278691042235937
+      ]
+    },
+    "malignant": {
+      "n": 607,
+      "dice_mean": 0.7209697954816996,
+      "dice_ci95": [
+        0.6966722238772856,
+        0.7430052543760288
+      ]
+    }
+  },
+  "normal_false_positive_count": null,
+  "normal_n": 0,
+  "cls_roc_auc": 0.6380587416003618,
+  "cls_sensitivity": 0.30971993410214166,
+  "cls_specificity": 0.8982649842271293,
+  "cls_ece": 0.21462513594627378,
+  "confusion_matrix": {
+    "labels": [
+      "benign",
+      "malignant"
+    ],
+    "matrix": [
+      [
+        1139,
+        129
+      ],
+      [
+        419,
+        188
+      ]
+    ]
+  },
+  "subgroups": {
+    "by_birads": {
+      "2": {
+        "n": 562,
+        "dice_mean": 0.7309639702080288,
+        "dice_ci95": [
+          0.6999137552138274,
+          0.7587396719075478
+        ]
+      },
+      "3": {
+        "n": 463,
+        "dice_mean": 0.6896829317923593,
+        "dice_ci95": [
+          0.6571022858797259,
+          0.7183818036114086
+        ]
+      },
+      "4": {
+        "n": 693,
+        "dice_mean": 0.7095555532153676,
+        "dice_ci95": [
+          0.6854336650938699,
+          0.7302601124892238
+        ]
+      },
+      "5": {
+        "n": 157,
+        "dice_mean": 0.7400699489423199,
+        "dice_ci95": [
+          0.7049934842112375,
+          0.7748937003906312
+        ]
+      }
+    },
+    "by_scanner": {
+      "GE Logiq 5 @10-12MHz": {
+        "n": 809,
+        "dice_mean": 0.7131492393684419,
+        "dice_ci95": [
+          0.68956609083426,
+          0.7365469265796847
+        ]
+      },
+      "GE Logiq 7 @10-14MHz": {
+        "n": 902,
+        "dice_mean": 0.7294405956800877,
+        "dice_ci95": [
+          0.7127625212134663,
+          0.747764998506936
+        ]
+      },
+      "Toshiba Aplio 300 @12-14 MHz": {
+        "n": 139,
+        "dice_mean": 0.6183381434671852,
+        "dice_ci95": [
+          0.5554796313602653,
+          0.6803497749418004
+        ]
+      },
+      "U-Systems @10-14MHz": {
+        "n": 25,
+        "dice_mean": 0.6878310057808519,
+        "dice_ci95": [
+          0.535138239477769,
+          0.8318860774766218
+        ]
+      }
+    }
+  },
+  "attribution": "G\u00f3mez-Flores et al., Med Phys 2024; Zenodo 8231412; CC BY 4.0",
+  "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160\u00b2 (shared bilinear)."
+}
