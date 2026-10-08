@@ -30,7 +30,7 @@ Do not claim specific tasks Surabhi personally drafted or recorded.
 
 ### D8 — Zenodo DOI
 
-**Decided:** **Deferred.** Minting a DOI needs the owner’s Zenodo login. Document as a TODO in cite docs / `CITATION.cff` only — agents cannot complete it.
+**Decided:** **Deferred.** Minting a DOI needs the owner’s Zenodo login. Note the deferral in cite docs / `CITATION.cff` only — agents cannot complete it.
 
 ### D9 — Walkthrough video
 

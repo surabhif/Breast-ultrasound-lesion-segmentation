@@ -36,16 +36,29 @@ def load(path: Path):
         return json.load(f)
 
 
-def fmt(x, digits=3):
+def fmt(x, digits=3, *, label: str = "value"):
     if x is None:
-        return "n/a"
+        raise SystemExit(f"Missing numeric {label} (refusing placeholder)")
     if isinstance(x, str):
         return x
     return f"{float(x):.{digits}f}"
 
 
-def pct(x, digits=1):
+def pct(x, digits=1, *, label: str = "value"):
+    if x is None:
+        raise SystemExit(f"Missing fraction {label} (refusing placeholder)")
     return f"{100.0 * float(x):.{digits}f}%"
+
+
+def normal_fp_from_empty_mask_dice(by_label: dict) -> tuple[int, int]:
+    """For empty-GT normals, per-image Dice is 0 or 1, so FP count = (1 − mean Dice) × n."""
+    block = by_label["normal"]
+    n = int(block["n"])
+    mean_dice = float(block["dice_mean"])
+    n_fp = int(round((1.0 - mean_dice) * n))
+    if not (0 <= n_fp <= n):
+        raise SystemExit(f"Implausible normal FP count {n_fp}/{n}")
+    return n_fp, n
 
 
 def collect_numbers() -> dict[str, str]:
@@ -58,9 +71,12 @@ def collect_numbers() -> dict[str, str]:
     inp = load(ROOT / "results" / "inpaint_experiment.json")
     uncert = load(ROOT / "results" / "uncertainty.json")
     meas = load(ROOT / "results" / "measurement_agreement.json")
-    skip = load(ROOT / "results" / "external" / "busuclm_SKIPPED.json")
 
-    fm = full["metrics"]
+    # FP32 training checkpoint metrics are nested under metrics.test in full_run.json
+    fp32 = full["metrics"]["test"]
+    fp32_cls = fp32["classification"]
+    fp32_nfp, fp32_nn = normal_fp_from_empty_mask_dice(fp32["by_label"])
+
     ea = inp["E_a"]["original"]
     ec = inp.get("E_c") or {}
     best_seed_id = ec.get("best_seed")
@@ -77,24 +93,21 @@ def collect_numbers() -> dict[str, str]:
     runs = leak.get("runs") or []
     grouped_vals = [r["val_dice"] for r in runs if r.get("mode") == "grouped" and "val_dice" in r]
     random_vals = [r["val_dice"] for r in runs if r.get("mode") == "random" and "val_dice" in r]
-    leak_delta = (
-        sum(random_vals) / len(random_vals) - sum(grouped_vals) / len(grouped_vals)
-        if grouped_vals and random_vals
-        else None
-    )
+    if not grouped_vals or not random_vals:
+        raise SystemExit("Missing leakage ablation val_dice runs")
+    leak_delta = sum(random_vals) / len(random_vals) - sum(grouped_vals) / len(grouped_vals)
 
     cov80 = None
     for row in uncert.get("risk_coverage") or []:
         if abs(float(row.get("coverage", -1)) - 0.8) < 1e-6:
             cov80 = row.get("mean_dice")
             break
+    if cov80 is None:
+        raise SystemExit("Missing uncertainty risk-coverage at 0.8")
 
-    reason = skip.get("reason") or skip.get("note") or "unavailable"
-    if isinstance(reason, dict):
-        reason = reason.get("reason") or json.dumps(reason)
     busuclm = (
-        f"BUS-UCLM was skipped in this environment: {reason}. "
-        "The pre-registered protocol keeps it as a secondary set if access becomes available."
+        "BUS-UCLM was not included because its Mendeley Data download requires a login "
+        "(the request returned HTTP 403)."
     )
 
     dc = clean["dataset_counts"]
@@ -103,58 +116,72 @@ def collect_numbers() -> dict[str, str]:
         "PAGES_URL": "https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/",
         "GITHUB_URL": "https://github.com/surabhif/Breast-ultrasound-lesion-segmentation",
         "HOW_BUILT": HOW_BUILT,
-        "SEG_THR": fmt(int8.get("seg_threshold", 0.4), 1),
+        "SEG_THR": fmt(int8.get("seg_threshold", 0.4), 1, label="seg_threshold"),
         "MIN_AREA": str(int(int8.get("min_component_area", 40))),
         "MODEL_SHA8": str(int8.get("sha256", ""))[:8],
-        "FP32_DICE": fmt(fm.get("test_dice")),
-        "FP32_LESION_DICE": fmt(fm.get("lesion_dice")),
-        "FP32_IOU": fmt(fm.get("test_iou")),
-        "FP32_AUC": fmt(fm.get("cls_roc_auc")),
-        "FP32_NFP": f"{fm.get('normal_false_positive_count')}/{fm.get('normal_n')}",
-        "INT8_DICE": fmt(int8.get("dice_mean")),
-        "INT8_LESION_DICE": fmt(int8.get("lesion_dice_mean")),
-        "INT8_IOU": fmt(int8.get("iou_mean")),
-        "INT8_AUC": fmt(int8.get("cls_roc_auc")),
+        "FP32_DICE": fmt(fp32.get("dice_mean"), label="FP32 dice"),
+        "FP32_LESION_DICE": fmt(fp32.get("lesion_dice_mean"), label="FP32 lesion dice"),
+        "FP32_IOU": fmt(fp32.get("iou_mean"), label="FP32 iou"),
+        "FP32_AUC": fmt(fp32_cls.get("roc_auc"), label="FP32 auc"),
+        "FP32_SENS": fmt(fp32_cls.get("sensitivity"), label="FP32 sens"),
+        "FP32_SPEC": fmt(fp32_cls.get("specificity"), label="FP32 spec"),
+        "FP32_ECE": fmt(fp32_cls.get("ece"), label="FP32 ece"),
+        "FP32_NFP": f"{fp32_nfp}/{fp32_nn}",
+        "INT8_DICE": fmt(int8.get("dice_mean"), label="INT8 dice"),
+        "INT8_LESION_DICE": fmt(int8.get("lesion_dice_mean"), label="INT8 lesion dice"),
+        "INT8_IOU": fmt(int8.get("iou_mean"), label="INT8 iou"),
+        "INT8_AUC": fmt(int8.get("cls_roc_auc"), label="INT8 auc"),
         "INT8_NFP": f"{int8.get('normal_false_positive_count')}/{int8.get('normal_n')}",
-        "INT8_SENS": fmt(int8.get("cls_sensitivity")),
-        "INT8_SPEC": fmt(int8.get("cls_specificity")),
-        "INT8_ECE": fmt(int8.get("cls_ece")),
-        "BUSBRA_DICE": fmt(busbra.get("test_dice")),
-        "BUSBRA_LESION_DICE": fmt(busbra.get("lesion_dice")),
-        "BUSBRA_AUC": fmt(busbra.get("cls_roc_auc")),
+        "INT8_SENS": fmt(int8.get("cls_sensitivity"), label="INT8 sens"),
+        "INT8_SPEC": fmt(int8.get("cls_specificity"), label="INT8 spec"),
+        "INT8_ECE": fmt(int8.get("cls_ece"), label="INT8 ece"),
+        "BUSBRA_DICE": fmt(busbra.get("test_dice"), label="BUS-BRA dice"),
+        "BUSBRA_LESION_DICE": fmt(busbra.get("lesion_dice"), label="BUS-BRA lesion dice"),
+        "BUSBRA_AUC": fmt(busbra.get("cls_roc_auc"), label="BUS-BRA auc"),
         "BUSBRA_N": str(busbra.get("n")),
         "BUSBRA_NP": str(busbra.get("n_patients")),
-        "BREAST_DICE": fmt(breast.get("test_dice")),
-        "BREAST_LESION_DICE": fmt(breast.get("lesion_dice")),
-        "BREAST_AUC": fmt(breast.get("cls_roc_auc")),
+        "BREAST_DICE": fmt(breast.get("test_dice"), label="BrEaST dice"),
+        "BREAST_LESION_DICE": fmt(breast.get("lesion_dice"), label="BrEaST lesion dice"),
+        "BREAST_AUC": fmt(breast.get("cls_roc_auc"), label="BrEaST auc"),
         "BREAST_N": str(breast.get("n")),
         "BREAST_NP": str(breast.get("n_patients")),
         "BUSUCLM_SENTENCE": busuclm,
-        "ANNOTATION_RATE": pct(dc["annotation_rate"]),
+        "ANNOTATION_RATE": pct(dc["annotation_rate"], label="annotation_rate"),
         "N_FLAGGED": str(dc["n_annotation_flagged"]),
         "N_TOTAL": str(dc["n_total"]),
         "LEAK_EPOCHS": str(leak.get("epochs")),
         "LEAK_SEEDS": ",".join(str(s) for s in leak.get("seeds", [])),
-        "LEAK_DELTA": fmt(leak_delta),
-        "EA_FLAGGED": fmt(ea.get("dice_flagged")),
-        "EA_CLEAN": fmt(ea.get("dice_clean")),
-        "EA_ORIG_DICE": fmt(ea.get("dice_mean")),
-        "EA_INP_DICE": fmt(inp["E_a"]["inpainted"].get("dice_mean")),
-        "EC_BUSBRA": fmt(ec_busbra),
-        "EC_BREAST": fmt(ec_breast),
-        "EC_CLEAN": fmt((seed_row or {}).get("test_clean_subset_original", {}).get("dice_mean")),
-        "EC_AUC": fmt((seed_row or {}).get("test_original", {}).get("cls_roc_auc")),
-        "UNCERT_RHO": fmt(uncert["spearman_uncertainty_vs_error"]["rho"]),
+        "LEAK_DELTA": fmt(leak_delta, label="leak_delta"),
+        "EA_FLAGGED": fmt(ea.get("dice_flagged"), label="E-a flagged"),
+        "EA_CLEAN": fmt(ea.get("dice_clean"), label="E-a clean"),
+        "EA_ORIG_DICE": fmt(ea.get("dice_mean"), label="E-a original"),
+        "EA_INP_DICE": fmt(inp["E_a"]["inpainted"].get("dice_mean"), label="E-a inpainted"),
+        "EC_BUSBRA": fmt(ec_busbra, label="E-c BUS-BRA"),
+        "EC_BREAST": fmt(ec_breast, label="E-c BrEaST"),
+        "EC_CLEAN": fmt(
+            (seed_row or {}).get("test_clean_subset_original", {}).get("dice_mean"),
+            label="E-c clean",
+        ),
+        "EC_AUC": fmt((seed_row or {}).get("test_original", {}).get("cls_roc_auc"), label="E-c auc"),
+        "UNCERT_RHO": fmt(uncert["spearman_uncertainty_vs_error"]["rho"], label="uncert rho"),
         "UNCERT_N": str(uncert.get("n")),
-        "UNCERT_COV80": fmt(cov80),
-        "MEAS_DIAM_R": fmt(meas["longest_diameter_mm"]["pearson_proxy_for_icc"]),
+        "UNCERT_COV80": fmt(cov80, label="uncert cov80"),
+        "MEAS_DIAM_R": fmt(meas["longest_diameter_mm"]["pearson_proxy_for_icc"], label="meas diam"),
         "MEAS_N": str(meas.get("n")),
-        "MEAS_T1T2": pct(meas["longest_diameter_mm"]["t1_t2_20mm_discordance_rate"]),
-        "MEAS_AREA_R": fmt(meas["area_px"]["pearson_proxy_for_icc"]),
+        "MEAS_T1T2": pct(
+            meas["longest_diameter_mm"]["t1_t2_20mm_discordance_rate"], label="meas t1t2"
+        ),
+        "MEAS_AREA_R": fmt(meas["area_px"]["pearson_proxy_for_icc"], label="meas area"),
     }
-    for key in ("EC_BUSBRA", "EC_BREAST", "LEAK_DELTA", "UNCERT_COV80", "INT8_AUC"):
-        if nums[key] == "n/a":
-            raise SystemExit(f"Missing required number for {key}")
+    if "None" in nums["INT8_NFP"] or nums["INT8_NFP"].startswith("/"):
+        raise SystemExit(f"Bad INT8_NFP {nums['INT8_NFP']!r}")
+    forbidden = ("n/a", "None", "TODO", "NaN", "data/external/")
+    for k, v in nums.items():
+        if k in ("HOW_BUILT", "PAGES_URL", "GITHUB_URL", "BUSUCLM_SENTENCE"):
+            continue
+        for bad in forbidden:
+            if bad in v:
+                raise SystemExit(f"Placeholder {bad!r} in {k}={v!r}")
     return nums
 
 
@@ -484,8 +511,12 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
                 ["Lesion Dice", nums["FP32_LESION_DICE"], nums["INT8_LESION_DICE"]],
                 ["IoU", nums["FP32_IOU"], nums["INT8_IOU"]],
                 ["ROC-AUC", nums["FP32_AUC"], nums["INT8_AUC"]],
-                ["Sensitivity / Specificity", "—", f"{nums['INT8_SENS']} / {nums['INT8_SPEC']}"],
-                ["ECE", "—", nums["INT8_ECE"]],
+                [
+                    "Sensitivity / Specificity",
+                    f"{nums['FP32_SENS']} / {nums['FP32_SPEC']}",
+                    f"{nums['INT8_SENS']} / {nums['INT8_SPEC']}",
+                ],
+                ["ECE", nums["FP32_ECE"], nums["INT8_ECE"]],
                 ["Normal FP masks", nums["FP32_NFP"], nums["INT8_NFP"]],
             ],
         )
@@ -674,16 +705,23 @@ def main() -> int:
         # extraction may normalize; check PDF contains font and we wrote the string in filled md
         if "Pawłowska" not in FILLED_MD.read_text():
             raise SystemExit("Pawłowska missing from filled markdown")
-    if "HTTP 403 wit)" in text or "HTTP 403 wit'." in text:
-        raise SystemExit("BUS-UCLM sentence still truncated in PDF")
-    if "without interactive login" not in text.replace("\n", " "):
-        raise SystemExit("BUS-UCLM full reason missing from PDF text")
+    compact = " ".join(text.split())
+    if "Mendeley Data download requires a login" not in compact:
+        raise SystemExit("Reader-facing BUS-UCLM sentence missing from PDF text")
+    if "data/external" in text:
+        raise SystemExit("Internal data/external path leaked into PDF text")
     if "Pawłowska" not in FILLED_MD.read_text() and "Paw" not in text:
         raise SystemExit("Pawłowska / Paw missing from report")
     offenders = re.findall(r"\bD(?:1[0-2]|[1-9])\b", text)
-    # Filter false positives like "Dice" — pattern already word-boundary on D+digits
     if offenders:
         raise SystemExit(f"Decision codes leaked into PDF text: {offenders}")
+    # Reject placeholders in reader text (allow source-path captions like results/*.json)
+    for bad in ("n/a", "None/None", "TODO", "NaN"):
+        if bad in text:
+            raise SystemExit(f"Placeholder {bad!r} found in PDF text")
+    # Em dash alone as a table cell value
+    if re.search(r"\n—\n", text):
+        raise SystemExit("Placeholder em-dash cell found in PDF text")
     n_pages = len(reader.pages)
     print(f"Wrote {OUT_PDF} ({OUT_PDF.stat().st_size} bytes, {n_pages} pages)")
     if n_pages < 6 or n_pages > 10:

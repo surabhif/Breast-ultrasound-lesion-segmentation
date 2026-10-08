@@ -148,7 +148,7 @@ ONNX I/O: `input` `[N,3,160,160]` → `seg_mask` `[N,1,160,160]`, `cls_prob` `[N
 | `web/public/report.pdf` | Auto-filled research write-up (site-only venue) |
 | `web/public/video/walkthrough.mp4` | Captioned 60–90s site walkthrough |
 
-Cite with `CITATION.cff` / About → How to cite. **TODO (owner):** Zenodo DOI (needs owner login). Analytics skipped (no account); About states no cookies / browser-only inference.
+Cite with `CITATION.cff` / About → How to cite. A Zenodo DOI is not minted yet (needs owner login). Analytics skipped (no account); About states no cookies / browser-only inference.
 
 ## How this was built
 

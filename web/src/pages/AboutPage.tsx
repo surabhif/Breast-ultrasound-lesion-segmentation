@@ -145,9 +145,8 @@ export default function AboutPage() {
         {CITE_BIBTEX}
       </pre>
       <p className="muted tiny">
-        Machine-readable: <code>CITATION.cff</code> in the repository root.{' '}
-        <strong>TODO (owner):</strong> mint a Zenodo DOI when ready — requires the owner&apos;s
-        Zenodo login; agents cannot complete that step.
+        Machine-readable: <code>CITATION.cff</code> in the repository root. A Zenodo DOI is not
+        minted yet — that step needs the owner&apos;s Zenodo login.
       </p>
       <p>
         Dataset: Al-Dhabyani W, Gomaa M, Khaled H, Fahmy A. Dataset of breast ultrasound images.

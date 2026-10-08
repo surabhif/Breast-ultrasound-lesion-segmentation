@@ -10,7 +10,7 @@ Served INT8 Dice 0.697, lesion Dice 0.764, AUC 0.931; BUS-BRA Dice 0.714 AUC 0.6
 
 ## Data
 Annotation-flag rate 46.9% (366/780).
-BUS-UCLM was skipped in this environment: BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) returned HTTP 403 without interactive login from this environment. Download manually, place under data/external/busuclm/, then re-run.. The pre-registered protocol keeps it as a secondary set if access becomes available.
+BUS-UCLM was not included because its Mendeley Data download requires a login (the request returned HTTP 403).
 External: BUS-BRA n=1875; BrEaST n=256 (Pawłowska et al.).
 
 ## Results highlights
