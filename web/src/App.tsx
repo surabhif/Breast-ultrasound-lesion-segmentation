@@ -5,7 +5,7 @@ import DemoPage from './pages/DemoPage'
 import AboutPage from './pages/AboutPage'
 import ResultsPage from './pages/ResultsPage'
 import ModelCardPage from './pages/ModelCardPage'
-import { SITE } from './lib/constants'
+import { MODEL_STATUS, SITE } from './lib/constants'
 import './App.css'
 
 const TITLES: Record<string, string> = {
@@ -97,7 +97,9 @@ export default function App() {
             </ul>
           </div>
         </div>
-        <p className="footer-fine">MIT license · Research only</p>
+        <p className="footer-fine">
+          Model v{MODEL_STATUS.version} · MIT license · Research only
+        </p>
       </footer>
     </div>
   )

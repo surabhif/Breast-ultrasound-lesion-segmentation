@@ -19,7 +19,10 @@ End-to-end student research project on the [BUSI](https://doi.org/10.1016/j.dib.
 | `notebooks/01_train_busi.ipynb` | Colab end-to-end training |
 | `results/` | Real run JSONs, split file, caliper/duplicate audit CSV |
 | `docs/HOW_IT_WORKS.md` | Plain-language walkthrough for interviews |
+| `docs/EXTERNAL_VALIDATION_PROTOCOL.md` | Pre-registered BUS-BRA / BrEaST protocol (eval not run yet) |
+| `CHANGELOG.md` | App + model version history |
 | `web/` | Vite + React + TypeScript demo (onnxruntime-web) |
+| `.github/workflows/ci.yml` | Lint, typecheck, build, smoke, parity |
 | `.github/workflows/deploy-pages.yml` | GitHub Pages deploy |
 
 The **full BUSI archive is not committed** (redistribution license is unclear). `scripts/download_busi.py` fetches a public Hugging Face mirror.
@@ -28,15 +31,20 @@ The **full BUSI archive is not committed** (redistribution license is unclear). 
 
 ## Headline results (committed run)
 
-From `results/full_run.json` / `web/public/results/metrics.json` (CPU-trained ResNet-18 U-Net, 160×160, grouped held-out test; val-tuned threshold 0.4 + min-component area 40):
+CPU-trained ResNet-18 U-Net, 160×160, grouped held-out test; val-tuned threshold **0.4** + min-component area **40**. Model **v1.0.0**.
 
-| Metric | Value |
-|--------|-------|
-| Test Dice (all) | **0.686** (95% CI 0.619–0.750) |
-| Lesion-only Dice | **0.751** (95% CI 0.689–0.808) |
-| Test IoU | **0.618** |
-| Benign vs malignant ROC-AUC | **0.939** |
-| Served ONNX | **~11.7 MB** dynamic INT8 |
+| Metric | FP32 (training) | INT8 ONNX (**served**) |
+|--------|-----------------|-------------------------|
+| Test Dice (all) | 0.686 [0.619–0.750] | **0.697** [0.632–0.766] |
+| Lesion-only Dice | 0.751 [0.689–0.808] | **0.764** [0.706–0.820] |
+| Test IoU | 0.618 | **0.629** |
+| Benign vs malignant ROC-AUC | 0.939 | **0.931** |
+| Normal false-positive masks | 12/19 | **12/19** |
+| Artifact size | 46.3 MB | **~11.7 MB** |
+
+Served INT8 metrics use the same half-pixel bilinear preprocess + min-area-40 postprocess as the browser (see `CHANGELOG.md`).
+
+The demo runs the INT8 weights; Results and the model card show both columns. Sources: `results/full_run.json`, `results/served_int8_test.json`.
 
 Quick baseline (tiny U-Net, 64×64, ~1 min CPU): Dice ≈ 0.42, AUC ≈ 0.80 — see `results/baseline_quick_run.json`.
 
@@ -105,8 +113,8 @@ Citation: Al-Dhabyani W, Gomaa M, Khaled H, Fahmy A. Dataset of breast ultrasoun
 ## Repo layout (training → web)
 
 1. Train → `export/full_best.pt`
-2. Export ONNX → `web/public/models/busi_unet.onnx`
-3. Quantize if helpful (INT8 adopted here)
+2. Export + quantize → `web/public/models/v1.0.0/busi_unet.onnx` (+ `current.json`)
+3. `eval_served_model.py` → INT8 test metrics alongside FP32
 4. `export_web_results.py` → `web/public/results/metrics.json` + failure gallery
 5. `export_gallery.py` → ~6 BUSI test samples under `web/public/samples/`
 
@@ -116,10 +124,11 @@ ONNX I/O: `input` `[N,3,160,160]` → `seg_mask` `[N,1,160,160]`, `cls_prob` `[N
 
 ## Limitations
 
-- Single public dataset; domain shift untested  
+- Single public dataset; domain shift untested (protocol pre-registered in `docs/EXTERNAL_VALIDATION_PROTOCOL.md`; eval not run yet)  
 - No patient IDs  
 - Caliper detector is a heuristic, not OCR  
 - 160² resolution for CPU/browser practicality  
+- **Normal-image false positives:** **12/19** non-empty masks on normals (FP32 and served INT8)  
 - **Not a medical device**
 
 ---

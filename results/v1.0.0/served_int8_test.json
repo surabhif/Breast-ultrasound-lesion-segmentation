@@ -1,0 +1,274 @@
+{
+  "label": "Served INT8 ONNX (v1.0.0) on held-out BUSI test",
+  "model_path": "web/public/models/v1.0.0/busi_unet.onnx",
+  "sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "n": 112,
+  "seg_threshold": 0.4,
+  "min_component_area": 40,
+  "cls_threshold": 0.5,
+  "dice_mean": 0.6972011494235116,
+  "dice_ci95": [
+    0.6318544128007265,
+    0.7656603082162292
+  ],
+  "iou_mean": 0.6295263549739772,
+  "iou_ci95": [
+    0.567721238896154,
+    0.6939308107729822
+  ],
+  "lesion_dice_mean": 0.7643712765714284,
+  "lesion_dice_ci95": [
+    0.7049727284836597,
+    0.8211196389529184
+  ],
+  "by_label": {
+    "benign": {
+      "n": 63,
+      "dice_mean": 0.7487316216173011,
+      "dice_ci95": [
+        0.6655292069953922,
+        0.8231480772927728
+      ],
+      "iou_mean": 0.682393075770187
+    },
+    "malignant": {
+      "n": 30,
+      "dice_mean": 0.7972145519750955,
+      "dice_ci95": [
+        0.7340945771833857,
+        0.8436558551805153
+      ],
+      "iou_mean": 0.6838729323091063
+    },
+    "normal": {
+      "n": 19,
+      "dice_mean": 0.3684210533837091,
+      "dice_ci95": [
+        0.15789473777098811,
+        0.5789473689815383
+      ],
+      "iou_mean": 0.3684210533837091
+    }
+  },
+  "normal_false_positive_count": 12,
+  "normal_n": 19,
+  "normal_false_positive_rate": 0.631578947368421,
+  "cls_roc_auc": 0.9306878306878307,
+  "cls_sensitivity": 0.8666666666666667,
+  "cls_specificity": 0.8412698412698413,
+  "cls_ece": 0.1106833475892262,
+  "confusion_matrix": {
+    "labels": [
+      "benign",
+      "malignant"
+    ],
+    "matrix": [
+      [
+        53,
+        10
+      ],
+      [
+        4,
+        26
+      ]
+    ]
+  },
+  "roc_curve": [
+    {
+      "fpr": 0.0,
+      "tpr": 0.0,
+      "threshold": Infinity
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.03333333333333333,
+      "threshold": 0.9994112849235535
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.36666666666666664,
+      "threshold": 0.9890698790550232
+    },
+    {
+      "fpr": 0.015873015873015872,
+      "tpr": 0.36666666666666664,
+      "threshold": 0.9885695576667786
+    },
+    {
+      "fpr": 0.015873015873015872,
+      "tpr": 0.5,
+      "threshold": 0.9863221645355225
+    },
+    {
+      "fpr": 0.031746031746031744,
+      "tpr": 0.5,
+      "threshold": 0.9842369556427002
+    },
+    {
+      "fpr": 0.031746031746031744,
+      "tpr": 0.5333333333333333,
+      "threshold": 0.9758051037788391
+    },
+    {
+      "fpr": 0.047619047619047616,
+      "tpr": 0.5333333333333333,
+      "threshold": 0.9752709865570068
+    },
+    {
+      "fpr": 0.047619047619047616,
+      "tpr": 0.7666666666666667,
+      "threshold": 0.8774803876876831
+    },
+    {
+      "fpr": 0.06349206349206349,
+      "tpr": 0.7666666666666667,
+      "threshold": 0.8454291820526123
+    },
+    {
+      "fpr": 0.06349206349206349,
+      "tpr": 0.8333333333333334,
+      "threshold": 0.7787923812866211
+    },
+    {
+      "fpr": 0.1111111111111111,
+      "tpr": 0.8333333333333334,
+      "threshold": 0.672448456287384
+    },
+    {
+      "fpr": 0.1111111111111111,
+      "tpr": 0.8666666666666667,
+      "threshold": 0.6318023204803467
+    },
+    {
+      "fpr": 0.20634920634920634,
+      "tpr": 0.8666666666666667,
+      "threshold": 0.43000176548957825
+    },
+    {
+      "fpr": 0.20634920634920634,
+      "tpr": 0.9,
+      "threshold": 0.412284255027771
+    },
+    {
+      "fpr": 0.31746031746031744,
+      "tpr": 0.9,
+      "threshold": 0.10776698589324951
+    },
+    {
+      "fpr": 0.31746031746031744,
+      "tpr": 0.9333333333333333,
+      "threshold": 0.09531179070472717
+    },
+    {
+      "fpr": 0.3492063492063492,
+      "tpr": 0.9333333333333333,
+      "threshold": 0.07316243648529053
+    },
+    {
+      "fpr": 0.3492063492063492,
+      "tpr": 0.9666666666666667,
+      "threshold": 0.0711047351360321
+    },
+    {
+      "fpr": 0.5396825396825397,
+      "tpr": 0.9666666666666667,
+      "threshold": 0.021316468715667725
+    },
+    {
+      "fpr": 0.5396825396825397,
+      "tpr": 1.0,
+      "threshold": 0.01546427607536316
+    },
+    {
+      "fpr": 1.0,
+      "tpr": 1.0,
+      "threshold": 4.0531158447265625e-06
+    }
+  ],
+  "calibration": [
+    {
+      "bin_start": 0.0,
+      "bin_end": 0.1,
+      "center": 0.05,
+      "mean_predicted": 0.019560426473617554,
+      "fraction_positive": 0.06521739130434782,
+      "count": 46
+    },
+    {
+      "bin_start": 0.1,
+      "bin_end": 0.2,
+      "center": 0.15000000000000002,
+      "mean_predicted": 0.1424468457698822,
+      "fraction_positive": 0.0,
+      "count": 5
+    },
+    {
+      "bin_start": 0.2,
+      "bin_end": 0.30000000000000004,
+      "center": 0.25,
+      "mean_predicted": 0.2100001871585846,
+      "fraction_positive": 0.0,
+      "count": 1
+    },
+    {
+      "bin_start": 0.30000000000000004,
+      "bin_end": 0.4,
+      "center": 0.35000000000000003,
+      "mean_predicted": 0.3821689486503601,
+      "fraction_positive": 0.0,
+      "count": 1
+    },
+    {
+      "bin_start": 0.4,
+      "bin_end": 0.5,
+      "center": 0.45,
+      "mean_predicted": 0.445936918258667,
+      "fraction_positive": 0.25,
+      "count": 4
+    },
+    {
+      "bin_start": 0.5,
+      "bin_end": 0.6000000000000001,
+      "center": 0.55,
+      "mean_predicted": 0.5489715139071146,
+      "fraction_positive": 0.0,
+      "count": 3
+    },
+    {
+      "bin_start": 0.6000000000000001,
+      "bin_end": 0.7000000000000001,
+      "center": 0.6500000000000001,
+      "mean_predicted": 0.6616671284039816,
+      "fraction_positive": 0.3333333333333333,
+      "count": 3
+    },
+    {
+      "bin_start": 0.7000000000000001,
+      "bin_end": 0.8,
+      "center": 0.75,
+      "mean_predicted": 0.7756766676902771,
+      "fraction_positive": 0.5,
+      "count": 2
+    },
+    {
+      "bin_start": 0.8,
+      "bin_end": 0.9,
+      "center": 0.8500000000000001,
+      "mean_predicted": 0.8571248799562454,
+      "fraction_positive": 0.75,
+      "count": 4
+    },
+    {
+      "bin_start": 0.9,
+      "bin_end": 1.0,
+      "center": 0.95,
+      "mean_predicted": 0.9788921301563581,
+      "fraction_positive": 0.875,
+      "count": 24
+    }
+  ],
+  "compared_to_fp32": {
+    "source": "results/full_run.json metrics block / web metrics.json",
+    "note": "FP32 numbers come from the PyTorch checkpoint used for export; INT8 is the file served in the browser."
+  }
+}

@@ -1,28 +1,42 @@
 import { useEffect, useState } from 'react'
+import { MODEL_VERSION } from '../lib/constants'
+
+type MetricsBlock = {
+  test_dice: number
+  test_dice_bootstrap_95ci: [number, number]
+  test_iou: number
+  test_iou_bootstrap_95ci: [number, number]
+  lesion_dice?: number
+  lesion_dice_bootstrap_95ci?: [number, number]
+  by_label?: Record<string, { n: number; dice_mean: number; dice_ci95: number[] }>
+  cls_roc_auc?: number
+  cls_sensitivity?: number
+  cls_specificity?: number
+  cls_ece?: number
+  decision_threshold?: number
+  confusion_matrix?: { labels: string[]; matrix: number[][]; row_means_true?: boolean }
+  cv_summary?: { fold: number; val_dice?: number; val_lesion_dice?: number }[]
+  normal_false_positive_count?: number
+  normal_n?: number
+  delta_vs_fp32?: { test_dice?: number; lesion_dice?: number; cls_roc_auc?: number }
+}
 
 type Metrics = {
   label: string
   disclaimer: string
   surabhi_prompts: string[]
   splits_note?: string
+  model_version?: string
   config: Record<string, unknown>
   subset_sizes: Record<string, unknown>
-  metrics: {
-    test_dice: number
-    test_dice_bootstrap_95ci: [number, number]
-    test_iou: number
-    test_iou_bootstrap_95ci: [number, number]
-    lesion_dice?: number
-    lesion_dice_bootstrap_95ci?: [number, number]
-    by_label?: Record<string, { n: number; dice_mean: number; dice_ci95: number[] }>
-    cls_roc_auc?: number
-    cls_sensitivity?: number
-    cls_specificity?: number
-    cls_ece?: number
-    decision_threshold: number
-    confusion_matrix?: { labels: string[]; matrix: number[][]; row_means_true: boolean }
-    cv_summary?: { fold: number; val_dice?: number; val_lesion_dice?: number }[]
+  metrics: MetricsBlock
+  served_int8?: MetricsBlock & {
+    label?: string
+    sha256?: string
+    seg_threshold?: number
+    min_component_area?: number
   }
+  metrics_source?: Record<string, string>
   roc_curve?: { fpr: number; tpr: number }[]
   calibration?: {
     center: number
@@ -142,8 +156,10 @@ export default function ResultsPage() {
   }
 
   const m = data.metrics
-  const cm = m.confusion_matrix?.matrix
-  const labels = m.confusion_matrix?.labels
+  const served = data.served_int8
+  const primary = served ?? m
+  const cm = (served?.confusion_matrix ?? m.confusion_matrix)?.matrix
+  const labels = (served?.confusion_matrix ?? m.confusion_matrix)?.labels
   const clean = data.cleaning_experiment?.full_model_clean_vs_flagged as
     | {
         all_test?: { dice_mean?: number; cls_auc?: number; n?: number }
@@ -161,41 +177,132 @@ export default function ResultsPage() {
       }
     | undefined
 
+  const diceDelta = served?.delta_vs_fp32?.test_dice
+  const aucDelta = served?.delta_vs_fp32?.cls_roc_auc
+  const meaningfulDiff =
+    (diceDelta != null && Math.abs(diceDelta) >= 0.005) ||
+    (aucDelta != null && Math.abs(aucDelta) >= 0.005)
+
   return (
     <div className="fade-in results-page">
       <header className="page-intro">
         <h1>Results</h1>
         <p>{data.disclaimer}</p>
-        <p className="muted tiny">{data.label}</p>
+        <p className="muted tiny">
+          {data.label} · model v{data.model_version ?? MODEL_VERSION}
+        </p>
       </header>
+
+      {served && (
+        <section className="panel" style={{ marginTop: 0 }}>
+          <h2 className="section-title">FP32 (training) vs INT8 (served)</h2>
+          <p>
+            Headline numbers below are for the <strong>served INT8 ONNX</strong> that runs in the
+            browser (v{data.model_version ?? MODEL_VERSION}). Training used an FP32 PyTorch
+            checkpoint with torchvision/PIL resize; the served path uses a shared half-pixel
+            bilinear resize identical to the browser. Both use the same grouped test split and
+            post-processing (threshold {served.seg_threshold ?? 0.4}, min-component area{' '}
+            {served.min_component_area ?? 40}).
+          </p>
+          {meaningfulDiff && (
+            <p>
+              Under browser-matched preprocess, INT8 overall Dice is {fmt(Math.abs(diceDelta ?? 0), 3)}{' '}
+              {(diceDelta ?? 0) < 0 ? 'lower' : 'higher'} than the FP32 training figure (
+              {fmt(m.test_dice)} → {fmt(served.test_dice)}), while AUC is{' '}
+              {fmt(Math.abs(aucDelta ?? 0), 3)} {(aucDelta ?? 0) < 0 ? 'lower' : 'higher'} (
+              {fmt(m.cls_roc_auc)} → {fmt(served.cls_roc_auc)}). Normal-image false positives are{' '}
+              {served.normal_false_positive_count}/{served.normal_n} (same rate as FP32’s 12/19).
+            </p>
+          )}
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>FP32 PyTorch</th>
+                  <th>INT8 ONNX (served)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Test Dice (all)</td>
+                  <td>
+                    {fmt(m.test_dice)} [{fmt(m.test_dice_bootstrap_95ci?.[0])},{' '}
+                    {fmt(m.test_dice_bootstrap_95ci?.[1])}]
+                  </td>
+                  <td>
+                    {fmt(served.test_dice)} [{fmt(served.test_dice_bootstrap_95ci?.[0])},{' '}
+                    {fmt(served.test_dice_bootstrap_95ci?.[1])}]
+                  </td>
+                </tr>
+                <tr>
+                  <td>Lesion Dice</td>
+                  <td>
+                    {fmt(m.lesion_dice)} [{fmt(m.lesion_dice_bootstrap_95ci?.[0])},{' '}
+                    {fmt(m.lesion_dice_bootstrap_95ci?.[1])}]
+                  </td>
+                  <td>
+                    {fmt(served.lesion_dice)} [{fmt(served.lesion_dice_bootstrap_95ci?.[0])},{' '}
+                    {fmt(served.lesion_dice_bootstrap_95ci?.[1])}]
+                  </td>
+                </tr>
+                <tr>
+                  <td>Test IoU</td>
+                  <td>{fmt(m.test_iou)}</td>
+                  <td>{fmt(served.test_iou)}</td>
+                </tr>
+                <tr>
+                  <td>Cls ROC-AUC</td>
+                  <td>{fmt(m.cls_roc_auc)}</td>
+                  <td>{fmt(served.cls_roc_auc)}</td>
+                </tr>
+                <tr>
+                  <td>Normal false-positive masks</td>
+                  <td>12 / 19</td>
+                  <td>
+                    {served.normal_false_positive_count} / {served.normal_n}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="muted tiny">
+            Sources: {data.metrics_source?.fp32_pytorch ?? 'results/full_run.json'} ·{' '}
+            {data.metrics_source?.int8_served ?? 'results/served_int8_test.json'}
+          </p>
+        </section>
+      )}
 
       <section className="panel metrics-strip">
         <div>
-          <div className="metric-label">Test Dice (all)</div>
-          <div className="metric-value">{fmt(m.test_dice)}</div>
+          <div className="metric-label">Test Dice (served INT8)</div>
+          <div className="metric-value">{fmt(primary.test_dice)}</div>
           <div className="muted tiny">
-            95% CI [{fmt(m.test_dice_bootstrap_95ci?.[0])}, {fmt(m.test_dice_bootstrap_95ci?.[1])}]
+            95% CI [{fmt(primary.test_dice_bootstrap_95ci?.[0])},{' '}
+            {fmt(primary.test_dice_bootstrap_95ci?.[1])}]
           </div>
         </div>
         <div>
           <div className="metric-label">Lesion Dice</div>
-          <div className="metric-value">{fmt(m.lesion_dice)}</div>
+          <div className="metric-value">{fmt(primary.lesion_dice)}</div>
           <div className="muted tiny">benign + malignant only</div>
         </div>
         <div>
           <div className="metric-label">Test IoU</div>
-          <div className="metric-value">{fmt(m.test_iou)}</div>
+          <div className="metric-value">{fmt(primary.test_iou)}</div>
         </div>
         <div>
           <div className="metric-label">Cls ROC-AUC</div>
-          <div className="metric-value">{fmt(m.cls_roc_auc)}</div>
+          <div className="metric-value">{fmt(primary.cls_roc_auc)}</div>
           <div className="muted tiny">
-            sens {fmt(m.cls_sensitivity)} · spec {fmt(m.cls_specificity)} @ {m.decision_threshold}
+            sens {fmt(primary.cls_sensitivity ?? m.cls_sensitivity)} · spec{' '}
+            {fmt(primary.cls_specificity ?? m.cls_specificity)} @{' '}
+            {primary.decision_threshold ?? m.decision_threshold ?? 0.5}
           </div>
         </div>
         <div>
           <div className="metric-label">ECE</div>
-          <div className="metric-value">{fmt(m.cls_ece)}</div>
+          <div className="metric-value">{fmt(primary.cls_ece ?? m.cls_ece)}</div>
           <div className="muted tiny">calibration error</div>
         </div>
       </section>
@@ -206,9 +313,9 @@ export default function ResultsPage() {
         </p>
       )}
 
-      {m.by_label && (
+      {(served?.by_label ?? m.by_label) && (
         <section className="panel" style={{ marginTop: '1rem' }}>
-          <h2 className="section-title">Dice by label</h2>
+          <h2 className="section-title">Dice by label (served INT8)</h2>
           <div className="table-wrap">
             <table>
               <thead>
@@ -220,7 +327,7 @@ export default function ResultsPage() {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(m.by_label).map(([lab, row]) => (
+                {Object.entries(served?.by_label ?? m.by_label ?? {}).map(([lab, row]) => (
                   <tr key={lab}>
                     <td>
                       <span className={`badge ${lab}`}>{lab}</span>
@@ -345,9 +452,10 @@ export default function ResultsPage() {
         )}
         {leak && (
           <p>
-            Duplicate-leakage proxy: random splits put ~{fmt((leak.random_split_val_group_leak_fraction ?? 0) * 100, 1)}%
-            of val images in a near-dup group also seen in train. Val Dice inflation (leaky −
-            grouped) ≈ {fmt(leak.val_dice_inflation_leaky_minus_grouped)}.
+            Duplicate-leakage proxy: random splits put ~
+            {fmt((leak.random_split_val_group_leak_fraction ?? 0) * 100, 1)}% of val images in a
+            near-dup group also seen in train. Val Dice inflation (leaky − grouped) ≈{' '}
+            {fmt(leak.val_dice_inflation_leaky_minus_grouped)}.
           </p>
         )}
       </section>
@@ -383,8 +491,8 @@ export default function ResultsPage() {
 
       {data.model_artifact && (
         <p className="muted tiny" style={{ marginTop: '1rem' }}>
-          Served model: {String(data.model_artifact.path)} · {String(data.model_artifact.served_mb)} MB ·{' '}
-          {String(data.model_artifact.quantization)}
+          Served model: {String(data.model_artifact.path)} · {String(data.model_artifact.served_mb)}{' '}
+          MB · {String(data.model_artifact.quantization)} · v{data.model_version ?? MODEL_VERSION}
         </p>
       )}
     </div>

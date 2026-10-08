@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "filename": "busi_unet.onnx",
+  "size_bytes": 12230873,
+  "quantization": "onnxruntime dynamic UINT8 (weights)",
+  "architecture": "ResNet-18 U-Net + aux B/M head",
+  "img_size": 160,
+  "postprocess": {
+    "seg_threshold": 0.4,
+    "min_component_area": 40,
+    "cls_threshold": 0.5,
+    "selected_on": "validation_lesion_dice"
+  },
+  "training_run": "results/full_run.json",
+  "date": "2026-10-08",
+  "metrics_note": "Training metrics in results/full_run.json are FP32 PyTorch. Served INT8 metrics live in results/served_int8_test.json / metrics.json served_int8 block."
+}
