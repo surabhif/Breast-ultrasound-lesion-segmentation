@@ -121,16 +121,32 @@ export default function ModelCardPage() {
         </li>
       </ul>
 
+      <h2 id="phase-3">Phase 3 (clinical context & polish)</h2>
+      <p>
+        Educational BI-RADS and surgeon&apos;s-view pages explain what the model does <em>not</em>{' '}
+        claim. A site-only research PDF auto-fills numbers from results JSON. Served model remains{' '}
+        <strong>v{MODEL_STATUS.version}</strong> (no Dec 4 freeze tag yet). No clinician
+        involvement on this project.
+      </p>
+
       <h2>Ethical considerations</h2>
       <p>
         Incorrect lesion outlines or malignancy scores could cause harm if misused clinically.
         Always show the research disclaimer. Do not collect or upload identifiable patient studies
-        to public demos. Prefer local/browser inference so images need not leave the device.
+        to public demos. Prefer local/browser inference so images need not leave the device. This
+        site uses no analytics or cookies.
       </p>
 
       <h2>Citation</h2>
       <p>
-        Al-Dhabyani et al., Data in Brief 2020. Project: {SITE.githubUrl}
+        Al-Dhabyani et al., Data in Brief 2020. Project: {SITE.githubUrl}. See About → How to cite
+        and <code>CITATION.cff</code> (no DOI yet — Zenodo minting needs owner login).
+      </p>
+
+      <h2 id="how-built">How this was built</h2>
+      <p>
+        Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools
+        (Cursor). High-school research project — not clinician-reviewed and not for clinical use.
       </p>
     </article>
   )

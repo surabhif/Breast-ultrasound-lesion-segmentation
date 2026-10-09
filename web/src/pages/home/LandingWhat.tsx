@@ -56,11 +56,35 @@ export function LandingWhat() {
           </Link>
         </article>
         <article className="landing-card">
+          <span className="landing-card-kicker">Context</span>
+          <h3>BI-RADS</h3>
+          <p>What ultrasound BI-RADS categories mean — and why a model score is not one.</p>
+          <Link className="landing-jumplink" to="/bi-rads">
+            BI-RADS context →
+          </Link>
+        </article>
+        <article className="landing-card">
+          <span className="landing-card-kicker">Context</span>
+          <h3>Surgeon&apos;s view</h3>
+          <p>Size and margins in research framing — not operative planning.</p>
+          <Link className="landing-jumplink" to="/surgeons-view">
+            Surgeon&apos;s view →
+          </Link>
+        </article>
+        <article className="landing-card">
           <span className="landing-card-kicker">Project</span>
-          <h3>About</h3>
-          <p>Background on the project and its educational purpose.</p>
+          <h3>About · write-up · video</h3>
+          <p>Citation, privacy note, captioned walkthrough, and auto-filled PDF report.</p>
           <Link className="landing-jumplink" to="/about">
             About the project →
+          </Link>
+        </article>
+        <article className="landing-card">
+          <span className="landing-card-kicker">Portfolio</span>
+          <h3>Related demos</h3>
+          <p>Lymph-node metastasis detector and pathology report explainer.</p>
+          <Link className="landing-jumplink" to="/portfolio">
+            Open portfolio →
           </Link>
         </article>
       </div>

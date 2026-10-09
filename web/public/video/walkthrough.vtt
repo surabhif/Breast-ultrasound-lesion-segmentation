@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.000
+Research demo · not for clinical use · Surabhi Fadnavis
+
+00:00:04.000 --> 00:00:10.000
+Home — educational tour and in-browser lesion segmentation
+
+00:00:10.000 --> 00:00:17.000
+Demo gallery — BUSI samples and CC BY BrEaST images
+
+00:00:17.000 --> 00:00:29.000
+Mask overlay and benign vs malignant score — fully in the browser
+
+00:00:29.000 --> 00:00:37.000
+Expert compare, threshold sliders, and research measurements
+
+00:00:37.000 --> 00:00:45.000
+Results — Dice, ROC, and calibration from committed JSON
+
+00:00:45.000 --> 00:00:52.000
+External validation on BUS-BRA and BrEaST
+
+00:00:52.000 --> 00:00:58.000
+Mistakes explorer — outline-only silhouettes for hard cases
+
+00:00:58.000 --> 00:01:04.000
+BI-RADS context — a model score is not a BI-RADS category
+
+00:01:04.000 --> 00:01:10.000
+Surgeon's view — imaging size is not pathologic T-stage
+
+00:01:10.000 --> 00:01:15.000
+Portfolio — related oncology-AI student research demos
+
+00:01:15.000 --> 00:01:22.000
+Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).
