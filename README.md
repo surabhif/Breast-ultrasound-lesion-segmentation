@@ -37,7 +37,9 @@ The **full BUSI archive is not committed** (redistribution license is unclear). 
 
 ## Headline results (committed run)
 
-**Phase 2:** served model still **v1.0.0** (inpaint-retrain did not pass the external-Dice swap rule). See Results → “What if we erase the calipers?” and CHANGELOG.
+**Phase 4:** multi-dataset v2 candidates under MODEL_POLICY — see Results → “Phase 4 model candidates vs v1” and `results/v2_experiment.json`. Served model stays **v1.0.0** unless the swap rule + INT8 size gate pass.
+
+**Phase 2:** inpaint-retrain did not pass the external-Dice swap rule. See Results → “What if we erase the calipers?” and CHANGELOG.
 
 
 CPU-trained ResNet-18 U-Net, 160×160, grouped held-out test; val-tuned threshold **0.4** + min-component area **40**. Model **v1.0.0**.
