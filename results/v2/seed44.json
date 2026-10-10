@@ -1,0 +1,654 @@
+{
+  "seed": 44,
+  "model_kind": "resnet34",
+  "img_size": 256,
+  "params_millions": 22.236,
+  "epochs_ran": 14,
+  "runtime_seconds": 3486.8792736530304,
+  "postprocess": {
+    "seg_threshold": 0.55,
+    "min_component_area": 80
+  },
+  "best_val_lesion_dice": 0.8167494876368167,
+  "test_original": {
+    "n": 112,
+    "seg_threshold": 0.55,
+    "min_component_area": 80,
+    "dice_mean": 0.6385336120597077,
+    "dice_ci95": [
+      0.5719549592749918,
+      0.707648029704394
+    ],
+    "iou_mean": 0.5704485007336982,
+    "iou_ci95": [
+      0.5077871762055288,
+      0.6353647403026506
+    ],
+    "lesion_dice_mean": 0.7689867155275587,
+    "lesion_dice_ci95": [
+      0.7129607340777718,
+      0.8261065118166402
+    ],
+    "by_label": {
+      "benign": {
+        "n": 63,
+        "dice_mean": 0.7567962035557119,
+        "dice_ci95": [
+          0.6822078071851558,
+          0.8314212785946675
+        ],
+        "iou_mean": 0.6902165945719368
+      },
+      "malignant": {
+        "n": 30,
+        "dice_mean": 0.7945867906684368,
+        "dice_ci95": [
+          0.7326346065977857,
+          0.8415123125368325
+        ],
+        "iou_mean": 0.6802195539172622
+      },
+      "normal": {
+        "n": 19,
+        "dice_mean": 3.4864780024960403e-10,
+        "dice_ci95": [
+          1.7582937914104343e-10,
+          5.592605575035954e-10
+        ],
+        "iou_mean": 3.4864780024960403e-10
+      }
+    },
+    "classification": {
+      "n": 93,
+      "decision_threshold": 0.5,
+      "roc_auc": 0.9185185185185185,
+      "accuracy": 0.8602150537634409,
+      "sensitivity": 0.8333333333333334,
+      "specificity": 0.873015873015873,
+      "ece": 0.10130371134828337,
+      "confusion_matrix": {
+        "labels": [
+          "benign",
+          "malignant"
+        ],
+        "matrix": [
+          [
+            55,
+            8
+          ],
+          [
+            5,
+            25
+          ]
+        ],
+        "row_means_true": true
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0,
+          "threshold": Infinity
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.03333333333333333,
+          "threshold": 0.9785263538360596
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.06666666666666667,
+          "threshold": 0.9728570580482483
+        },
+        {
+          "fpr": 0.015873015873015872,
+          "tpr": 0.06666666666666667,
+          "threshold": 0.9606713056564331
+        },
+        {
+          "fpr": 0.015873015873015872,
+          "tpr": 0.7333333333333333,
+          "threshold": 0.7672376036643982
+        },
+        {
+          "fpr": 0.047619047619047616,
+          "tpr": 0.7333333333333333,
+          "threshold": 0.7447959780693054
+        },
+        {
+          "fpr": 0.047619047619047616,
+          "tpr": 0.7666666666666667,
+          "threshold": 0.7139619588851929
+        },
+        {
+          "fpr": 0.06349206349206349,
+          "tpr": 0.7666666666666667,
+          "threshold": 0.7092961072921753
+        },
+        {
+          "fpr": 0.06349206349206349,
+          "tpr": 0.8,
+          "threshold": 0.6991850137710571
+        },
+        {
+          "fpr": 0.12698412698412698,
+          "tpr": 0.8,
+          "threshold": 0.5453845262527466
+        },
+        {
+          "fpr": 0.12698412698412698,
+          "tpr": 0.8333333333333334,
+          "threshold": 0.5157644152641296
+        },
+        {
+          "fpr": 0.14285714285714285,
+          "tpr": 0.8333333333333334,
+          "threshold": 0.4795636534690857
+        },
+        {
+          "fpr": 0.14285714285714285,
+          "tpr": 0.8666666666666667,
+          "threshold": 0.4277172386646271
+        },
+        {
+          "fpr": 0.2698412698412698,
+          "tpr": 0.8666666666666667,
+          "threshold": 0.24551372230052948
+        },
+        {
+          "fpr": 0.2698412698412698,
+          "tpr": 0.9,
+          "threshold": 0.20768293738365173
+        },
+        {
+          "fpr": 0.42857142857142855,
+          "tpr": 0.9,
+          "threshold": 0.07186383008956909
+        },
+        {
+          "fpr": 0.42857142857142855,
+          "tpr": 0.9333333333333333,
+          "threshold": 0.05815408006310463
+        },
+        {
+          "fpr": 0.5238095238095238,
+          "tpr": 0.9333333333333333,
+          "threshold": 0.0368567518889904
+        },
+        {
+          "fpr": 0.5238095238095238,
+          "tpr": 1.0,
+          "threshold": 0.035180557519197464
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0,
+          "threshold": 0.002624040236696601
+        }
+      ],
+      "calibration": [
+        {
+          "bin_start": 0.0,
+          "bin_end": 0.1,
+          "center": 0.05,
+          "mean_predicted": 0.02311465204352649,
+          "fraction_positive": 0.07317073170731707,
+          "count": 41
+        },
+        {
+          "bin_start": 0.1,
+          "bin_end": 0.2,
+          "center": 0.15000000000000002,
+          "mean_predicted": 0.1431416468694806,
+          "fraction_positive": 0.0,
+          "count": 8
+        },
+        {
+          "bin_start": 0.2,
+          "bin_end": 0.30000000000000004,
+          "center": 0.25,
+          "mean_predicted": 0.25168656930327415,
+          "fraction_positive": 0.25,
+          "count": 4
+        },
+        {
+          "bin_start": 0.30000000000000004,
+          "bin_end": 0.4,
+          "center": 0.35000000000000003,
+          "mean_predicted": 0.34226634353399277,
+          "fraction_positive": 0.0,
+          "count": 4
+        },
+        {
+          "bin_start": 0.4,
+          "bin_end": 0.5,
+          "center": 0.45,
+          "mean_predicted": 0.4428371588389079,
+          "fraction_positive": 0.3333333333333333,
+          "count": 3
+        },
+        {
+          "bin_start": 0.5,
+          "bin_end": 0.6000000000000001,
+          "center": 0.55,
+          "mean_predicted": 0.5305744707584381,
+          "fraction_positive": 0.5,
+          "count": 2
+        },
+        {
+          "bin_start": 0.6000000000000001,
+          "bin_end": 0.7000000000000001,
+          "center": 0.6500000000000001,
+          "mean_predicted": 0.679129034280777,
+          "fraction_positive": 0.25,
+          "count": 4
+        },
+        {
+          "bin_start": 0.7000000000000001,
+          "bin_end": 0.8,
+          "center": 0.75,
+          "mean_predicted": 0.7574843525886535,
+          "fraction_positive": 0.7,
+          "count": 10
+        },
+        {
+          "bin_start": 0.8,
+          "bin_end": 0.9,
+          "center": 0.8500000000000001,
+          "mean_predicted": 0.8497446656227112,
+          "fraction_positive": 1.0,
+          "count": 10
+        },
+        {
+          "bin_start": 0.9,
+          "bin_end": 1.0,
+          "center": 0.95,
+          "mean_predicted": 0.9520610911505563,
+          "fraction_positive": 0.8571428571428571,
+          "count": 7
+        }
+      ]
+    }
+  },
+  "test_clean_subset": {
+    "n": 55,
+    "seg_threshold": 0.55,
+    "min_component_area": 80,
+    "dice_mean": 0.6151055236242038,
+    "dice_ci95": [
+      0.5155896508498853,
+      0.7144858963594772
+    ],
+    "iou_mean": 0.5434898713408697,
+    "iou_ci95": [
+      0.45075333007944807,
+      0.6398250433261843
+    ],
+    "lesion_dice_mean": 0.735452256403815,
+    "lesion_dice_ci95": [
+      0.646593378529393,
+      0.8172098214674974
+    ],
+    "by_label": {
+      "benign": {
+        "n": 29,
+        "dice_mean": 0.7206772588540179,
+        "dice_ci95": [
+          0.5869954302338056,
+          0.8344106854113988
+        ],
+        "iou_mean": 0.6533263391384042
+      },
+      "malignant": {
+        "n": 17,
+        "dice_mean": 0.760656663988763,
+        "dice_ci95": [
+          0.6571591241999459,
+          0.8417623699496378
+        ],
+        "iou_mean": 0.6438517108222582
+      },
+      "normal": {
+        "n": 9,
+        "dice_mean": 5.284138961467816e-10,
+        "dice_ci95": [
+          2.0851901600751245e-10,
+          8.903579403569773e-10
+        ],
+        "iou_mean": 5.284138961467816e-10
+      }
+    },
+    "classification": {
+      "n": 46,
+      "decision_threshold": 0.5,
+      "roc_auc": 0.9066937119675457,
+      "accuracy": 0.8913043478260869,
+      "sensitivity": 0.8235294117647058,
+      "specificity": 0.9310344827586207,
+      "ece": 0.11935935124916874,
+      "confusion_matrix": {
+        "labels": [
+          "benign",
+          "malignant"
+        ],
+        "matrix": [
+          [
+            27,
+            2
+          ],
+          [
+            3,
+            14
+          ]
+        ],
+        "row_means_true": true
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0,
+          "threshold": Infinity
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.058823529411764705,
+          "threshold": 0.9785263538360596
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.11764705882352941,
+          "threshold": 0.9728570580482483
+        },
+        {
+          "fpr": 0.034482758620689655,
+          "tpr": 0.11764705882352941,
+          "threshold": 0.9606713056564331
+        },
+        {
+          "fpr": 0.034482758620689655,
+          "tpr": 0.8235294117647058,
+          "threshold": 0.7672376036643982
+        },
+        {
+          "fpr": 0.20689655172413793,
+          "tpr": 0.8235294117647058,
+          "threshold": 0.27970629930496216
+        },
+        {
+          "fpr": 0.20689655172413793,
+          "tpr": 0.8823529411764706,
+          "threshold": 0.20768293738365173
+        },
+        {
+          "fpr": 0.41379310344827586,
+          "tpr": 0.8823529411764706,
+          "threshold": 0.07596634328365326
+        },
+        {
+          "fpr": 0.41379310344827586,
+          "tpr": 0.9411764705882353,
+          "threshold": 0.05815408006310463
+        },
+        {
+          "fpr": 0.5517241379310345,
+          "tpr": 0.9411764705882353,
+          "threshold": 0.04044696316123009
+        },
+        {
+          "fpr": 0.5517241379310345,
+          "tpr": 1.0,
+          "threshold": 0.03537781164050102
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0,
+          "threshold": 0.004211876541376114
+        }
+      ],
+      "calibration": [
+        {
+          "bin_start": 0.0,
+          "bin_end": 0.1,
+          "center": 0.05,
+          "mean_predicted": 0.025948457326740025,
+          "fraction_positive": 0.1,
+          "count": 20
+        },
+        {
+          "bin_start": 0.1,
+          "bin_end": 0.2,
+          "center": 0.15000000000000002,
+          "mean_predicted": 0.13805726021528245,
+          "fraction_positive": 0.0,
+          "count": 5
+        },
+        {
+          "bin_start": 0.2,
+          "bin_end": 0.30000000000000004,
+          "center": 0.25,
+          "mean_predicted": 0.24369461834430695,
+          "fraction_positive": 0.5,
+          "count": 2
+        },
+        {
+          "bin_start": 0.30000000000000004,
+          "bin_end": 0.4,
+          "center": 0.35000000000000003,
+          "mean_predicted": 0.36796265840530396,
+          "fraction_positive": 0.0,
+          "count": 2
+        },
+        {
+          "bin_start": 0.4,
+          "bin_end": 0.5,
+          "center": 0.45,
+          "mean_predicted": 0.4795636534690857,
+          "fraction_positive": 0.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.5,
+          "bin_end": 0.6000000000000001,
+          "center": 0.55,
+          "mean_predicted": null,
+          "fraction_positive": null,
+          "count": 0
+        },
+        {
+          "bin_start": 0.6000000000000001,
+          "bin_end": 0.7000000000000001,
+          "center": 0.6500000000000001,
+          "mean_predicted": null,
+          "fraction_positive": null,
+          "count": 0
+        },
+        {
+          "bin_start": 0.7000000000000001,
+          "bin_end": 0.8,
+          "center": 0.75,
+          "mean_predicted": 0.7679375410079956,
+          "fraction_positive": 0.8,
+          "count": 5
+        },
+        {
+          "bin_start": 0.8,
+          "bin_end": 0.9,
+          "center": 0.8500000000000001,
+          "mean_predicted": 0.8594662427902222,
+          "fraction_positive": 1.0,
+          "count": 5
+        },
+        {
+          "bin_start": 0.9,
+          "bin_end": 1.0,
+          "center": 0.95,
+          "mean_predicted": 0.95468869805336,
+          "fraction_positive": 0.8333333333333334,
+          "count": 6
+        }
+      ]
+    }
+  },
+  "external_busbra_heldout": {
+    "n": 469,
+    "n_patients": 266,
+    "dice_mean": 0.8974606745679183,
+    "dice_ci95": [
+      0.8869478166082259,
+      0.9061911007567763
+    ],
+    "lesion_dice_mean": 0.8974606745679183,
+    "lesion_dice_ci95": [
+      0.8869478166082259,
+      0.9061911007567763
+    ],
+    "cls_roc_auc": 0.8985822888843229
+  },
+  "external_breast": {
+    "n": 256,
+    "n_patients": 256,
+    "dice_mean": 0.6689531490850649,
+    "dice_ci95": [
+      0.6288761202174763,
+      0.7056891323442385
+    ],
+    "lesion_dice_mean": 0.6795714530230277,
+    "lesion_dice_ci95": [
+      0.6417016791932152,
+      0.7171283024843992
+    ],
+    "cls_roc_auc": 0.807977736549165
+  },
+  "onnx_fp32_mb": 84.82,
+  "onnx_int8_mb": 21.346,
+  "onnx_int8": "/workspace/export/v2/seed44_int8.onnx",
+  "onnx_sha256": "bb8c4abe80a4d77d4a15f62e2f148067fbc7b8114170d59163fc1f3c178ecfc3",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.1957451364428726,
+      "val_dice": 0.4351193283728396,
+      "val_lesion_dice": 0.5252791887072858,
+      "val_auc": 0.6251851851851852
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.9576714504010898,
+      "val_dice": 0.48641966619333116,
+      "val_lesion_dice": 0.5872093263291565,
+      "val_auc": 0.7025925925925925
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.8377836468293495,
+      "val_dice": 0.5752912450917748,
+      "val_lesion_dice": 0.6674687102347828,
+      "val_auc": 0.7955555555555556
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.7108812055022447,
+      "val_dice": 0.6140218065444144,
+      "val_lesion_dice": 0.7232335321681145,
+      "val_auc": 0.8911111111111111
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6637203925663663,
+      "val_dice": 0.6477369094702392,
+      "val_lesion_dice": 0.7549256383569835,
+      "val_auc": 0.8803703703703704
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6203836556869684,
+      "val_dice": 0.6134187851295707,
+      "val_lesion_dice": 0.7405235783908631,
+      "val_auc": 0.8833333333333334
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.5872229544465075,
+      "val_dice": 0.6545942936379064,
+      "val_lesion_dice": 0.7902309489514893,
+      "val_auc": 0.9222222222222223
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5662542686634457,
+      "val_dice": 0.6475433864558486,
+      "val_lesion_dice": 0.7817190430368285,
+      "val_auc": 0.8999999999999999
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5369252674665648,
+      "val_dice": 0.6600260481747603,
+      "val_lesion_dice": 0.7877791932316812,
+      "val_auc": 0.9277777777777778
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5034588809480373,
+      "val_dice": 0.6763190983507392,
+      "val_lesion_dice": 0.7984392715787582,
+      "val_auc": 0.9196296296296296
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.49753925491546847,
+      "val_dice": 0.6507038023910245,
+      "val_lesion_dice": 0.7855343199382561,
+      "val_auc": 0.8933333333333333
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.4724004019474246,
+      "val_dice": 0.6765611428029462,
+      "val_lesion_dice": 0.8167494876368167,
+      "val_auc": 0.9125925925925926
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.4597955615557346,
+      "val_dice": 0.6663415472237532,
+      "val_lesion_dice": 0.8044123182006933,
+      "val_auc": 0.9103703703703704
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.4431859246541544,
+      "val_dice": 0.6750979442562459,
+      "val_lesion_dice": 0.8149831038009537,
+      "val_auc": 0.9170370370370371
+    }
+  ],
+  "subset_sizes": {
+    "train_total": 1940,
+    "train_busi": 534,
+    "train_busbra": 1406,
+    "val_busi": 134,
+    "test_busi": 112,
+    "test_busbra_heldout": 469,
+    "breast_external": 256
+  },
+  "failures": [],
+  "swap": {
+    "checks": {
+      "clean_dice_ok": false,
+      "busbra_ok": true,
+      "breast_ok": true,
+      "auc_ok": true,
+      "size_ok": true
+    },
+    "swap_ok": false,
+    "v2": {
+      "clean_dice": 0.6151055236242038,
+      "busbra_dice": 0.8974606745679183,
+      "breast_dice": 0.6689531490850649,
+      "auc": 0.9185185185185185,
+      "int8_mb": 21.346,
+      "test_dice": 0.6385336120597077,
+      "lesion_dice": 0.7689867155275587
+    }
+  }
+}

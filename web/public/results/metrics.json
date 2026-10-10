@@ -1073,5 +1073,387 @@
     ],
     "before_after_note": "Demo before/after uses CC BY BrEaST sample with synthetic calipers (digitally altered), not BUSI pixels.",
     "source": "results/inpaint_experiment.json"
+  },
+  "v2_experiment": {
+    "served_unchanged": true,
+    "decision_sentence": "Seed-mean failed at least one fair swap criterion, so the site keeps serving v1.0.0.",
+    "swap_criteria": [
+      {
+        "criterion": "Clean-subset Dice (BUSI) \u2014 seed mean",
+        "rule": "mean \u2265 v1",
+        "v1": 0.623,
+        "v2": 0.614,
+        "v2_sd": 0.012,
+        "delta": -0.0091,
+        "delta_ci95": [
+          -0.0217,
+          0.0021
+        ],
+        "passed": false
+      },
+      {
+        "criterion": "BUS-BRA same-source held-out Dice \u2014 seed mean",
+        "rule": "mean \u2265 v1 on same held-out split",
+        "v1": 0.713,
+        "v2": 0.894,
+        "v2_sd": 0.006,
+        "delta": 0.1813,
+        "delta_ci95": [
+          0.1747,
+          0.1849
+        ],
+        "passed": true,
+        "note": "Not external for v2; v1 baseline is INT8 on the identical held-out IDs."
+      },
+      {
+        "criterion": "External Dice (BrEaST) \u2014 seed mean",
+        "rule": "mean \u2265 v1",
+        "v1": 0.627,
+        "v2": 0.672,
+        "v2_sd": 0.02,
+        "delta": 0.0455,
+        "delta_ci95": [
+          0.0276,
+          0.0664
+        ],
+        "passed": true,
+        "note": "Only truly external test for v2."
+      },
+      {
+        "criterion": "BUSI test AUC \u2014 seed mean",
+        "rule": "mean drop \u2264 0.02",
+        "v1": 0.931,
+        "v2": 0.912,
+        "v2_sd": 0.007,
+        "delta": -0.019,
+        "delta_ci95": [
+          -0.027,
+          -0.0122
+        ],
+        "passed": true
+      },
+      {
+        "criterion": "INT8 ONNX size \u2014 seed mean",
+        "rule": "\u2264 ~25 MB",
+        "v1": 11.664,
+        "v2": 21.346,
+        "v2_sd": 0.0,
+        "passed": true
+      }
+    ],
+    "swap_note": "Seed-mean failed at least one fair swap criterion, so the site keeps serving v1.0.0. mean_checks={'clean_dice_ok': False, 'busbra_heldout_ok': True, 'breast_ok': True, 'auc_ok': True, 'size_ok': True}",
+    "table": [
+      {
+        "name": "v1.0.0 served INT8 (160\u00b2 ResNet-18)",
+        "dice": 0.6972011494235116,
+        "lesion_dice": 0.7643712765714284,
+        "clean_dice": 0.6229383436474434,
+        "busbra_dice": 0.7130324154048149,
+        "busbra_label": "same-source held-out (v1 INT8 on v2 split)",
+        "breast_dice": 0.6265385719593876,
+        "auc": 0.9306878306878307,
+        "int8_mb": 11.664,
+        "busbra_fullset_ref_only": 0.7136202288207832
+      },
+      {
+        "name": "v2 seed 42 (resnet34 256\u00b2)",
+        "dice": 0.6564425680247006,
+        "lesion_dice": 0.7905544904738318,
+        "clean_dice": 0.6250754183023378,
+        "busbra_dice": 0.8979746572634851,
+        "busbra_label": "same-source held-out",
+        "breast_dice": 0.6929121062858388,
+        "auc": 0.9126984126984128,
+        "int8_mb": 21.346,
+        "swap_ok": true,
+        "checks": {
+          "clean_dice_ok": true,
+          "busbra_heldout_ok": true,
+          "breast_ok": true,
+          "auc_ok": true,
+          "size_ok": true
+        }
+      },
+      {
+        "name": "v2 seed 43 (resnet34 256\u00b2)",
+        "dice": 0.6345262333182934,
+        "lesion_dice": 0.7641606250319971,
+        "clean_dice": 0.6012256468751818,
+        "busbra_dice": 0.8877112201935534,
+        "busbra_label": "same-source held-out",
+        "breast_dice": 0.6541272417790442,
+        "auc": 0.9037037037037037,
+        "int8_mb": 21.346,
+        "swap_ok": false,
+        "checks": {
+          "clean_dice_ok": false,
+          "busbra_heldout_ok": true,
+          "breast_ok": true,
+          "auc_ok": false,
+          "size_ok": true
+        }
+      },
+      {
+        "name": "v2 seed 44 (resnet34 256\u00b2)",
+        "dice": 0.6385336120597077,
+        "lesion_dice": 0.7689867155275587,
+        "clean_dice": 0.6151055236242038,
+        "busbra_dice": 0.8974606745679183,
+        "busbra_label": "same-source held-out",
+        "breast_dice": 0.6689531490850649,
+        "auc": 0.9185185185185185,
+        "int8_mb": 21.346,
+        "swap_ok": false,
+        "checks": {
+          "clean_dice_ok": false,
+          "busbra_heldout_ok": true,
+          "breast_ok": true,
+          "auc_ok": true,
+          "size_ok": true
+        }
+      },
+      {
+        "name": "v2 seed mean \u00b1 SD (n=3)",
+        "dice": 0.6431674711342339,
+        "dice_sd": 0.011669872286479557,
+        "lesion_dice": 0.7745672770111293,
+        "lesion_dice_sd": 0.014054039742876459,
+        "clean_dice": 0.6138021962672412,
+        "clean_dice_sd": 0.01197818416670293,
+        "busbra_dice": 0.894382184008319,
+        "busbra_dice_sd": 0.0057829372481697375,
+        "busbra_label": "same-source held-out",
+        "breast_dice": 0.6719974990499825,
+        "breast_dice_sd": 0.019570832346486277,
+        "auc": 0.9116402116402117,
+        "auc_sd": 0.007463881470722708,
+        "int8_mb": 21.346,
+        "swap_ok": false,
+        "checks": {
+          "clean_dice_ok": false,
+          "busbra_heldout_ok": true,
+          "breast_ok": true,
+          "auc_ok": true,
+          "size_ok": true
+        }
+      }
+    ],
+    "seed_summary": {
+      "clean_dice": {
+        "mean": 0.6138021962672412,
+        "sd": 0.01197818416670293,
+        "n": 3,
+        "values": [
+          0.6250754183023378,
+          0.6012256468751818,
+          0.6151055236242038
+        ]
+      },
+      "test_dice": {
+        "mean": 0.6431674711342339,
+        "sd": 0.011669872286479557,
+        "n": 3,
+        "values": [
+          0.6564425680247006,
+          0.6345262333182934,
+          0.6385336120597077
+        ]
+      },
+      "lesion_dice": {
+        "mean": 0.7745672770111293,
+        "sd": 0.014054039742876459,
+        "n": 3,
+        "values": [
+          0.7905544904738318,
+          0.7641606250319971,
+          0.7689867155275587
+        ]
+      },
+      "busbra_heldout": {
+        "mean": 0.894382184008319,
+        "sd": 0.0057829372481697375,
+        "n": 3,
+        "values": [
+          0.8979746572634851,
+          0.8877112201935534,
+          0.8974606745679183
+        ]
+      },
+      "breast": {
+        "mean": 0.6719974990499825,
+        "sd": 0.019570832346486277,
+        "n": 3,
+        "values": [
+          0.6929121062858388,
+          0.6541272417790442,
+          0.6689531490850649
+        ]
+      },
+      "auc": {
+        "mean": 0.9116402116402117,
+        "sd": 0.007463881470722708,
+        "n": 3,
+        "values": [
+          0.9126984126984128,
+          0.9037037037037037,
+          0.9185185185185185
+        ]
+      },
+      "int8_mb": {
+        "mean": 21.346,
+        "sd": 0.0,
+        "n": 3,
+        "values": [
+          21.346,
+          21.346,
+          21.346
+        ]
+      }
+    },
+    "deltas": {
+      "clean_dice": {
+        "v1": 0.6229383436474434,
+        "v2_mean": 0.6138021962672412,
+        "v2_sd": 0.01197818416670293,
+        "mean_delta": -0.009136147380202261,
+        "sd_delta": 0.01197818416670293,
+        "ci95_paired_bootstrap": [
+          -0.02171269677226162,
+          0.002137074654894433
+        ],
+        "per_seed_delta": [
+          0.002137074654894433,
+          -0.02171269677226162,
+          -0.007832820023239595
+        ]
+      },
+      "busbra_heldout": {
+        "v1": 0.7130324154048149,
+        "v2_mean": 0.894382184008319,
+        "v2_sd": 0.0057829372481697375,
+        "mean_delta": 0.18134976860350407,
+        "sd_delta": 0.0057829372481697375,
+        "ci95_paired_bootstrap": [
+          0.17467880478873854,
+          0.18494224185867025
+        ],
+        "per_seed_delta": [
+          0.18494224185867025,
+          0.17467880478873854,
+          0.18442825916310346
+        ]
+      },
+      "breast": {
+        "v1": 0.6265385719593876,
+        "v2_mean": 0.6719974990499825,
+        "v2_sd": 0.019570832346486277,
+        "mean_delta": 0.04545892709059507,
+        "sd_delta": 0.019570832346486277,
+        "ci95_paired_bootstrap": [
+          0.027588669819656686,
+          0.06637353432645121
+        ],
+        "per_seed_delta": [
+          0.06637353432645121,
+          0.027588669819656686,
+          0.04241457712567731
+        ]
+      },
+      "auc": {
+        "v1": 0.9306878306878307,
+        "v2_mean": 0.9116402116402117,
+        "v2_sd": 0.007463881470722708,
+        "mean_delta": -0.019047619047619018,
+        "sd_delta": 0.007463881470722708,
+        "ci95_paired_bootstrap": [
+          -0.026984126984127,
+          -0.012169312169312163
+        ],
+        "per_seed_delta": [
+          -0.01798941798941789,
+          -0.026984126984127,
+          -0.012169312169312163
+        ]
+      },
+      "test_dice": {
+        "v1": 0.6972011494235116,
+        "v2_mean": 0.6431674711342339,
+        "v2_sd": 0.011669872286479557,
+        "mean_delta": -0.05403367828927774,
+        "sd_delta": 0.011669872286479557,
+        "ci95_paired_bootstrap": [
+          -0.06267491610521825,
+          -0.040758581398811056
+        ],
+        "per_seed_delta": [
+          -0.040758581398811056,
+          -0.06267491610521825,
+          -0.05866753736380392
+        ]
+      },
+      "lesion_dice": {
+        "v1": 0.7643712765714284,
+        "v2_mean": 0.7745672770111293,
+        "v2_sd": 0.014054039742876459,
+        "mean_delta": 0.01019600043970074,
+        "sd_delta": 0.01405403974287646,
+        "ci95_paired_bootstrap": [
+          -0.00021065153943133907,
+          0.0261832139024033
+        ],
+        "per_seed_delta": [
+          0.0261832139024033,
+          -0.00021065153943133907,
+          0.004615438956130258
+        ]
+      }
+    },
+    "mean_checks": {
+      "clean_dice_ok": false,
+      "busbra_heldout_ok": true,
+      "breast_ok": true,
+      "auc_ok": true,
+      "size_ok": true
+    },
+    "mean_pass": false,
+    "promoted_seed": null,
+    "promotion_rule": "Promote median-performing passing seed by clean Dice only if seed-mean passes all fair criteria. BUS-BRA is same-source held-out (v1 baseline on identical split). BrEaST is the only truly external test.",
+    "busbra_label": "same-source held-out",
+    "breast_label": "external",
+    "v1_busbra_heldout": {
+      "n": 469,
+      "dice_ci95": [
+        0.6866139919835941,
+        0.7365246810679991
+      ],
+      "source": "results/v2/v1_busbra_heldout.json",
+      "role": "same_source_heldout_baseline"
+    },
+    "config": {
+      "model": "resnet34",
+      "img_size": 256,
+      "epochs": 14,
+      "batch_size": 4,
+      "lr": 0.0006,
+      "cls_weight": 0.25,
+      "patience": 5,
+      "freeze_epochs": 2,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "inpaint": true,
+      "busbra_test_frac": 0.25,
+      "split_seed": 42
+    },
+    "busbra_split": {
+      "train_n": 1406,
+      "test_n": 469,
+      "train_patients": 798,
+      "test_patients": 266
+    },
+    "source": "results/v2_experiment.json",
+    "note": "Phase 4 fair comparison: BUSI train + patient-grouped BUS-BRA train; BUS-BRA held-out is same-source (not external for v2); BrEaST fully external."
   }
 }

@@ -37,7 +37,7 @@ The **full BUSI archive is not committed** (redistribution license is unclear). 
 
 ## Headline results (committed run)
 
-**Phase 4:** multi-dataset v2 candidates under MODEL_POLICY — see Results → “Phase 4 model candidates vs v1” and `results/v2_experiment.json`. Served model stays **v1.0.0** unless the swap rule + INT8 size gate pass.
+**Phase 4:** multi-dataset v2 candidates under the **fair** MODEL_POLICY (BUS-BRA = same-source held-out vs v1 on the identical split; BrEaST external; seed-mean + median passer). Seed-mean clean Dice failed (0.614 vs 0.623) → **served model stays v1.0.0**. See Results → “Phase 4 model candidates vs v1” and `results/v2_experiment.json`.
 
 **Phase 2:** inpaint-retrain did not pass the external-Dice swap rule. See Results → “What if we erase the calipers?” and CHANGELOG.
 

@@ -15,7 +15,7 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 
 ### Model
 
-- Served weights remain **v1.0.0** until a candidate passes the swap rule (see Results → Phase 4 comparison and `results/v2_experiment.json`).
+- Served weights remain **v1.0.0**. Fair Phase-4 swap (D17): seed-mean clean Dice **0.614 ± 0.012** vs v1 **0.623** (Δ −0.009, paired bootstrap 95% CI [−0.022, +0.002]) — **mean fails**, so no promotion. Only seed 42 individually passed; seeds 43/44 failed clean and/or AUC. BUS-BRA same-source held-out improved a lot (v2 mean **0.894** vs v1-on-same-split **0.713**); BrEaST external mean **0.672** vs v1 **0.627**. INT8 ~21.3 MB. See Results → Phase 4 comparison and `results/v2_experiment.json`.
 
 ## [Phase 3] — 2026-10-08
 
