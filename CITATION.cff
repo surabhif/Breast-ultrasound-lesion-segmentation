@@ -1,12 +1,11 @@
 cff-version: 1.2.0
 message: >-
   If you use this research demo or cite the software, please use the metadata
-  below. A Zenodo DOI will be filled in after the owner mints one from a GitHub
-  release (see docs/ZENODO_STEPS.md). Agents must not create tags or releases.
+  below (including the Zenodo DOI). Agents must not create tags or releases.
 type: software
 title: "Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation"
 version: 1.0.0
-date-released: "2026-10-08"
+date-released: "2026-10-10"
 authors:
   - family-names: Fadnavis
     given-names: Surabhi
@@ -25,10 +24,9 @@ keywords:
   - external validation
   - ONNX
   - research demo
-# DOI placeholder — fill after Zenodo mints from a GitHub release (owner-only).
-# identifiers:
-#   - type: doi
-#     value: "10.5281/zenodo.XXXXXXX"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23286597"
 preferred-citation:
   type: software
   title: "Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation"
@@ -38,7 +36,6 @@ preferred-citation:
   year: 2026
   version: "1.0.0"
   url: "https://github.com/surabhif/Breast-ultrasound-lesion-segmentation"
-  # doi: "10.5281/zenodo.XXXXXXX"  # fill after Zenodo mint
+  doi: "10.5281/zenodo.23286597"
   notes: >-
-    DOI will be filled after the repository owner connects Zenodo and creates a
-    GitHub release. Research demo only — not for clinical use.
+    Research demo only — not for clinical use.

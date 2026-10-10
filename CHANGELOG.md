@@ -24,7 +24,7 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 - `/bi-rads` — plain-language BI-RADS ultrasound context (score ≠ category); verified ACR / review citations.
 - `/surgeons-view` — size/margins research framing; BrEaST CC BY examples + BUSI outline silhouettes.
 - `web/public/report.pdf` — 6–10 page research write-up auto-filled from results JSON with figures; CI drift check.
-- `CITATION.cff` + About “How to cite” (Zenodo DOI deferred — needs owner login).
+- `CITATION.cff` + About “How to cite” (Zenodo DOI **10.5281/zenodo.23286597**).
 - Captioned walkthrough `web/public/video/walkthrough.mp4` + poster + VTT; storyboard in `docs/VIDEO_SCRIPT.md`.
 - `/portfolio` — Surabhi Fadnavis: student research in oncology AI (verified sibling links; no invented metrics).
 - Social preview from CC BY BrEaST imagery; privacy note (no analytics/cookies).

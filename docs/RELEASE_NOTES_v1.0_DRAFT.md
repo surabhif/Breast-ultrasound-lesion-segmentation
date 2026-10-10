@@ -64,15 +64,16 @@ First freeze-ready release of the breast ultrasound lesion segmentation research
 - Pages: `/bi-rads`, `/surgeons-view`, `/portfolio`
 - Auto-filled research PDF (`web/public/report.pdf`) + CI drift check
 - Captioned walkthrough video; social preview; accessibility notes
-- `CITATION.cff` (Zenodo DOI deferred to owner login)
+- `CITATION.cff` + Zenodo DOI **10.5281/zenodo.23286597**
 - No analytics / no cookies; no clinician acknowledgements
 
 ---
 
-## Phase 4 prep (this PR / freeze path — not a release yet)
+## Phase 4 prep (freeze path)
 
 - Zenodo metadata (`.zenodo.json`), freeze checklist, preprint LaTeX package under `paper/`
-- Owner still must: mint DOI via release, choose venue, deploy Pages at freeze
+- **DOI minted:** https://doi.org/10.5281/zenodo.23286597 (owner GitHub Release → Zenodo)
+- Owner still must: choose venue, deploy Pages at freeze if not already live
 
 ---
 

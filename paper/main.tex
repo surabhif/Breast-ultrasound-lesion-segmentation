@@ -19,7 +19,8 @@
 an In-Browser Research Demo on BUSI with External Validation}
 \author{Surabhi Fadnavis\\
 \textit{High-school senior, Georgia}\\
-\texttt{https://github.com/surabhif/Breast-ultrasound-lesion-segmentation}}
+\texttt{https://github.com/surabhif/Breast-ultrasound-lesion-segmentation}\\
+DOI: \url{https://doi.org/10.5281/zenodo.23286597}}
 \date{}
 
 \begin{document}
@@ -69,7 +70,7 @@ reporting---not clinical deployment.
 (3)~Pre-registered external validation of frozen model~\MetricModelVersion\ on BUS-BRA and BrEaST.
 (4)~A written MODEL\_POLICY for when a retrained candidate may replace the served model.
 (5)~Open citation/freeze scaffolding (CITATION.cff, Zenodo metadata, number-locked preprint
-sources) so a Dec~4 freeze can mint a DOI without rewriting results.
+sources) with a minted software DOI (\url{https://doi.org/10.5281/zenodo.23286597}).
 
 \section{Related work and positioning}
 
@@ -281,9 +282,9 @@ Project by Surabhi Fadnavis. The code, analysis, text, and video were produced w
 
 Code, metrics JSON, ONNX weights, and the GitHub Pages demo are in
 \url{https://github.com/surabhif/Breast-ultrasound-lesion-segmentation}.
-Citation metadata: \texttt{CITATION.cff}; Zenodo deposit metadata: \texttt{.zenodo.json}. A DOI
-will be filled after the owner connects Zenodo and publishes a GitHub release
-(\texttt{docs/ZENODO\_STEPS.md}; agents must not create tags or releases). Paper numbers:
+Citation metadata: \texttt{CITATION.cff}; Zenodo deposit metadata: \texttt{.zenodo.json}.
+Software DOI: \url{https://doi.org/10.5281/zenodo.23286597}
+(cite as~\cite{fadnavis2026busi}; agents must not create tags or releases). Paper numbers:
 \begin{verbatim}
 python scripts/export_paper_numbers.py
 cd paper && pdflatex main && pdflatex main
@@ -298,6 +299,12 @@ No clinician reviewers. Training used public datasets cited above. Hosting is Gi
 
 \bibliographystyle{plain}
 \begin{thebibliography}{9}
+
+\bibitem{fadnavis2026busi}
+S.~Fadnavis.
+\newblock Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation (Version 1.0.0) [Computer software].
+\newblock Zenodo, 2026.
+\newblock \url{https://doi.org/10.5281/zenodo.23286597}.
 
 \bibitem{aldhabyani2020busi}
 W.~Al-Dhabyani, M.~Gomaa, H.~Khaled, and A.~Fahmy.

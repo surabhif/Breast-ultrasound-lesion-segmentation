@@ -93,4 +93,7 @@ export const SITE = {
   tagline: 'In-browser research demo on the BUSI ultrasound dataset',
   githubUrl: 'https://github.com/surabhif/Breast-ultrasound-lesion-segmentation',
   pagesUrl: 'https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/',
+  /** Zenodo version DOI for the v1.0.0 GitHub Release (record 23286597). */
+  doi: '10.5281/zenodo.23286597',
+  doiUrl: 'https://doi.org/10.5281/zenodo.23286597',
 }

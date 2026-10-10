@@ -7,7 +7,10 @@ End-to-end student research project on the [BUSI](https://doi.org/10.1016/j.dib.
 **Live demo:** [https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/](https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/)  
 *(Requires GitHub Pages enabled for this repo — Settings → Pages → Source: GitHub Actions.)*
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23286597.svg)](https://doi.org/10.5281/zenodo.23286597)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/surabhif/Breast-ultrasound-lesion-segmentation/blob/main/notebooks/01_train_busi.ipynb)
+
+**How to cite:** Fadnavis, S. (2026). Breast Ultrasound Lesion Segmentation (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.23286597 — also `CITATION.cff` / About → How to cite.
 
 ---
 
@@ -154,7 +157,7 @@ ONNX I/O: `input` `[N,3,160,160]` → `seg_mask` `[N,1,160,160]`, `cls_prob` `[N
 | `web/public/report.pdf` | Auto-filled research write-up (site-only venue) |
 | `web/public/video/walkthrough.mp4` | Captioned 60–90s site walkthrough |
 
-Cite with `CITATION.cff` / About → How to cite. A Zenodo DOI is not minted yet (needs owner login). Analytics skipped (no account); About states no cookies / browser-only inference.
+Cite with `CITATION.cff` / About → How to cite ([DOI 10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597)). Analytics skipped (no account); About states no cookies / browser-only inference.
 
 ## How this was built
 
