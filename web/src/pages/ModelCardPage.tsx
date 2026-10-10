@@ -143,7 +143,11 @@ export default function ModelCardPage() {
       <h2>Citation</h2>
       <p>
         Al-Dhabyani et al., Data in Brief 2020. Project: {SITE.githubUrl}. See About → How to cite
-        and <code>CITATION.cff</code> (no DOI yet — Zenodo minting needs owner login).
+        and <code>CITATION.cff</code> (DOI:{' '}
+        <a href={SITE.doiUrl} target="_blank" rel="noreferrer">
+          {SITE.doi}
+        </a>
+        ).
       </p>
 
       <h2 id="how-built">How this was built</h2>

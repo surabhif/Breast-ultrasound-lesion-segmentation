@@ -123,6 +123,6 @@ Personal endorsement click path (from arXiv help):
 - [ ] Read JEI AI policy; confirm JEI is or is not viable  
 - [ ] If arXiv: identify endorser; obtain endorsement for eess.IV or cs.CV  
 - [ ] Rebuild `paper/main.pdf`; pass `scripts/check_paper_numbers_drift.py`  
-- [ ] Zenodo DOI minted or staged (`docs/ZENODO_STEPS.md`)  
+- [x] Zenodo DOI minted: [10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597) (`docs/ZENODO_STEPS.md`)  
 - [ ] Update `docs/DECISION_LOG.md` with venue choice when decided  
 - [ ] **Submit only from the owner’s (or mentor’s) account**

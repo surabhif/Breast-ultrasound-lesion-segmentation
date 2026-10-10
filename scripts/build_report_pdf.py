@@ -115,6 +115,7 @@ def collect_numbers() -> dict[str, str]:
         "MODEL_VERSION": "1.0.0",
         "PAGES_URL": "https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/",
         "GITHUB_URL": "https://github.com/surabhif/Breast-ultrasound-lesion-segmentation",
+        "DOI_URL": "https://doi.org/10.5281/zenodo.23286597",
         "HOW_BUILT": HOW_BUILT,
         "SEG_THR": fmt(int8.get("seg_threshold", 0.4), 1, label="seg_threshold"),
         "MIN_AREA": str(int(int8.get("min_component_area", 40))),
@@ -177,7 +178,7 @@ def collect_numbers() -> dict[str, str]:
         raise SystemExit(f"Bad INT8_NFP {nums['INT8_NFP']!r}")
     forbidden = ("n/a", "None", "TODO", "NaN", "data/external/")
     for k, v in nums.items():
-        if k in ("HOW_BUILT", "PAGES_URL", "GITHUB_URL", "BUSUCLM_SENTENCE"):
+        if k in ("HOW_BUILT", "PAGES_URL", "GITHUB_URL", "DOI_URL", "BUSUCLM_SENTENCE"):
             continue
         for bad in forbidden:
             if bad in v:
@@ -429,6 +430,7 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(P("Author: Surabhi Fadnavis (high-school senior, Georgia)", "Meta"))
     story.append(P(f"Live demo: {nums['PAGES_URL']}", "Meta"))
     story.append(P(f"Repository: {nums['GITHUB_URL']}", "Meta"))
+    story.append(P(f"Software DOI: {nums['DOI_URL']}", "Meta"))
     story.append(Spacer(1, 6))
     story.append(P("Research demo — not for clinical use. Not clinician-reviewed. Not for diagnosis, screening, or care decisions.", "Warn"))
 
@@ -635,6 +637,7 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         "Pawłowska A, et al. BrEaST — Breast Cancer Dataset. TCIA; 2024. CC BY 4.0.",
         "Moran MS, et al. SSO–ASTRO consensus guideline on margins for breast-conserving surgery. 2014.",
         f"Project repository: {nums['GITHUB_URL']}",
+        f"Fadnavis S. Breast Ultrasound Lesion Segmentation (Version 1.0.0). Zenodo; 2026. {nums['DOI_URL']}",
     ]
     for i, r in enumerate(refs, 1):
         story.append(P(f"{i}. {r}", "BulletR"))

@@ -24,10 +24,10 @@ Research demo — not for clinical use. No clinician outreach (D4 revoked).
 
 ## Citation / DOI
 
-- [ ] Zenodo ↔ GitHub connected (toggle **On**) — `docs/ZENODO_STEPS.md`
-- [ ] **DOI minted** via owner-created GitHub Release (not by agent)
-- [ ] `CITATION.cff` and README updated with DOI after mint
-- [ ] `.zenodo.json` present on tagged commit
+- [x] Zenodo ↔ GitHub connected (toggle **On**) — `docs/ZENODO_STEPS.md`
+- [x] **DOI minted** via owner-created GitHub Release (not by agent): [10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597)
+- [x] `CITATION.cff` and README updated with DOI after mint
+- [x] `.zenodo.json` present on tagged commit
 
 ## Preprint / write-up
 
@@ -50,7 +50,7 @@ Research demo — not for clinical use. No clinician outreach (D4 revoked).
 - [ ] `CHANGELOG.md` updated for freeze / Unreleased → v1.0.0 section
 - [ ] Draft release notes promoted from `docs/RELEASE_NOTES_v1.0_DRAFT.md` (remove DRAFT banner)
 - [ ] Owner creates tag + GitHub Release **only after** checklist items above are satisfied
-- [ ] Decision log entry noting freeze date, served model version, DOI (when minted)
+- [ ] Decision log entry noting freeze date, served model version, DOI ([10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597) minted)
 
 ## Explicit non-goals at freeze
 

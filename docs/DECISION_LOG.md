@@ -56,7 +56,7 @@ Do not claim specific tasks Surabhi personally drafted or recorded.
 
 ### D8 — Zenodo DOI
 
-**Decided:** **Deferred.** Minting a DOI needs the owner’s Zenodo login. Note the deferral in cite docs / `CITATION.cff` only — agents cannot complete it.
+**Decided (updated):** **Minted.** Owner published a GitHub Release; Zenodo assigned version DOI **10.5281/zenodo.23286597** (`https://doi.org/10.5281/zenodo.23286597`). Citation files / About / README updated on a follow-up PR. Agents still must not create tags or releases.
 
 ### D9 — Walkthrough video
 

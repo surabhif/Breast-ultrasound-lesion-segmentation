@@ -1,10 +1,12 @@
 import HowBuilt from '../components/HowBuilt'
+import { SITE } from '../lib/constants'
 
 type ProjectCard = {
   title: string
   blurb: string
   repoUrl: string
   liveUrl?: string
+  doiUrl?: string
   /** Verified published metric only — omit rather than invent. */
   metric?: { label: string; value: string; source: string }
 }
@@ -21,6 +23,7 @@ const PROJECTS: ProjectCard[] = [
       'In-browser U-Net on BUSI with external BUS-BRA / BrEaST checks, caliper audits, and honest limitations.',
     repoUrl: 'https://github.com/surabhif/Breast-ultrasound-lesion-segmentation',
     liveUrl: 'https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/',
+    doiUrl: SITE.doiUrl,
     metric: {
       label: 'Served INT8 test Dice (BUSI)',
       value: '0.697',
@@ -82,6 +85,14 @@ export default function PortfolioPage() {
                   {' · '}
                   <a href={p.liveUrl} target="_blank" rel="noreferrer">
                     Live demo
+                  </a>
+                </>
+              )}
+              {p.doiUrl && (
+                <>
+                  {' · '}
+                  <a href={p.doiUrl} target="_blank" rel="noreferrer">
+                    DOI
                   </a>
                 </>
               )}

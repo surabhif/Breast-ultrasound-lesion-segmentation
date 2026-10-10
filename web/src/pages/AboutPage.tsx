@@ -4,7 +4,7 @@ import { SITE } from '../lib/constants'
 
 const BASE = import.meta.env.BASE_URL
 
-const CITE_APA = `Fadnavis, S. (2026). Breast ultrasound lesion segmentation research demo (Version 1.0.0) [Computer software]. GitHub. ${SITE.githubUrl}`
+const CITE_APA = `Fadnavis, S. (2026). Breast ultrasound lesion segmentation research demo (Version 1.0.0) [Computer software]. Zenodo. ${SITE.doiUrl}`
 
 const CITE_BIBTEX = `@software{fadnavis_busi_lesion_seg_2026,
   author  = {Fadnavis, Surabhi},
@@ -12,6 +12,7 @@ const CITE_BIBTEX = `@software{fadnavis_busi_lesion_seg_2026,
   year    = {2026},
   version = {1.0.0},
   url     = {${SITE.githubUrl}},
+  doi     = {${SITE.doi}},
   note    = {Research demo, not for clinical use}
 }`
 
@@ -136,7 +137,13 @@ export default function AboutPage() {
       </p>
 
       <h2 id="cite">How to cite</h2>
-      <p>Suggested citation (no DOI yet):</p>
+      <p>
+        Suggested citation (DOI:{' '}
+        <a href={SITE.doiUrl} target="_blank" rel="noreferrer">
+          {SITE.doi}
+        </a>
+        ):
+      </p>
       <pre className="cite-block" tabIndex={0}>
         {CITE_APA}
       </pre>
@@ -145,8 +152,11 @@ export default function AboutPage() {
         {CITE_BIBTEX}
       </pre>
       <p className="muted tiny">
-        Machine-readable: <code>CITATION.cff</code> in the repository root. A Zenodo DOI is not
-        minted yet — that step needs the owner&apos;s Zenodo login.
+        Machine-readable: <code>CITATION.cff</code> in the repository root. Zenodo version DOI:{' '}
+        <a href={SITE.doiUrl} target="_blank" rel="noreferrer">
+          {SITE.doiUrl}
+        </a>
+        .
       </p>
       <p>
         Dataset: Al-Dhabyani W, Gomaa M, Khaled H, Fahmy A. Dataset of breast ultrasound images.
