@@ -2,13 +2,13 @@
 """Build web/public/report.pdf from results JSON + generated figures.
 
 All numeric placeholders are filled from committed JSON. Uses DejaVu fonts so
-Unicode (e.g. Pawłowska) renders. Reader-facing text omits internal decision codes.
+Unicode (e.g. Pawłowska) renders. Reader-facing text omits internal decision codes
+and file-system paths (source captions under tables are allowed).
 """
 
 from __future__ import annotations
 
 import json
-import math
 import re
 import sys
 from pathlib import Path
@@ -17,11 +17,13 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT_PDF = ROOT / "web" / "public" / "report.pdf"
 FILLED_MD = ROOT / "docs" / "report" / "report.filled.md"
 NUMBERS_JSON = ROOT / "docs" / "report" / "numbers.json"
+PLAIN_ABSTRACT_TS = ROOT / "web" / "src" / "lib" / "plainAbstract.ts"
 FIG_DIR = ROOT / "docs" / "report" / "figures"
 
 FONT_REG = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONT_SERIF = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
+FONT_SERIF_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
 
 HOW_BUILT = (
     "Project by Surabhi Fadnavis. The code, analysis, text, and video were "
@@ -61,6 +63,30 @@ def normal_fp_from_empty_mask_dice(by_label: dict) -> tuple[int, int]:
     return n_fp, n
 
 
+def plain_abstract(nums: dict[str, str]) -> str:
+    """~200–250 word plain-language abstract; no unexplained acronyms."""
+    return (
+        f"Breast ultrasound helps doctors look at breast lumps, especially when mammograms are "
+        f"hard to read in dense tissue. This student project builds a program that outlines those "
+        f"lumps on ultrasound pictures and estimates how well the program tells benign from "
+        f"cancerous lumps. It was trained on one public image collection and checked on three "
+        f"others from different hospitals. "
+        f"The main quality measure is an outline-overlap score (Dice), which is high when the "
+        f"computer outline matches the expert outline. On held-out training-collection images, the "
+        f"browser version reaches {nums['INT8_DICE']} overall and {nums['INT8_LESION_DICE']} on "
+        f"images that contain a lump. On two outside collections, outline scores stay similar "
+        f"({nums['BUSBRA_DICE']} and {nums['BREAST_DICE']}), while telling benign from cancerous "
+        f"gets harder after the hospital and scanner change. On a third outside collection, empty "
+        f"or normal images remain difficult: false outlines pull the all-image score down to "
+        f"{nums['BUSUCLM_DICE']} even though the lesion-only score is {nums['BUSUCLM_LESION_DICE']}. "
+        f"The write-up also studies near-duplicate frames, burned-in measurement marks, and whether "
+        f"outlines stay stable when a picture is flipped. A later mixed-collection retrain improved "
+        f"some outside scores but did not pass a pre-agreed replacement rule, so the site still "
+        f"serves the original model. This is an educational research demonstration, not a medical "
+        f"device, and must not be used for diagnosis or care decisions."
+    )
+
+
 def collect_numbers() -> dict[str, str]:
     full = load(ROOT / "results" / "full_run.json")
     int8 = load(ROOT / "results" / "served_int8_test.json")
@@ -71,8 +97,10 @@ def collect_numbers() -> dict[str, str]:
     inp = load(ROOT / "results" / "inpaint_experiment.json")
     uncert = load(ROOT / "results" / "uncertainty.json")
     meas = load(ROOT / "results" / "measurement_agreement.json")
+    metrics = load(ROOT / "web" / "public" / "results" / "metrics.json")
+    v2 = load(ROOT / "results" / "v2_experiment.json")
+    mistakes = load(ROOT / "web" / "public" / "results" / "mistakes.json")
 
-    # FP32 training checkpoint metrics are nested under metrics.test in full_run.json
     fp32 = full["metrics"]["test"]
     fp32_cls = fp32["classification"]
     fp32_nfp, fp32_nn = normal_fp_from_empty_mask_dice(fp32["by_label"])
@@ -108,16 +136,21 @@ def collect_numbers() -> dict[str, str]:
     busuclm_js = load(ROOT / "results" / "external" / "busuclm.json")
     if "test_dice" in busuclm_js:
         busuclm = (
-            f"**BUS-UCLM** (Vallez et al., 2025; Mendeley CC BY 4.0) is scored for frozen v1.0.0 INT8: "
-            f"n={busuclm_js['n']} / {busuclm_js['n_patients']} patients "
-            f"(43 Doppler/combined frames excluded). All-image Dice **{fmt(busuclm_js['test_dice'])}** "
-            f"[{fmt(busuclm_js['test_dice_bootstrap_95ci'][0])}, {fmt(busuclm_js['test_dice_bootstrap_95ci'][1])}]; "
-            f"lesion Dice **{fmt(busuclm_js['lesion_dice'])}** "
-            f"[{fmt(busuclm_js['lesion_dice_bootstrap_95ci'][0])}, {fmt(busuclm_js['lesion_dice_bootstrap_95ci'][1])}]; "
-            f"AUC **{fmt(busuclm_js['cls_roc_auc'])}**. Normal false positives dominate the all-image figure "
-            f"({busuclm_js['normal_false_positive_count']}/{busuclm_js['normal_n']}) — the same known weakness "
-            f"as on BUSI ({int8.get('normal_false_positive_count')}/{int8.get('normal_n')}). "
-            f"Prefer lesion Dice for cross-dataset comparison (between BrEaST and BUS-BRA)."
+            f"**BUS-UCLM** (Vallez et al., 2025; Mendeley Creative Commons Attribution 4.0) is "
+            f"scored for the frozen served browser model: n={busuclm_js['n']} / "
+            f"{busuclm_js['n_patients']} patients (43 Doppler/combined frames excluded). "
+            f"All-image outline-overlap score **{fmt(busuclm_js['test_dice'])}** "
+            f"[{fmt(busuclm_js['test_dice_bootstrap_95ci'][0])}, "
+            f"{fmt(busuclm_js['test_dice_bootstrap_95ci'][1])}]; "
+            f"lesion outline-overlap score **{fmt(busuclm_js['lesion_dice'])}** "
+            f"[{fmt(busuclm_js['lesion_dice_bootstrap_95ci'][0])}, "
+            f"{fmt(busuclm_js['lesion_dice_bootstrap_95ci'][1])}]; "
+            f"area under the receiver-operating curve (AUC) **{fmt(busuclm_js['cls_roc_auc'])}**. "
+            f"Normal false positives dominate the all-image figure "
+            f"({busuclm_js['normal_false_positive_count']}/{busuclm_js['normal_n']}) — the same "
+            f"known weakness as on BUSI ({int8.get('normal_false_positive_count')}/"
+            f"{int8.get('normal_n')}). Prefer the lesion outline-overlap score for cross-dataset "
+            f"comparison (between BrEaST and BUS-BRA)."
         )
         busuclm_dice = fmt(busuclm_js["test_dice"], label="BUS-UCLM dice")
         busuclm_lesion = fmt(busuclm_js["lesion_dice"], label="BUS-UCLM lesion dice")
@@ -125,14 +158,40 @@ def collect_numbers() -> dict[str, str]:
         busuclm_n = str(busuclm_js["n"])
         busuclm_np = str(busuclm_js["n_patients"])
         busuclm_nfp = f"{busuclm_js['normal_false_positive_count']}/{busuclm_js['normal_n']}"
+        busuclm_benign = fmt(busuclm_js["by_label"]["benign"]["dice_mean"], label="BUS-UCLM benign")
+        busuclm_malig = fmt(
+            busuclm_js["by_label"]["malignant"]["dice_mean"], label="BUS-UCLM malignant"
+        )
     else:
         busuclm = (
             "BUS-UCLM was not included because its Mendeley Data download requires a login "
             "(the request returned HTTP 403)."
         )
         busuclm_dice = busuclm_lesion = busuclm_auc = busuclm_n = busuclm_np = busuclm_nfp = "n/a"
+        busuclm_benign = busuclm_malig = "n/a"
+
+    bl = int8["by_label"]
+    art = metrics.get("model_artifact") or {}
+    served_mb = art.get("served_mb")
+    fp32_mb = art.get("fp32_mb")
+    if served_mb is None or fp32_mb is None:
+        raise SystemExit("Missing model_artifact MB sizes")
+
+    fs = (v2.get("fair_swap") or {}).get("deltas") or {}
+    ss = (v2.get("fair_swap") or {}).get("seed_summary") or {}
+    if not fs or not ss:
+        raise SystemExit("Missing v2 fair_swap deltas/seed_summary")
+
+    err_counts: dict[str, int] = {}
+    for row in mistakes.get("rows") or []:
+        et = row.get("error_type") or "unknown"
+        err_counts[et] = err_counts.get(et, 0) + 1
+    n_mistakes = sum(err_counts.values())
+    if n_mistakes < 1:
+        raise SystemExit("Missing mistakes.json rows")
 
     dc = clean["dataset_counts"]
+    subsets = full.get("subset_sizes") or {}
     nums = {
         "MODEL_VERSION": "1.0.0",
         "PAGES_URL": "https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/",
@@ -142,6 +201,11 @@ def collect_numbers() -> dict[str, str]:
         "SEG_THR": fmt(int8.get("seg_threshold", 0.4), 1, label="seg_threshold"),
         "MIN_AREA": str(int(int8.get("min_component_area", 40))),
         "MODEL_SHA8": str(int8.get("sha256", ""))[:8],
+        "SERVED_MB": fmt(served_mb, 1, label="served_mb"),
+        "FP32_MB": fmt(fp32_mb, 1, label="fp32_mb"),
+        "N_TRAIN": str(subsets.get("train", "")),
+        "N_VAL": str(subsets.get("val", "")),
+        "N_TEST": str(subsets.get("test", "") or int8.get("n")),
         "FP32_DICE": fmt(fp32.get("dice_mean"), label="FP32 dice"),
         "FP32_LESION_DICE": fmt(fp32.get("lesion_dice_mean"), label="FP32 lesion dice"),
         "FP32_IOU": fmt(fp32.get("iou_mean"), label="FP32 iou"),
@@ -158,16 +222,33 @@ def collect_numbers() -> dict[str, str]:
         "INT8_SENS": fmt(int8.get("cls_sensitivity"), label="INT8 sens"),
         "INT8_SPEC": fmt(int8.get("cls_specificity"), label="INT8 spec"),
         "INT8_ECE": fmt(int8.get("cls_ece"), label="INT8 ece"),
+        "INT8_BENIGN_DICE": fmt(bl["benign"]["dice_mean"], label="INT8 benign"),
+        "INT8_MALIG_DICE": fmt(bl["malignant"]["dice_mean"], label="INT8 malignant"),
+        "INT8_BENIGN_N": str(bl["benign"]["n"]),
+        "INT8_MALIG_N": str(bl["malignant"]["n"]),
+        "INT8_NORMAL_N": str(bl["normal"]["n"]),
         "BUSBRA_DICE": fmt(busbra.get("test_dice"), label="BUS-BRA dice"),
         "BUSBRA_LESION_DICE": fmt(busbra.get("lesion_dice"), label="BUS-BRA lesion dice"),
         "BUSBRA_AUC": fmt(busbra.get("cls_roc_auc"), label="BUS-BRA auc"),
         "BUSBRA_N": str(busbra.get("n")),
         "BUSBRA_NP": str(busbra.get("n_patients")),
+        "BUSBRA_BENIGN_DICE": fmt(
+            busbra["by_label"]["benign"]["dice_mean"], label="BUS-BRA benign"
+        ),
+        "BUSBRA_MALIG_DICE": fmt(
+            busbra["by_label"]["malignant"]["dice_mean"], label="BUS-BRA malignant"
+        ),
         "BREAST_DICE": fmt(breast.get("test_dice"), label="BrEaST dice"),
         "BREAST_LESION_DICE": fmt(breast.get("lesion_dice"), label="BrEaST lesion dice"),
         "BREAST_AUC": fmt(breast.get("cls_roc_auc"), label="BrEaST auc"),
         "BREAST_N": str(breast.get("n")),
         "BREAST_NP": str(breast.get("n_patients")),
+        "BREAST_BENIGN_DICE": fmt(
+            breast["by_label"]["benign"]["dice_mean"], label="BrEaST benign"
+        ),
+        "BREAST_MALIG_DICE": fmt(
+            breast["by_label"]["malignant"]["dice_mean"], label="BrEaST malignant"
+        ),
         "BUSUCLM_SENTENCE": busuclm,
         "BUSUCLM_DICE": busuclm_dice,
         "BUSUCLM_LESION_DICE": busuclm_lesion,
@@ -175,9 +256,13 @@ def collect_numbers() -> dict[str, str]:
         "BUSUCLM_N": busuclm_n,
         "BUSUCLM_NP": busuclm_np,
         "BUSUCLM_NFP": busuclm_nfp,
+        "BUSUCLM_BENIGN_DICE": busuclm_benign,
+        "BUSUCLM_MALIG_DICE": busuclm_malig,
         "ANNOTATION_RATE": pct(dc["annotation_rate"], label="annotation_rate"),
         "N_FLAGGED": str(dc["n_annotation_flagged"]),
         "N_TOTAL": str(dc["n_total"]),
+        "N_DUP_GROUPS": str(dc["n_dup_groups"]),
+        "N_MULTI_DUP": str(dc["n_in_multi_member_groups"]),
         "LEAK_EPOCHS": str(leak.get("epochs")),
         "LEAK_SEEDS": ",".join(str(s) for s in leak.get("seeds", [])),
         "LEAK_DELTA": fmt(leak_delta, label="leak_delta"),
@@ -201,6 +286,20 @@ def collect_numbers() -> dict[str, str]:
             meas["longest_diameter_mm"]["t1_t2_20mm_discordance_rate"], label="meas t1t2"
         ),
         "MEAS_AREA_R": fmt(meas["area_px"]["pearson_proxy_for_icc"], label="meas area"),
+        "V2_CLEAN_MEAN": fmt(ss["clean_dice"]["mean"], label="v2 clean mean"),
+        "V2_CLEAN_DELTA": fmt(fs["clean_dice"]["mean_delta"], label="v2 clean delta"),
+        "V2_BUSBRA_MEAN": fmt(ss["busbra_heldout"]["mean"], label="v2 busbra mean"),
+        "V2_BREAST_MEAN": fmt(ss["breast"]["mean"], label="v2 breast mean"),
+        "V2_AUC_MEAN": fmt(ss["auc"]["mean"], label="v2 auc mean"),
+        "V2_INT8_MB": fmt(ss["int8_mb"]["mean"], 1, label="v2 int8 mb"),
+        "V1_CLEAN": fmt(fs["clean_dice"]["v1"], label="v1 clean"),
+        "ERR_N": str(n_mistakes),
+        "ERR_BOUNDARY": str(err_counts.get("boundary_disagreement", 0)),
+        "ERR_FP_NORMAL": str(err_counts.get("false_lesion_on_normal", 0)),
+        "ERR_WRONG_CLS": str(err_counts.get("wrong_class", 0)),
+        "ERR_MISSED": str(err_counts.get("missed_lesion", 0)),
+        "ERR_OVER": str(err_counts.get("over_segmentation", 0)),
+        "ERR_UNDER": str(err_counts.get("under_segmentation", 0)),
     }
     if "None" in nums["INT8_NFP"] or nums["INT8_NFP"].startswith("/"):
         raise SystemExit(f"Bad INT8_NFP {nums['INT8_NFP']!r}")
@@ -216,15 +315,68 @@ def collect_numbers() -> dict[str, str]:
     return nums
 
 
+def write_plain_abstract_ts(nums: dict[str, str]) -> None:
+    """Keep the site About/Results intro in sync with the PDF abstract."""
+    text = plain_abstract(nums)
+    # Escape for a TypeScript template literal
+    esc = text.replace("\\", "\\\\").replace("`", "\\`").replace("${", "\\${")
+    PLAIN_ABSTRACT_TS.parent.mkdir(parents=True, exist_ok=True)
+    PLAIN_ABSTRACT_TS.write_text(
+        "/** Auto-synced plain-language abstract from scripts/build_report_pdf.py — do not edit by hand. */\n"
+        f"export const PLAIN_ABSTRACT = `{esc}`\n"
+        f"export const PLAIN_ABSTRACT_WORD_TARGET = '200-250'\n"
+    )
+
+
 def make_figures() -> dict[str, Path]:
     import matplotlib
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
     import numpy as np
 
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     paths: dict[str, Path] = {}
+
+    # Pipeline diagram
+    fig, ax = plt.subplots(figsize=(7.2, 2.8), dpi=140)
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 3)
+    ax.axis("off")
+    steps = [
+        (0.3, "Public\nultrasound\nimages"),
+        (2.0, "Clean &\ngroup near-\nduplicates"),
+        (3.8, "Train outline\n+ lump-type\nmodel"),
+        (5.6, "Shrink for\nbrowser\n(download)"),
+        (7.4, "Choose\noutline\nthreshold"),
+        (9.0, "Score on\nheld-out &\noutside sets"),
+    ]
+    for x, label in steps:
+        ax.add_patch(
+            mpatches.FancyBboxPatch(
+                (x - 0.55, 0.7),
+                1.2,
+                1.6,
+                boxstyle="round,pad=0.08,rounding_size=0.15",
+                facecolor=(0.87, 0.93, 0.93),
+                edgecolor=TEAL,
+                linewidth=1.4,
+            )
+        )
+        ax.text(x, 1.5, label, ha="center", va="center", fontsize=7.5, color="#0e0e0e")
+    for x0, x1 in [(0.85, 1.45), (2.55, 3.15), (4.35, 4.95), (6.15, 6.75), (7.95, 8.45)]:
+        ax.annotate(
+            "",
+            xy=(x1, 1.5),
+            xytext=(x0, 1.5),
+            arrowprops=dict(arrowstyle="->", color=TEAL, lw=1.3),
+        )
+    ax.set_title("Figure 1. End-to-end pipeline (plain overview)", fontsize=10, color="#0e0e0e", pad=6)
+    fig.tight_layout()
+    paths["pipeline"] = FIG_DIR / "fig_pipeline.png"
+    fig.savefig(paths["pipeline"], bbox_inches="tight")
+    plt.close(fig)
 
     # Dice distribution from per-image INT8
     per = load(ROOT / "results" / "served_int8_per_image.json")
@@ -238,9 +390,9 @@ def make_figures() -> dict[str, Path]:
 
     fig, ax = plt.subplots(figsize=(5.2, 3.2), dpi=140)
     ax.hist(dice_vals, bins=18, color=TEAL, edgecolor="white")
-    ax.set_xlabel("Dice (held-out BUSI test)")
+    ax.set_xlabel("Outline-overlap score (Dice) on held-out BUSI test")
     ax.set_ylabel("Count")
-    ax.set_title("Figure 1. Served INT8 Dice distribution")
+    ax.set_title("Figure 2. Served browser-model Dice distribution")
     ax.axvline(np.mean(dice_vals), color="#c81e4a", linestyle="--", label=f"mean={np.mean(dice_vals):.3f}")
     ax.legend(fontsize=8)
     fig.tight_layout()
@@ -256,22 +408,36 @@ def make_figures() -> dict[str, Path]:
 
     fig, ax = plt.subplots(figsize=(5.2, 3.6), dpi=140)
     if roc:
-        ax.plot([p["fpr"] for p in roc], [p["tpr"] for p in roc], color=TEAL, lw=2, label=f"BUSI INT8 AUC={fmt(metrics.get('served_int8',{}).get('cls_roc_auc') or metrics.get('metrics',{}).get('cls_roc_auc'))}")
-    # external may have roc_curve
+        auc_lab = fmt(
+            metrics.get("served_int8", {}).get("cls_roc_auc")
+            or metrics.get("metrics", {}).get("cls_roc_auc")
+        )
+        ax.plot(
+            [p["fpr"] for p in roc],
+            [p["tpr"] for p in roc],
+            color=TEAL,
+            lw=2,
+            label=f"BUSI served AUC={auc_lab}",
+        )
     for name, blob, color in [
         ("BUS-BRA", busbra, "#0e0e0e"),
         ("BrEaST", breast, "#c45c26"),
     ]:
         er = blob.get("roc_curve") or []
         if er:
-            ax.plot([p["fpr"] for p in er], [p["tpr"] for p in er], color=color, lw=1.6, label=f"{name} AUC={fmt(blob.get('cls_roc_auc'))}")
+            ax.plot(
+                [p["fpr"] for p in er],
+                [p["tpr"] for p in er],
+                color=color,
+                lw=1.6,
+                label=f"{name} AUC={fmt(blob.get('cls_roc_auc'))}",
+            )
         else:
-            # mark AUC as horizontal legend-only note
             ax.plot([], [], color=color, label=f"{name} AUC={fmt(blob.get('cls_roc_auc'))} (curve not stored)")
     ax.plot([0, 1], [0, 1], "k--", lw=0.8, alpha=0.5)
     ax.set_xlabel("False positive rate")
     ax.set_ylabel("True positive rate")
-    ax.set_title("Figure 2. Classification ROC (internal vs external)")
+    ax.set_title("Figure 3. Classification ROC (internal vs external)")
     ax.legend(fontsize=7, loc="lower right")
     fig.tight_layout()
     paths["roc"] = FIG_DIR / "fig_roc.png"
@@ -288,7 +454,7 @@ def make_figures() -> dict[str, Path]:
     ax.plot([0, 1], [0, 1], "k--", lw=0.8, alpha=0.5)
     ax.set_xlabel("Mean predicted P(malignant)")
     ax.set_ylabel("Fraction malignant")
-    ax.set_title("Figure 3. Calibration (BUSI INT8)")
+    ax.set_title("Figure 4. Calibration (BUSI served model)")
     ax.legend(fontsize=8)
     fig.tight_layout()
     paths["cal"] = FIG_DIR / "fig_calibration.png"
@@ -298,15 +464,15 @@ def make_figures() -> dict[str, Path]:
     # Leakage ablation
     leak = load(ROOT / "results" / "leakage_ablation.json")
     fig, ax = plt.subplots(figsize=(5.2, 3.2), dpi=140)
-    modes = {}
+    modes: dict[str, list] = {}
     for r in leak.get("runs") or []:
         modes.setdefault(r["mode"], []).append(r.get("val_dice") or r.get("test_dice"))
     labels = list(modes.keys())
     means = [sum(v) / len(v) for v in modes.values()]
     stds = [float(np.std(v)) if len(v) > 1 else 0 for v in modes.values()]
     ax.bar(labels, means, yerr=stds, color=[TEAL, "#89b2b2"][: len(labels)], edgecolor="white", capsize=4)
-    ax.set_ylabel("Validation Dice")
-    ax.set_title("Figure 4. Leakage ablation (grouped vs random)")
+    ax.set_ylabel("Validation outline-overlap score")
+    ax.set_title("Figure 5. Leakage ablation (grouped vs random)")
     fig.tight_layout()
     paths["leak"] = FIG_DIR / "fig_leakage.png"
     fig.savefig(paths["leak"])
@@ -322,7 +488,7 @@ def make_figures() -> dict[str, Path]:
     axes[1].imshow(plt.imread(after), cmap="gray")
     axes[1].set_title("After Telea inpaint")
     axes[1].axis("off")
-    fig.suptitle("Figure 5. Caliper erase demo (CC BY BrEaST; digitally altered)", fontsize=10)
+    fig.suptitle("Figure 6. Caliper erase demo (CC BY BrEaST; digitally altered)", fontsize=10)
     fig.tight_layout()
     paths["caliper"] = FIG_DIR / "fig_caliper.png"
     fig.savefig(paths["caliper"])
@@ -346,9 +512,9 @@ def make_figures() -> dict[str, Path]:
         ax.scatter(xs, ys, s=14, alpha=0.65, color=TEAL)
     uncert = load(ROOT / "results" / "uncertainty.json")
     rho = uncert["spearman_uncertainty_vs_error"]["rho"]
-    ax.set_xlabel("TTA disagreement")
+    ax.set_xlabel("Test-time augmentation disagreement")
     ax.set_ylabel("1 − Dice")
-    ax.set_title(f"Figure 6. Uncertainty vs error (Spearman ρ={rho:.3f})")
+    ax.set_title(f"Figure 7. Uncertainty vs error (Spearman ρ={rho:.3f})")
     fig.tight_layout()
     paths["uncert"] = FIG_DIR / "fig_uncertainty.png"
     fig.savefig(paths["uncert"])
@@ -364,7 +530,9 @@ def make_figures() -> dict[str, Path]:
         ax.axis("off")
     for ax in axes.ravel()[len(sils) :]:
         ax.axis("off")
-    fig.suptitle("Figure 7. Failure-case outline silhouettes (BUSI; no ultrasound pixels)", fontsize=9)
+    fig.suptitle(
+        "Figure 8. Failure-case outline silhouettes (BUSI; no ultrasound pixels)", fontsize=9
+    )
     fig.tight_layout()
     paths["fail"] = FIG_DIR / "fig_failures.png"
     fig.savefig(paths["fail"])
@@ -374,7 +542,7 @@ def make_figures() -> dict[str, Path]:
 
 
 def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
-    from reportlab.lib.colors import HexColor
+    from reportlab.lib.colors import HexColor, Color
     from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_LEFT
     from reportlab.lib.pagesizes import letter
     from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
@@ -391,56 +559,213 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         Table,
         TableStyle,
         HRFlowable,
-        ListFlowable,
-        ListItem,
+        Flowable,
     )
 
     pdfmetrics.registerFont(TTFont("DejaVu", FONT_REG))
     pdfmetrics.registerFont(TTFont("DejaVu-Bold", FONT_BOLD))
+    if Path(FONT_SERIF).exists():
+        pdfmetrics.registerFont(TTFont("DejaVuSerif", FONT_SERIF))
+        title_font = "DejaVuSerif"
+    else:
+        title_font = "DejaVu-Bold"
+    if Path(FONT_SERIF_BOLD).exists():
+        pdfmetrics.registerFont(TTFont("DejaVuSerif-Bold", FONT_SERIF_BOLD))
+        title_bold = "DejaVuSerif-Bold"
+    else:
+        title_bold = "DejaVu-Bold"
 
     teal = HexColor("#297373")
     ink = HexColor("#0e0e0e")
     muted = HexColor("#5c6b6b")
+    box_bg = HexColor("#e8f2f2")
 
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="TitleTeal", fontName="DejaVu-Bold", fontSize=15, leading=19, textColor=teal, alignment=TA_CENTER, spaceAfter=8))
-    styles.add(ParagraphStyle(name="Meta", fontName="DejaVu", fontSize=9, leading=12, textColor=muted, alignment=TA_CENTER, spaceAfter=4))
-    styles.add(ParagraphStyle(name="H1R", fontName="DejaVu-Bold", fontSize=12, leading=15, textColor=teal, spaceBefore=12, spaceAfter=6))
-    styles.add(ParagraphStyle(name="H2R", fontName="DejaVu-Bold", fontSize=10.5, leading=13, textColor=ink, spaceBefore=9, spaceAfter=4))
-    styles.add(ParagraphStyle(name="BodyR", fontName="DejaVu", fontSize=9.2, leading=12.5, alignment=TA_JUSTIFY, spaceAfter=5))
-    styles.add(ParagraphStyle(name="BulletR", fontName="DejaVu", fontSize=9.2, leading=12.5, leftIndent=12, spaceAfter=2))
-    styles.add(ParagraphStyle(name="Cap", fontName="DejaVu", fontSize=8, leading=10, textColor=muted, alignment=TA_CENTER, spaceAfter=8, spaceBefore=2))
-    styles.add(ParagraphStyle(name="Warn", fontName="DejaVu-Bold", fontSize=9, leading=12, textColor=HexColor("#ffffff"), backColor=teal, borderPadding=6, spaceAfter=10))
-    styles.add(ParagraphStyle(name="Cell", fontName="DejaVu", fontSize=8.2, leading=10.5))
-    styles.add(ParagraphStyle(name="CellB", fontName="DejaVu-Bold", fontSize=8.2, leading=10.5))
+    styles.add(
+        ParagraphStyle(
+            name="TitleTeal",
+            fontName=title_bold,
+            fontSize=16,
+            leading=20,
+            textColor=teal,
+            alignment=TA_CENTER,
+            spaceAfter=8,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="Meta",
+            fontName="DejaVu",
+            fontSize=9,
+            leading=12,
+            textColor=muted,
+            alignment=TA_CENTER,
+            spaceAfter=3,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="H1R",
+            fontName="DejaVu-Bold",
+            fontSize=12,
+            leading=15,
+            textColor=teal,
+            spaceBefore=12,
+            spaceAfter=6,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="H2R",
+            fontName="DejaVu-Bold",
+            fontSize=10.5,
+            leading=13,
+            textColor=ink,
+            spaceBefore=9,
+            spaceAfter=4,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="BodyR",
+            fontName="DejaVu",
+            fontSize=9.5,
+            leading=13.2,
+            alignment=TA_JUSTIFY,
+            spaceAfter=6,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="BulletR",
+            fontName="DejaVu",
+            fontSize=9.2,
+            leading=12.6,
+            leftIndent=12,
+            spaceAfter=3,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="KeyBullet",
+            fontName="DejaVu",
+            fontSize=9.0,
+            leading=12.2,
+            leftIndent=8,
+            spaceAfter=3,
+            textColor=ink,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="KeyTitle",
+            fontName="DejaVu-Bold",
+            fontSize=10.5,
+            leading=13,
+            textColor=teal,
+            spaceAfter=6,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="Cap",
+            fontName="DejaVu",
+            fontSize=8,
+            leading=10.5,
+            textColor=muted,
+            alignment=TA_CENTER,
+            spaceAfter=8,
+            spaceBefore=2,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="Warn",
+            fontName="DejaVu-Bold",
+            fontSize=9,
+            leading=12,
+            textColor=HexColor("#ffffff"),
+            backColor=teal,
+            borderPadding=6,
+            spaceAfter=10,
+            alignment=TA_CENTER,
+        )
+    )
+    styles.add(ParagraphStyle(name="Cell", fontName="DejaVu", fontSize=7.8, leading=10.2))
+    styles.add(ParagraphStyle(name="CellB", fontName="DejaVu-Bold", fontSize=7.8, leading=10.2))
+    styles.add(
+        ParagraphStyle(
+            name="GlossTerm",
+            fontName="DejaVu-Bold",
+            fontSize=9.2,
+            leading=12,
+            textColor=teal,
+            spaceBefore=6,
+            spaceAfter=1,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="GlossDef",
+            fontName="DejaVu",
+            fontSize=8.8,
+            leading=11.8,
+            alignment=TA_JUSTIFY,
+            spaceAfter=2,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="AbstractBody",
+            fontName="DejaVu",
+            fontSize=9.4,
+            leading=13.0,
+            alignment=TA_JUSTIFY,
+            spaceAfter=6,
+            firstLineIndent=0,
+        )
+    )
+    styles.add(
+        ParagraphStyle(
+            name="RefR",
+            fontName="DejaVu",
+            fontSize=8.6,
+            leading=11.4,
+            leftIndent=12,
+            spaceAfter=4,
+        )
+    )
 
     def P(text: str, style="BodyR"):
-        # light markdown
-        html = (
-            text.replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-        )
+        html = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         html = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", html)
         html = re.sub(r"`(.+?)`", r"<font face='DejaVu' size='8'>\1</font>", html)
         return Paragraph(html, styles[style])
 
-    def table(headers, rows):
+    def table(headers, rows, col_widths=None):
         data = [[Paragraph(h, styles["CellB"]) for h in headers]]
         for r in rows:
             data.append([Paragraph(str(c), styles["Cell"]) for c in r])
-        t = Table(data, hAlign="LEFT", colWidths=[1.45 * inch] * len(headers) if len(headers) > 3 else None)
-        if len(headers) <= 4:
-            widths = [1.7 * inch] + [1.2 * inch] * (len(headers) - 1)
-            t = Table(data, hAlign="LEFT", colWidths=widths)
+        n = len(headers)
+        if col_widths is None:
+            if n <= 4:
+                col_widths = [1.55 * inch] + [1.25 * inch] * (n - 1)
+            elif n == 5:
+                col_widths = [1.15 * inch] * 5
+            elif n == 6:
+                col_widths = [1.05 * inch] * 6
+            else:
+                usable = 7.1 * inch
+                col_widths = [usable / n] * n
+        t = Table(data, hAlign="LEFT", colWidths=col_widths)
         t.setStyle(
             TableStyle(
                 [
                     ("BACKGROUND", (0, 0), (-1, 0), HexColor("#dfeaea")),
                     ("GRID", (0, 0), (-1, -1), 0.4, HexColor("#89b2b2")),
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("LEFTPADDING", (0, 0), (-1, -1), 4),
-                    ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 3),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 3),
                     ("TOPPADDING", (0, 0), (-1, -1), 3),
                     ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
                 ]
@@ -448,11 +773,50 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         )
         return t
 
-    def fig(key: str, width=5.6 * inch):
+    def fig(key: str, width=6.0 * inch, aspect=0.58):
         path = figs[key]
-        im = Image(str(path), width=width, height=width * 0.62)
+        im = Image(str(path), width=width, height=width * aspect)
         im.hAlign = "CENTER"
         return im
+
+    def key_findings_box():
+        bullets = [
+            f"On held-out training-collection images, the browser model’s outline-overlap score is "
+            f"**{nums['INT8_DICE']}** overall and **{nums['INT8_LESION_DICE']}** on images that "
+            f"actually contain a lump.",
+            f"On outside hospitals, outline quality stays in a similar ballpark on BUS-BRA "
+            f"(**{nums['BUSBRA_DICE']}**) and BrEaST (**{nums['BREAST_DICE']}**), but how well the "
+            f"program tells benign from cancerous drops (**{nums['BUSBRA_AUC']}** / "
+            f"**{nums['BREAST_AUC']}** vs **{nums['INT8_AUC']}** inside).",
+            f"On BUS-UCLM, normal images without lumps drive many false outlines "
+            f"({nums['BUSUCLM_NFP']}); the lesion-only outline-overlap score "
+            f"**{nums['BUSUCLM_LESION_DICE']}** is the fairer comparison.",
+            f"Near-duplicate frames are common ({nums['N_MULTI_DUP']} images in multi-member "
+            f"groups). A short leakage check did not show random splits inflating validation "
+            f"scores (Δ ≈ **{nums['LEAK_DELTA']}**), but patient IDs are still missing.",
+            f"Erasing measurement marks and a later multi-collection retrain improved some "
+            f"outside scores but did **not** replace the published model under the pre-agreed "
+            f"swap rule (clean-subset score moved by about {nums['V2_CLEAN_DELTA']}).",
+            "This is an educational research demo only — not for diagnosis, screening, or care "
+            "decisions.",
+        ]
+        inner = [P("Key findings in plain English", "KeyTitle")]
+        for b in bullets:
+            inner.append(P("• " + b, "KeyBullet"))
+        box = Table([[inner]], colWidths=[6.9 * inch])
+        box.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), box_bg),
+                    ("BOX", (0, 0), (-1, -1), 1.5, teal),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                    ("TOPPADDING", (0, 0), (-1, -1), 8),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                ]
+            )
+        )
+        return box
 
     story = []
     story.append(P("Breast Ultrasound Lesion Segmentation: Research Write-up", "TitleTeal"))
@@ -462,107 +826,398 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(P(f"Repository: {nums['GITHUB_URL']}", "Meta"))
     story.append(P(f"Software DOI: {nums['DOI_URL']}", "Meta"))
     story.append(Spacer(1, 6))
-    story.append(P("Research demo — not for clinical use. Not clinician-reviewed. Not for diagnosis, screening, or care decisions.", "Warn"))
+    story.append(
+        P(
+            "Research demo — not for clinical use. Not for diagnosis, screening, or care decisions.",
+            "Warn",
+        )
+    )
 
     story.append(P("1. Abstract", "H1R"))
+    abs_text = plain_abstract(nums)
+    story.append(P(abs_text, "AbstractBody"))
+    wc = len(abs_text.split())
+    if not (190 <= wc <= 270):
+        print(f"WARNING: abstract word count {wc} outside ~200–250 band")
+
+    story.append(Spacer(1, 4))
+    story.append(key_findings_box())
+
+    story.append(PageBreak())
+    story.append(P("2. Background: why outlining lumps on ultrasound matters", "H1R"))
     story.append(
         P(
-            f"This high-school research project trains a ResNet-18 U-Net with an auxiliary "
-            f"benign-vs-malignant head on the BUSI breast ultrasound dataset, exports an INT8 ONNX "
-            f"model for fully in-browser inference, and reports honest internal and external metrics. "
-            f"On the held-out BUSI test set the **served INT8** model reaches Dice **{nums['INT8_DICE']}** "
-            f"(lesion-only **{nums['INT8_LESION_DICE']}**) and ROC-AUC **{nums['INT8_AUC']}**. "
-            f"External validation on BUS-BRA and BrEaST keeps segmentation closer to internal Dice "
-            f"(**{nums['BUSBRA_DICE']}** / **{nums['BREAST_DICE']}**) while classification AUC drops "
-            f"(**{nums['BUSBRA_AUC']}** / **{nums['BREAST_AUC']}**). Cleaning, leakage, caliper-inpainting, "
-            f"and TTA uncertainty experiments are included. This write-up is published on the project site only."
+            "Breast ultrasound uses high-frequency sound waves to form a live picture of breast "
+            "tissue. Clinicians often add ultrasound after a mammogram or a physical exam when they "
+            "need a closer look at a mass, especially in dense breasts where X-ray contrast is "
+            "limited (Mendelson et al., ACR BI-RADS Ultrasound, 2013). For a patient, the practical "
+            "questions are simple: Is there a lump? How large is it? Does it look more concerning or "
+            "more reassuring? Those answers influence biopsy decisions and, later, surgical planning."
+        )
+    )
+    story.append(
+        P(
+            "Outlining a lump — drawing its boundary on the image — is the spatial version of that "
+            "conversation. A careful outline supports size estimates, shape descriptors used in "
+            "Breast Imaging Reporting and Data System (BI-RADS) language, and communication among "
+            "radiologists, surgeons, and patients. Automated outlining is attractive for education "
+            "and research because public datasets now include expert masks. It is also easy to "
+            "over-claim: a computer outline is not a surgical margin, an imaging diameter is not "
+            "pathologic tumor stage, and a model score is not a BI-RADS assessment category "
+            "(Moran et al., SSO–ASTRO margin guideline, 2014)."
+        )
+    )
+    story.append(
+        P(
+            "This project asks a narrower, honest question suitable for a student portfolio: can a "
+            "small model outline lesions in the browser, and do the published numbers survive "
+            "outside the training hospital’s pictures? The site pairs the demo with BI-RADS context "
+            "and a surgeon’s-view page so readers see what the numbers do not mean."
+        )
+    )
+    story.append(
+        P(
+            "From a patient’s point of view, an outline is a picture of extent: how much of the "
+            "frame looks abnormal, and whether the edge looks smooth or irregular. Surgeons later "
+            "care about margins in tissue, not pixels, which is why this write-up repeatedly "
+            "separates imaging size from pathologic stage. From a student’s point of view, the "
+            "same outline is a measurable prediction that can be scored, stress-tested on outside "
+            "hospitals, and shipped in a browser so anyone can see the failure modes without "
+            "installing a machine-learning stack."
         )
     )
 
-    story.append(P("2. Introduction", "H1R"))
+    story.append(P("3. Related work", "H1R"))
     story.append(
         P(
-            "Breast ultrasound helps characterize masses, especially in dense breasts. Public datasets "
-            "enable student projects but hide pitfalls: near-duplicate frames, burned-in calipers, and "
-            "missing patient IDs. This project asks whether a small model can outline lesions in the "
-            "browser — and how honest the scores remain under those pitfalls."
+            "U-Net-style encoder–decoder networks remain a default for biomedical segmentation "
+            "(Ronneberger et al., 2015). On the Breast Ultrasound Images (BUSI) dataset, recent "
+            "papers report a wide range of scores depending on whether splits are random, whether "
+            "near-duplicates are removed, and whether normal (no-lesion) images are included. "
+            "UNeXt (Valanarasu & Patel, MICCAI 2022) reports F1 about 0.79 and intersection-over-union "
+            "(IoU) about 0.67 on an 80–20 random split of benign and malignant BUSI frames at 256×256 "
+            "— a useful context number, but not an apples-to-apples match for this project’s grouped "
+            "split and per-image outline-overlap score. Musah et al. (2025) show that BUSI scores "
+            "fall after de-duplication and fall further when a BUSI-trained model is tested on BrEaST "
+            "(reported Dice about 0.49 in their setting). Pawłowska et al. (2023) document roughly "
+            "235 duplicated BUSI images (~19%), which is why this project groups perceptual near-"
+            "duplicates before splitting."
         )
     )
     story.append(
         P(
-            "Related educational pages on the site cover BI-RADS context (a model score is not a BI-RADS "
-            "category) and a surgeon's-view framing of size and margins (imaging size is not pathologic "
-            "T-stage; model outlines are not surgical margins)."
+            f"This work’s served browser model reaches outline-overlap score **{nums['INT8_DICE']}** "
+            f"(lesion-only **{nums['INT8_LESION_DICE']}**) on the grouped held-out BUSI test, and "
+            f"external outline-overlap scores **{nums['BUSBRA_DICE']}** (BUS-BRA), "
+            f"**{nums['BREAST_DICE']}** (BrEaST), and lesion-only **{nums['BUSUCLM_LESION_DICE']}** "
+            f"(BUS-UCLM). Classification area under the curve drops from **{nums['INT8_AUC']}** "
+            f"internally to **{nums['BUSBRA_AUC']}** / **{nums['BREAST_AUC']}** / "
+            f"**{nums['BUSUCLM_AUC']}** externally — the same direction Wang (2026) reports for "
+            f"classification under dataset shift. Published tables are context, not a leaderboard; "
+            f"protocol differences dominate small score gaps. Full row-by-row notes live in the "
+            f"project’s literature-comparison document."
         )
     )
-
-    story.append(P("3. Data", "H1R"))
-    story.append(P("3.1 BUSI (internal)", "H2R"))
     story.append(
         P(
-            f"BUSI (Al-Dhabyani et al., Data in Brief, 2020) provides ~780 PNG ultrasound images labeled "
-            f"benign, malignant, or normal with masks. Multi-mask lesions are OR-merged. BUSI publishes "
-            f"**no patient IDs**; we group perceptual-hash near-duplicates so groups never cross splits. "
-            f"Annotation-flag rate (heuristic): **{nums['ANNOTATION_RATE']}** "
-            f"({nums['N_FLAGGED']} / {nums['N_TOTAL']})."
+            "Positioning matters as much as the table. This is not a claim to beat UNeXt or "
+            "nnU-Net on a public leaderboard. It is a claim that a single frozen browser artifact "
+            "has internal scores, external scores, cleaning experiments, and a written rule for "
+            "when the artifact may change — and that those pieces are visible next to the demo."
         )
     )
-    story.append(P("3.2 External sets", "H2R"))
     story.append(
-        P(
-            f"Primary external sets follow the pre-registered protocol in "
-            f"`docs/EXTERNAL_VALIDATION_PROTOCOL.md`: **BUS-BRA** (Gómez-Flores et al., 2024; Zenodo CC BY 4.0; "
-            f"n={nums['BUSBRA_N']}, patients≈{nums['BUSBRA_NP']}) and **BrEaST** (Pawłowska et al., 2024; "
-            f"TCIA CC BY 4.0; n={nums['BREAST_N']}, patients={nums['BREAST_NP']})."
+        table(
+            ["Paper / setting", "Split & notes", "Reported figure", "How it compares here"],
+            [
+                [
+                    "This work v1.0.0 served",
+                    "BUSI grouped held-out n=112",
+                    f"Outline-overlap {nums['INT8_DICE']}; lesion {nums['INT8_LESION_DICE']}; AUC {nums['INT8_AUC']}",
+                    "Reference row",
+                ],
+                [
+                    "This work external",
+                    "Frozen weights; no retune",
+                    f"BUS-BRA {nums['BUSBRA_DICE']}; BrEaST {nums['BREAST_DICE']}; BUS-UCLM lesion {nums['BUSUCLM_LESION_DICE']}",
+                    "Transfer check",
+                ],
+                [
+                    "Valanarasu & Patel, UNeXt (2022)",
+                    "BUSI B+M; 80–20 random; 256²",
+                    "F1 ≈ 0.79; IoU ≈ 0.67",
+                    "Partly comparable (random split; different aggregation)",
+                ],
+                [
+                    "Musah et al. (2025)",
+                    "BUSI→BrEaST OOD among other settings",
+                    "BUSI→BrEaST Dice ≈ 0.49 in their setting",
+                    "Same OOD direction; different model/resolution",
+                ],
+                [
+                    "Pawłowska et al. (2023)",
+                    "BUSI audit",
+                    "~235 duplicates (~19%)",
+                    "Motivation for near-duplicate grouping",
+                ],
+            ],
+            col_widths=[1.55 * inch, 1.55 * inch, 1.9 * inch, 1.9 * inch],
         )
     )
-    story.append(P(nums["BUSUCLM_SENTENCE"]))
-
-    story.append(P("4. Methods", "H1R"))
     story.append(
         P(
-            f"Architecture: ResNet-18 ImageNet encoder + slim U-Net decoder (160×160) with an auxiliary "
-            f"classification head. Training uses grouped stratified splits, paired augmentations, checkpointing "
-            f"on lesion Dice, and val-tuned segmentation threshold **{nums['SEG_THR']}** with min-component area "
-            f"**{nums['MIN_AREA']}**. The served artifact is INT8 ONNX "
-            f"`models/v{nums['MODEL_VERSION']}/busi_unet.onnx` (sha256 {nums['MODEL_SHA8']}…). "
-            f"The browser runs onnxruntime-web (WASM) in a Web Worker with the same morphology post-process "
-            f"as the Python evaluation. Phase 2 added Telea caliper-inpaint experiments, offline TTA "
-            f"uncertainty, and Demo threshold sliders."
+            "Takeaway: published BUSI scores are easy to misread unless the split and metric "
+            "definition match; this project optimizes for honest transfer reporting, not a "
+            "leaderboard win.",
+            "Cap",
         )
     )
 
     story.append(PageBreak())
-    story.append(P("5. Results", "H1R"))
-    story.append(P("5.1 Internal (BUSI held-out test)", "H2R"))
+    story.append(P("4. Data", "H1R"))
+    story.append(
+        P(
+            f"Four public breast-ultrasound collections are used. BUSI is the training and internal "
+            f"test source. BUS-BRA, BrEaST, and BUS-UCLM are external checks of the frozen served "
+            f"model with no threshold retuning. BUSI provides no patient identifiers; the other three "
+            f"do. Annotation marks (calipers, text overlays) were flagged heuristically on "
+            f"**{nums['ANNOTATION_RATE']}** of BUSI frames ({nums['N_FLAGGED']} / {nums['N_TOTAL']}). "
+            f"Perceptual near-duplicate grouping produced **{nums['N_DUP_GROUPS']}** groups, with "
+            f"**{nums['N_MULTI_DUP']}** images in multi-member groups."
+        )
+    )
     story.append(
         table(
-            ["Metric", "FP32 training", "Served INT8"],
+            ["Dataset", "Images", "Patients", "Source country", "Scanner notes", "License", "Excluded / notes"],
             [
-                ["Dice (all)", nums["FP32_DICE"], nums["INT8_DICE"]],
-                ["Lesion Dice", nums["FP32_LESION_DICE"], nums["INT8_LESION_DICE"]],
-                ["IoU", nums["FP32_IOU"], nums["INT8_IOU"]],
-                ["ROC-AUC", nums["FP32_AUC"], nums["INT8_AUC"]],
+                [
+                    "BUSI (Al-Dhabyani et al., 2020)",
+                    nums["N_TOTAL"],
+                    "Not published",
+                    "Egypt (Baheya / Cairo University collection)",
+                    "Clinical ultrasound archive; device mix not standardized in the release",
+                    "Citation required; full-archive redistribution rights unclear — not redistributed here",
+                    "Multi-mask lesions OR-merged; near-duplicate groups kept intact across splits",
+                ],
+                [
+                    "BUS-BRA (Gómez-Flores et al., 2024)",
+                    nums["BUSBRA_N"],
+                    nums["BUSBRA_NP"],
+                    "Brazil",
+                    "GE Logiq 5/7, Toshiba Aplio 300, U-Systems (device field in release)",
+                    "Creative Commons Attribution 4.0 (Zenodo)",
+                    "No normal class in this release; used as external test of frozen weights",
+                ],
+                [
+                    "BrEaST (Pawłowska et al., 2024)",
+                    nums["BREAST_N"],
+                    nums["BREAST_NP"],
+                    "Poland",
+                    "Clinical scanners with physical pixel size in metadata",
+                    "Creative Commons Attribution 4.0 (TCIA)",
+                    "Freehand tumour masks; few normals; used as external test",
+                ],
+                [
+                    "BUS-UCLM (Vallez et al., 2025)",
+                    nums["BUSUCLM_N"],
+                    nums["BUSUCLM_NP"],
+                    "Spain (Castilla-La Mancha)",
+                    "Siemens ACUSON S2000",
+                    "Creative Commons Attribution 4.0 (Mendeley)",
+                    "43 Doppler/combined frames excluded; images scored locally, not redistributed",
+                ],
+            ],
+            col_widths=[1.15 * inch, 0.7 * inch, 0.75 * inch, 1.05 * inch, 1.2 * inch, 1.05 * inch, 1.2 * inch],
+        )
+    )
+    story.append(
+        P(
+            "Takeaway: four public collections from different countries and scanners; only BUSI "
+            "trains the published model, and BUS-UCLM drops Doppler/combined frames before scoring.",
+            "Cap",
+        )
+    )
+    story.append(
+        P(
+            "Sources: dataset papers cited above; counts from committed results JSON "
+            "(cleaning_experiment.json; external busbra/breast/busuclm.json).",
+            "Cap",
+        )
+    )
+    story.append(P(nums["BUSUCLM_SENTENCE"]))
+    story.append(
+        P(
+            f"Internal split sizes after grouped stratification: train {nums['N_TRAIN']}, "
+            f"validation {nums['N_VAL']}, held-out test {nums['N_TEST']}."
+        )
+    )
+
+    story.append(PageBreak())
+    story.append(P("5. Methods", "H1R"))
+    story.append(P("5.1 Pipeline overview", "H2R"))
+    story.append(
+        P(
+            "Figure 1 summarizes the path from public images to browser scores. Every served number "
+            "on the site is produced by regenerating metrics from committed results files so the "
+            "demo and the write-up cannot silently diverge."
+        )
+    )
+    story.append(fig("pipeline", width=6.8 * inch, aspect=0.42))
+    story.append(
+        P(
+            "Takeaway: images are cleaned and grouped, a compact model is trained, shrunk for "
+            "browser download, thresholded, then scored on held-out and outside sets.",
+            "Cap",
+        )
+    )
+
+    story.append(P("5.2 Preprocessing", "H2R"))
+    story.append(
+        P(
+            "Each image is loaded as red–green–blue, resized to 160×160 with a shared half-pixel-"
+            "center bilinear resize (identical in Python evaluation and in the browser), scaled to "
+            "[0, 1], and normalized with ImageNet channel means and standard deviations. Expert "
+            "masks are resized with nearest-neighbour interpolation and binarized; when a lesion has "
+            "several mask files they are combined with a logical OR so any marked region counts."
+        )
+    )
+
+    story.append(P("5.3 Near-duplicate grouping", "H2R"))
+    story.append(
+        P(
+            "Because BUSI does not publish patient identifiers, near-identical frames can otherwise "
+            "appear in both training and testing. Frames are grouped with a perceptual hash so that "
+            "an entire near-duplicate group stays on one side of each split. That does not prove "
+            "zero leakage — only that the obvious near-copies are not split apart."
+        )
+    )
+
+    story.append(P("5.4 Model, explained intuitively", "H2R"))
+    story.append(
+        P(
+            "The network is a compact encoder–decoder in the U-Net family (Ronneberger et al., 2015) "
+            "with a ResNet-18 ImageNet encoder (He et al., 2016). Intuitively, the encoder compresses "
+            "the ultrasound into a smaller grid of features; the decoder expands those features back "
+            "to a full-size outline map. A second head reads the same compressed features and "
+            "outputs a single score for benign versus malignant. Training uses paired image–mask "
+            "augmentations, stratified grouped splits, and checkpoint selection on lesion "
+            "outline-overlap score on the validation set."
+        )
+    )
+
+    story.append(P("5.5 Shrinking the model for the browser", "H2R"))
+    story.append(
+        P(
+            f"The full-precision training checkpoint is about **{nums['FP32_MB']}** megabytes. For "
+            f"the website it is exported to the Open Neural Network Exchange (ONNX) format and "
+            f"dynamically quantized to 8-bit integer weights (often called INT8), yielding a "
+            f"**{nums['SERVED_MB']}** MB download. The browser runs that artifact with "
+            f"onnxruntime-web (WebAssembly) inside a Web Worker so the page stays responsive. "
+            f"Post-processing matches Python evaluation: probability threshold "
+            f"**{nums['SEG_THR']}** and minimum connected-component area **{nums['MIN_AREA']}** "
+            f"pixels."
+        )
+    )
+
+    story.append(P("5.6 Threshold choice", "H2R"))
+    story.append(
+        P(
+            f"The outline threshold **{nums['SEG_THR']}** and minimum area **{nums['MIN_AREA']}** "
+            f"were chosen on BUSI validation lesion outline-overlap score and then frozen. External "
+            f"sets reuse the same operating point with no retuning — an intentional honesty choice "
+            f"that can look worse than a tuned baseline but answers the transfer question readers "
+            f"actually care about."
+        )
+    )
+
+    story.append(P("5.7 Training details in brief", "H2R"))
+    story.append(
+        P(
+            f"Training uses the grouped BUSI split (train {nums['N_TRAIN']}, validation "
+            f"{nums['N_VAL']}, test {nums['N_TEST']}). The optimization target emphasizes overlap "
+            f"with expert masks; the classification head is trained jointly so the same backbone "
+            f"supports both outlining and the benign-versus-malignant score. Checkpoints are picked "
+            f"by validation lesion outline-overlap score, not by hunting for the best held-out test "
+            f"number after the fact. The served fingerprint (sha256 prefix {nums['MODEL_SHA8']}…) "
+            f"is the artifact evaluated everywhere in this write-up unless a section explicitly "
+            f"names a v2 experiment candidate."
+        )
+    )
+    story.append(
+        P(
+            "Evaluation code paths are shared: the same resize, normalization, threshold, and "
+            "minimum-area filter run in Python metrics and in the browser worker. That parity is "
+            "why the Results page can honestly say the site numbers are the served-model numbers, "
+            "not a prettier training checkpoint left behind in a notebook."
+        )
+    )
+
+    story.append(PageBreak())
+    story.append(P("6. Results", "H1R"))
+    story.append(P("6.1 Internal results (held-out BUSI test)", "H2R"))
+    story.append(
+        P(
+            f"Table 2 compares the full-precision training checkpoint with the served browser model "
+            f"on the same grouped test split (n={nums['N_TEST']}). Overall outline-overlap scores "
+            f"are close (**{nums['FP32_DICE']}** vs **{nums['INT8_DICE']}**); lesion-only scores are "
+            f"**{nums['FP32_LESION_DICE']}** vs **{nums['INT8_LESION_DICE']}**. Per-class served "
+            f"outline-overlap scores: benign **{nums['INT8_BENIGN_DICE']}** (n={nums['INT8_BENIGN_N']}), "
+            f"malignant **{nums['INT8_MALIG_DICE']}** (n={nums['INT8_MALIG_N']}). Normal images remain "
+            f"hard: non-empty predicted masks on **{nums['INT8_NFP']}** normals."
+        )
+    )
+    story.append(
+        table(
+            ["Metric", "Full-precision training", "Served browser model"],
+            [
+                ["Outline-overlap score (all)", nums["FP32_DICE"], nums["INT8_DICE"]],
+                ["Outline-overlap score (lesion-only)", nums["FP32_LESION_DICE"], nums["INT8_LESION_DICE"]],
+                ["Intersection-over-union (IoU)", nums["FP32_IOU"], nums["INT8_IOU"]],
+                ["AUC (benign vs malignant)", nums["FP32_AUC"], nums["INT8_AUC"]],
                 [
                     "Sensitivity / Specificity",
                     f"{nums['FP32_SENS']} / {nums['FP32_SPEC']}",
                     f"{nums['INT8_SENS']} / {nums['INT8_SPEC']}",
                 ],
-                ["ECE", nums["FP32_ECE"], nums["INT8_ECE"]],
-                ["Normal FP masks", nums["FP32_NFP"], nums["INT8_NFP"]],
+                ["Expected calibration error (ECE)", nums["FP32_ECE"], nums["INT8_ECE"]],
+                ["Normal false-positive masks", nums["FP32_NFP"], nums["INT8_NFP"]],
             ],
+        )
+    )
+    story.append(
+        P(
+            "Takeaway: shrinking the model for the browser barely changes outline quality on the "
+            "held-out BUSI test; empty/normal images are still the weak spot.",
+            "Cap",
         )
     )
     story.append(P("Sources: results/full_run.json, results/served_int8_test.json.", "Cap"))
     story.append(fig("dice_hist"))
-    story.append(P("Per-image Dice on the held-out BUSI test set for the served INT8 model.", "Cap"))
+    story.append(
+        P(
+            "Takeaway: most held-out BUSI test cases land at high outline-overlap scores, with a "
+            "long left tail of hard misses and normal false positives.",
+            "Cap",
+        )
+    )
 
-    story.append(P("5.2 External validation", "H2R"))
+    story.append(P("6.2 External validation", "H2R"))
+    story.append(
+        P(
+            f"Frozen served weights were scored without tuning on BUS-BRA (n={nums['BUSBRA_N']}, "
+            f"{nums['BUSBRA_NP']} patients), BrEaST (n={nums['BREAST_N']}, {nums['BREAST_NP']} "
+            f"patients), and BUS-UCLM (n={nums['BUSUCLM_N']}, {nums['BUSUCLM_NP']} patients). "
+            f"Per-class outline-overlap scores: BUS-BRA benign **{nums['BUSBRA_BENIGN_DICE']}** / "
+            f"malignant **{nums['BUSBRA_MALIG_DICE']}**; BrEaST benign **{nums['BREAST_BENIGN_DICE']}** / "
+            f"malignant **{nums['BREAST_MALIG_DICE']}**; BUS-UCLM benign "
+            f"**{nums['BUSUCLM_BENIGN_DICE']}** / malignant **{nums['BUSUCLM_MALIG_DICE']}**."
+        )
+    )
     story.append(
         table(
-            ["Set", "Dice", "Lesion Dice", "AUC"],
+            ["Set", "Outline-overlap", "Lesion-only", "AUC"],
             [
-                ["BUSI internal", nums["INT8_DICE"], nums["INT8_LESION_DICE"], nums["INT8_AUC"]],
+                ["BUSI internal (served)", nums["INT8_DICE"], nums["INT8_LESION_DICE"], nums["INT8_AUC"]],
                 ["BUS-BRA", nums["BUSBRA_DICE"], nums["BUSBRA_LESION_DICE"], nums["BUSBRA_AUC"]],
                 ["BrEaST", nums["BREAST_DICE"], nums["BREAST_LESION_DICE"], nums["BREAST_AUC"]],
                 ["BUS-UCLM", nums["BUSUCLM_DICE"], nums["BUSUCLM_LESION_DICE"], nums["BUSUCLM_AUC"]],
@@ -571,124 +1226,375 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     )
     story.append(
         P(
-            "Sources: results/external/busbra.json, breast.json, busuclm.json. "
-            f"BUS-UCLM normal FPs {nums['BUSUCLM_NFP']} (n={nums['BUSUCLM_N']}, patients={nums['BUSUCLM_NP']}).",
+            "Takeaway: outlines transfer better than lump-type scores; BUS-UCLM’s all-image figure "
+            f"is dragged down by normal false positives ({nums['BUSUCLM_NFP']}).",
+            "Cap",
+        )
+    )
+    story.append(
+        P(
+            "Sources: results/external/busbra.json, breast.json, busuclm.json.",
             "Cap",
         )
     )
     story.append(fig("roc"))
-    story.append(P("Classification ROC on BUSI versus external sets (when curves are stored).", "Cap"))
+    story.append(
+        P(
+            "Takeaway: the curve that separates benign from malignant looks strong on BUSI and "
+            "weaker once the hospital and scanner change.",
+            "Cap",
+        )
+    )
     story.append(fig("cal"))
-    story.append(P(f"Reliability diagram for the served INT8 classifier (ECE {nums['INT8_ECE']}).", "Cap"))
-
-    story.append(PageBreak())
-    story.append(P("5.3 Leakage ablation", "H2R"))
     story.append(
         P(
-            f"Short schedule ({nums['LEAK_EPOCHS']} epochs × seeds {nums['LEAK_SEEDS']}), same grouped test: "
-            f"random vs grouped splits did not inflate validation Dice on this run "
-            f"(mean Δ val Dice random−grouped ≈ **{nums['LEAK_DELTA']}**). Residual leakage risk remains "
-            f"because patient IDs are absent. Source: results/leakage_ablation.json."
-        )
-    )
-    story.append(fig("leak"))
-    story.append(P("Grouped versus random split validation Dice under the short ablation schedule.", "Cap"))
-
-    story.append(P("5.4 Caliper / inpaint experiment", "H2R"))
-    story.append(
-        P(
-            f"Flagged vs clean Dice gap on the original test: flagged **{nums['EA_FLAGGED']}** vs clean "
-            f"**{nums['EA_CLEAN']}**. Erasing markers (E-a) moved overall Dice from {nums['EA_ORIG_DICE']} to "
-            f"{nums['EA_INP_DICE']} and did **not** collapse flagged Dice toward clean. The best E-c retrain "
-            f"seed did **not** replace served v1.0.0 under the pre-registered swap rule: external Dice was "
-            f"BUS-BRA {nums['EC_BUSBRA']} (vs v1 {nums['BUSBRA_DICE']}) and BrEaST {nums['EC_BREAST']} "
-            f"(vs v1 {nums['BREAST_DICE']}); clean Dice {nums['EC_CLEAN']}; AUC {nums['EC_AUC']}. "
-            f"Source: results/inpaint_experiment.json."
-        )
-    )
-    story.append(fig("caliper", width=5.8 * inch))
-    story.append(P("Illustrative CC BY BrEaST frame with synthetic calipers removed by Telea inpainting.", "Cap"))
-
-    story.append(P("5.5 Uncertainty (TTA)", "H2R"))
-    story.append(
-        P(
-            f"Spearman ρ between TTA disagreement and 1−Dice ≈ **{nums['UNCERT_RHO']}** on BUSI test "
-            f"(n={nums['UNCERT_N']}). Risk–coverage at 80% keep ≈ Dice **{nums['UNCERT_COV80']}**. "
-            f"Interpretation: agreement under flips — not a calibrated error probability. "
-            f"Source: results/uncertainty.json."
-        )
-    )
-    story.append(fig("uncert"))
-    story.append(P("Offline TTA disagreement versus segmentation error on the BUSI test set.", "Cap"))
-
-    story.append(PageBreak())
-    story.append(P("5.6 Measurement agreement (BrEaST)", "H2R"))
-    story.append(
-        P(
-            f"Model vs expert longest diameter (mm) Pearson proxy ≈ **{nums['MEAS_DIAM_R']}** "
-            f"(n={nums['MEAS_N']}); area Pearson proxy ≈ **{nums['MEAS_AREA_R']}**; ≥20 mm threshold "
-            f"discordance ≈ **{nums['MEAS_T1T2']}**. Research only — not pathologic T-stage. "
-            f"Source: results/measurement_agreement.json."
-        )
-    )
-
-    story.append(P("5.7 Failure cases", "H2R"))
-    story.append(
-        P(
-            "Hard cases from the held-out test are published as outline-only silhouettes on the Model Errors "
-            "explorer (BUSI ultrasound pixels withheld on new visuals). The grid below samples those outlines."
-        )
-    )
-    story.append(fig("fail", width=5.8 * inch))
-    story.append(P("Outline-only silhouettes for selected BUSI model-error cases.", "Cap"))
-
-    story.append(P("6. Limitations", "H1R"))
-    for bullet in [
-        "No patient IDs → residual near-duplicate / patient leakage risk",
-        "Domain shift: classification AUC drops sharply on externals",
-        "Calipers / HUD may still act as shortcuts",
-        f"160² resolution loses fine detail; normal-image false positives ({nums['INT8_NFP']})",
-        "Not clinically validated; no clinician review on this project",
-        "A model score is not a BI-RADS category; imaging size is not surgical staging",
-    ]:
-        story.append(P("• " + bullet, "BulletR"))
-
-    story.append(P("7. Ethics and licensing", "H1R"))
-    story.append(
-        P(
-            "Code is MIT. Full BUSI is not redistributed (license unclear); cite Al-Dhabyani et al. 2020. "
-            "External demo imagery uses CC BY sets with attribution. Site social preview uses CC BY external "
-            "pixels (not BUSI). Research demo only. This site uses no analytics or cookies; Demo images are "
-            "processed in the browser only."
-        )
-    )
-
-    story.append(P("8. AI-assistance statement", "H1R"))
-    story.append(P(nums["HOW_BUILT"]))
-
-    story.append(P("9. References", "H1R"))
-    refs = [
-        "Al-Dhabyani W, et al. Dataset of breast ultrasound images. Data in Brief. 2020;28:104863.",
-        "Mendelson EB, et al. ACR BI-RADS® Ultrasound. In: ACR BI-RADS® Atlas. Reston, VA: ACR; 2013.",
-        "Gómez-Flores W, et al. BUS-BRA breast ultrasound dataset. Zenodo; 2024. CC BY 4.0.",
-        "Pawłowska A, et al. BrEaST — Breast Cancer Dataset. TCIA; 2024. CC BY 4.0.",
-        "Moran MS, et al. SSO–ASTRO consensus guideline on margins for breast-conserving surgery. 2014.",
-        f"Project repository: {nums['GITHUB_URL']}",
-        f"Fadnavis S. Breast Ultrasound Lesion Segmentation (Version 1.0.0). Zenodo; 2026. {nums['DOI_URL']}",
-    ]
-    for i, r in enumerate(refs, 1):
-        story.append(P(f"{i}. {r}", "BulletR"))
-
-    story.append(Spacer(1, 10))
-    story.append(
-        P(
-            "Numbers in this PDF are auto-filled from committed results JSON by scripts/build_report_pdf.py. "
-            "A CI check fails if PDF figures drift from those JSON files.",
+            f"Takeaway: predicted cancer probabilities are only roughly aligned with observed rates "
+            f"(ECE {nums['INT8_ECE']}) — confidence should be read cautiously.",
             "Cap",
         )
     )
 
-    # Also write a filled markdown snapshot for humans
+    story.append(PageBreak())
+    story.append(P("6.3 Leakage ablation", "H2R"))
+    story.append(
+        P(
+            f"A short schedule ({nums['LEAK_EPOCHS']} epochs × seeds {nums['LEAK_SEEDS']}) trained "
+            f"under grouped versus random splits and evaluated on the same grouped held-out test. "
+            f"Mean validation outline-overlap score did not rise under random splits "
+            f"(Δ random−grouped ≈ **{nums['LEAK_DELTA']}**). Residual leakage risk remains because "
+            f"patient identifiers are absent and near-duplicates are documented in the literature."
+        )
+    )
+    story.append(fig("leak"))
+    story.append(
+        P(
+            "Takeaway: on this short check, random splits did not inflate validation scores versus "
+            "grouped splits — leakage risk remains for other reasons.",
+            "Cap",
+        )
+    )
+    story.append(P("Source: results/leakage_ablation.json.", "Cap"))
+
+    story.append(P("6.4 Caliper-mark experiments", "H2R"))
+    story.append(
+        P(
+            f"Images with burned-in measurement marks often look easier: flagged-frame "
+            f"outline-overlap score **{nums['EA_FLAGGED']}** versus clean **{nums['EA_CLEAN']}**. "
+            f"Erasing markers on the original test (experiment E-a) moved overall score from "
+            f"{nums['EA_ORIG_DICE']} to {nums['EA_INP_DICE']} and did **not** collapse the "
+            f"flagged–clean gap. Retraining with inpainting (E-c) produced external scores "
+            f"BUS-BRA {nums['EC_BUSBRA']} and BrEaST {nums['EC_BREAST']} with clean-subset "
+            f"{nums['EC_CLEAN']} and AUC {nums['EC_AUC']} — not enough, under the pre-registered "
+            f"swap rule, to replace served v{nums['MODEL_VERSION']}."
+        )
+    )
+    story.append(fig("caliper", width=5.8 * inch, aspect=0.52))
+    story.append(
+        P(
+            "Takeaway: measurement marks can act as shortcuts; simply erasing them on test images "
+            "does not automatically make hard clean cases easy.",
+            "Cap",
+        )
+    )
+
+    story.append(P("6.5 Uncertainty analysis", "H2R"))
+    story.append(
+        P(
+            f"Test-time augmentation (TTA) flips and mild transforms are run offline; disagreement "
+            f"across those views is treated as an uncertainty signal. Spearman correlation between "
+            f"disagreement and 1−Dice is **{nums['UNCERT_RHO']}** on the BUSI test "
+            f"(n={nums['UNCERT_N']}). Keeping the most certain 80% of cases raises mean "
+            f"outline-overlap score to **{nums['UNCERT_COV80']}**. Interpretation: agreement under "
+            f"flips — not a calibrated probability of being wrong."
+        )
+    )
+    story.append(fig("uncert"))
+    story.append(
+        P(
+            "Takeaway: when the outline stays stable under flips, errors are less common — useful "
+            "as a research triage signal, not as a clinical confidence meter.",
+            "Cap",
+        )
+    )
+
+    story.append(P("6.6 Measurement agreement (BrEaST)", "H2R"))
+    story.append(
+        P(
+            f"On BrEaST, model versus expert longest diameter (mm) shows Pearson correlation proxy "
+            f"**{nums['MEAS_DIAM_R']}** (n={nums['MEAS_N']}); area correlation proxy "
+            f"**{nums['MEAS_AREA_R']}**; disagreement at a 20 mm threshold occurs on about "
+            f"**{nums['MEAS_T1T2']}** of cases. Research only — imaging size is not pathologic "
+            f"T-stage."
+        )
+    )
+
+    story.append(PageBreak())
+    story.append(P("6.7 Version-2 retrain and swap-rule outcome", "H2R"))
+    story.append(
+        P(
+            f"A later candidate trained on BUSI plus patient-grouped BUS-BRA (larger backbone, "
+            f"256×256, stronger augmentation) was compared with served v{nums['MODEL_VERSION']} "
+            f"under a pre-registered fair swap rule. Seed-mean clean-subset outline-overlap score "
+            f"was **{nums['V2_CLEAN_MEAN']}** versus v1 **{nums['V1_CLEAN']}** "
+            f"(Δ **{nums['V2_CLEAN_DELTA']}**). Same-source BUS-BRA held-out rose to "
+            f"**{nums['V2_BUSBRA_MEAN']}**, and truly external BrEaST to **{nums['V2_BREAST_MEAN']}**, "
+            f"with AUC **{nums['V2_AUC_MEAN']}** and packaged size about **{nums['V2_INT8_MB']}** MB. "
+            f"Because the seed-mean clean-subset rule failed, the site keeps serving "
+            f"v{nums['MODEL_VERSION']} and publishes the comparison as an experiment."
+        )
+    )
+    story.append(
+        P(
+            "Takeaway: better scores on a mixed-training held-out set are not enough; the published "
+            "model only changes when every pre-agreed gate passes on the seed mean.",
+            "Cap",
+        )
+    )
+    story.append(P("Source: results/v2_experiment.json.", "Cap"))
+
+    story.append(P("7. Error analysis", "H1R"))
+    story.append(
+        P(
+            f"The Model Errors explorer on the site lists **{nums['ERR_N']}** hard held-out BUSI "
+            f"cases as outline-only silhouettes (BUSI ultrasound pixels withheld because "
+            f"redistribution rights are unclear). Category counts: boundary disagreement "
+            f"**{nums['ERR_BOUNDARY']}**, false lesion on normal **{nums['ERR_FP_NORMAL']}**, "
+            f"wrong class **{nums['ERR_WRONG_CLS']}**, missed lesion **{nums['ERR_MISSED']}**, "
+            f"over-segmentation **{nums['ERR_OVER']}**, under-segmentation **{nums['ERR_UNDER']}**. "
+            f"Boundary disagreements dominate; normal false outlines remain the most clinically "
+            f"intuitive failure mode for a triage-style demo."
+        )
+    )
+    story.append(fig("fail", width=5.8 * inch, aspect=0.70))
+    story.append(
+        P(
+            "Takeaway: silhouette cards make misses visible without redistributing BUSI pixels — "
+            "most hard cases are boundary fights, not total collapses.",
+            "Cap",
+        )
+    )
+
+    story.append(P("8. Discussion: what the numbers mean in practice", "H1R"))
+    story.append(
+        P(
+            f"An outline-overlap score near **{nums['INT8_DICE']}** on held-out BUSI means that, on "
+            f"average, the computer outline and the expert outline share most of their area — useful "
+            f"for a demo and for learning what segmentation metrics feel like, not for claiming "
+            f"radiologist parity. External outline scores in the 0.63–0.71 range suggest the spatial "
+            f"task transfers better than the lump-type score, which falls when scanners and labeling "
+            f"habits change. That pattern matches the broader literature on dataset shift."
+        )
+    )
+    story.append(
+        P(
+            f"Normal false positives ({nums['INT8_NFP']} on BUSI; {nums['BUSUCLM_NFP']} on BUS-UCLM) "
+            f"are the practical warning label: a browser demo that “finds” a lump on a healthy-looking "
+            f"frame can mislead a casual reader faster than a slightly jagged outline on a true mass. "
+            f"Calibration (ECE {nums['INT8_ECE']}) is imperfect, so verbal confidence cues are "
+            f"intentionally subdued on the site."
+        )
+    )
+    story.append(
+        P(
+            f"Readers comparing this project with published BUSI leaderboards should weight "
+            f"protocol first. Many papers use random splits on a dataset with documented "
+            f"near-duplicates; this project uses grouped splits, reports the served browser artifact "
+            f"({nums['SERVED_MB']} MB), and publishes external numbers without retuning. A higher "
+            f"in-domain score under a leakier split is not a stronger scientific claim than a "
+            f"slightly lower score under a stricter one."
+        )
+    )
+    story.append(
+        P(
+            f"The failed v2 swap is part of the result, not an embarrassment to hide. Same-source "
+            f"BUS-BRA held-out rose to about {nums['V2_BUSBRA_MEAN']}, and BrEaST to about "
+            f"{nums['V2_BREAST_MEAN']}, yet the clean-subset gate (v2 mean {nums['V2_CLEAN_MEAN']} "
+            f"vs v1 {nums['V1_CLEAN']}) blocked promotion. Pre-registering that rule before seeing "
+            f"the seed mean is how a student project stays honest when a larger model looks "
+            f"tempting on a chart."
+        )
+    )
+    story.append(
+        P(
+            "For admissions readers and scientifically literate parents, the portfolio claim is "
+            "process honesty: grouped splits, frozen external tests, a written swap rule that "
+            "refused a flashy upgrade, and a downloadable write-up whose figures are locked to "
+            "committed JSON."
+        )
+    )
+
+    story.append(P("9. Limitations", "H1R"))
+    story.append(
+        P(
+            "Several constraints bound how far these numbers should travel outside a research demo:"
+        )
+    )
+    for bullet in [
+        "No patient identifiers on BUSI → residual near-duplicate / patient-leakage risk despite perceptual grouping.",
+        f"Domain shift: classification AUC drops from {nums['INT8_AUC']} internally to as low as {nums['BUSBRA_AUC']} on BUS-BRA.",
+        "Calipers and on-screen text may still act as shortcuts on annotated frames.",
+        f"160×160 resolution loses fine boundary detail; normal-image false positives remain ({nums['INT8_NFP']}).",
+        "Single-author student project without clinical validation; not a medical device.",
+        "A model score is not a BI-RADS category; imaging size is not surgical staging.",
+        "External BUS-UCLM images were scored locally and are not redistributed with the site.",
+    ]:
+        story.append(P("• " + bullet, "BulletR"))
+
+    story.append(P("10. Ethics and responsible use", "H1R"))
+    story.append(
+        P(
+            "Code is released under the MIT license. The full BUSI archive is not redistributed "
+            "(redistribution rights are unclear); users must obtain it themselves and cite "
+            "Al-Dhabyani et al. (2020). External demo imagery uses Creative Commons Attribution "
+            "collections with credit. The site uses no analytics or cookies; Demo images are "
+            "processed in the browser only and are not uploaded to a server. This write-up and the "
+            "live demo are educational research materials. They must not be used for diagnosis, "
+            "triage, screening, or any care decision. No clinician reviewed this project for "
+            "clinical deployment, and none is claimed."
+        )
+    )
+
+    story.append(P("11. Future work", "H1R"))
+    story.append(
+        P(
+            "Natural next steps, if pursued, include stronger normal-vs-lesion rejection, "
+            "patient-level collections with clearer licenses, higher-resolution models that still "
+            "fit a browser budget, and uncertainty displays that a non-specialist can interpret "
+            "without over-trust. Any promoted weight file would need a new version number and a "
+            "fresh pass of the written swap rule."
+        )
+    )
+    story.append(
+        P(
+            "A second thread of future work is communication: shorter silhouette cards that teach "
+            "error types, clearer captions for parents who are not engineers, and printable "
+            "one-pagers that keep the same locked numbers as this PDF. None of those changes "
+            "should quietly retune thresholds on external data."
+        )
+    )
+
+    story.append(P("12. Reproducibility", "H1R"))
+    story.append(
+        P(
+            f"Software version {nums['MODEL_VERSION']} is archived with DOI {nums['DOI_URL']}. "
+            f"To regenerate this PDF: install Python dependencies (reportlab, pypdf, matplotlib), "
+            f"run the report builder script from the repository root, then run the drift check so "
+            f"every locked number still appears in the PDF text. Paper metrics are exported from the "
+            f"same results JSON into LaTeX macros. Served artifact fingerprint (sha256 prefix): "
+            f"{nums['MODEL_SHA8']}… · packaged size {nums['SERVED_MB']} MB. Typical software stack "
+            f"for regeneration: Python 3.10+, Node.js 20+ for the web app, onnxruntime / "
+            f"onnxruntime-web for model execution. Exact pinned versions live in the repository "
+            f"lockfiles on the tagged release."
+        )
+    )
+
+    story.append(P("13. AI-use disclosure", "H1R"))
+    story.append(P(nums["HOW_BUILT"]))
+
+    story.append(PageBreak())
+    story.append(P("14. Glossary", "H1R"))
+    glossary = [
+        (
+            "Outline-overlap score (Dice)",
+            "A number from 0 to 1 describing how much the computer outline and the expert outline "
+            "overlap. Twice the shared area divided by the sum of both areas; 1 is a perfect match.",
+        ),
+        (
+            "Intersection-over-union (IoU)",
+            "Shared outline area divided by the area of either outline. Related to Dice; usually a "
+            "little lower than Dice for the same pair of outlines.",
+        ),
+        (
+            "Area under the curve (AUC)",
+            "A summary of how well a score ranks cancerous cases above benign ones across all "
+            "thresholds. 0.5 is chance; 1.0 is perfect ranking.",
+        ),
+        (
+            "Sensitivity / Specificity",
+            "Sensitivity is the share of truly cancerous cases the score catches at a chosen "
+            "threshold; specificity is the share of truly benign cases it correctly leaves below "
+            "that threshold.",
+        ),
+        (
+            "Calibration / expected calibration error (ECE)",
+            "Whether a predicted probability (for example “70% malignant”) matches how often such "
+            "cases are actually malignant. ECE summarizes the mismatch across probability bins.",
+        ),
+        (
+            "BI-RADS",
+            "Breast Imaging Reporting and Data System — a standard lexicon and assessment "
+            "categories radiologists use. A model score is not a BI-RADS category.",
+        ),
+        (
+            "U-Net",
+            "A widely used neural-network shape for image outlining: a compressing path, an "
+            "expanding path, and skip connections that preserve spatial detail.",
+        ),
+        (
+            "ONNX",
+            "Open Neural Network Exchange — a portable file format for trained models so the same "
+            "weights can run in Python and in the browser.",
+        ),
+        (
+            "Quantization (INT8)",
+            "Storing weights with 8-bit integers instead of 32-bit floats to shrink download size "
+            "and speed inference, with small metric changes when done carefully.",
+        ),
+        (
+            "Test-time augmentation (TTA)",
+            "Running the model on flipped or lightly altered copies of the same image and "
+            "measuring how much the outlines disagree — used here as an uncertainty signal.",
+        ),
+        (
+            "External validation",
+            "Scoring a frozen model on data from other hospitals or collections without retuning, "
+            "to test whether results were specific to the training source.",
+        ),
+        (
+            "Data leakage",
+            "Accidental overlap between training and test information (for example near-duplicate "
+            "frames on both sides) that makes scores look better than true generalization.",
+        ),
+    ]
+    for term, defn in glossary:
+        story.append(KeepTogether([P(term, "GlossTerm"), P(defn, "GlossDef"), Spacer(1, 4)]))
+
+    story.append(PageBreak())
+    story.append(P("15. References", "H1R"))
+    story.append(
+        P(
+            "Citations below support the clinical framing, datasets, model family, and "
+            "software archive. Prefer the dataset papers when quoting collection size or license."
+        )
+    )
+    refs = [
+        "Al-Dhabyani W, Gomaa M, Khaled H, Fahmy A. Dataset of breast ultrasound images. Data in Brief. 2020;28:104863.",
+        "Mendelson EB, Böhm-Vélez M, Berg WA, et al. ACR BI-RADS® Ultrasound. In: ACR BI-RADS® Atlas. Reston, VA: American College of Radiology; 2013.",
+        "Ronneberger O, Fischer P, Brox T. U-Net: Convolutional networks for biomedical image segmentation. MICCAI. 2015.",
+        "He K, Zhang X, Ren S, Sun J. Deep residual learning for image recognition. CVPR. 2016.",
+        "Gómez-Flores W, et al. BUS-BRA: A breast ultrasound dataset for assessing computer-aided diagnosis systems. Medical Physics. 2024;51:3110–3123. Zenodo CC BY 4.0.",
+        "Pawłowska A, et al. A curated benchmark dataset for ultrasound-based breast lesion analysis (BrEaST). Scientific Data. 2024;11:148. TCIA CC BY 4.0.",
+        "Pawłowska A, et al. Letter commenting on BUSI quality issues and duplicates. Data in Brief / related commentary. 2023.",
+        "Vallez N, et al. BUS-UCLM: Breast ultrasound dataset from the University of Castilla-La Mancha. Scientific Data. 2025;12:242. Mendeley CC BY 4.0.",
+        "Valanarasu JMJ, Patel VM. UNeXt: MLP-based rapid medical image segmentation network. MICCAI. 2022.",
+        "Musah et al. On de-duplication and out-of-distribution breast ultrasound segmentation. arXiv:2508.17768. 2025.",
+        "Wang L. Classification performance under dataset shift in breast ultrasound. Diagnostics. 2026;16(10):1537.",
+        "Moran MS, et al. Society of Surgical Oncology–American Society for Radiation Oncology consensus guideline on margins for breast-conserving surgery. 2014.",
+        f"Fadnavis S. Breast Ultrasound Lesion Segmentation (Version {nums['MODEL_VERSION']}). Zenodo; 2026. {nums['DOI_URL']}",
+        f"Project repository: {nums['GITHUB_URL']}",
+    ]
+    for i, r in enumerate(refs, 1):
+        story.append(P(f"{i}. {r}", "RefR"))
+
+    story.append(Spacer(1, 10))
+    story.append(
+        P(
+            "Numbers in this PDF are auto-filled from committed results JSON by the report builder. "
+            "A continuous-integration check fails if PDF figures drift from those JSON files.",
+            "Cap",
+        )
+    )
+
     md = f"""# Breast Ultrasound Lesion Segmentation: Research Write-up
 
 Version {nums['MODEL_VERSION']} · Site-only research report  
@@ -697,7 +1603,7 @@ Author: Surabhi Fadnavis (high-school senior, Georgia)
 > Research demo — not for clinical use.
 
 ## Abstract
-Served INT8 Dice {nums['INT8_DICE']}, lesion Dice {nums['INT8_LESION_DICE']}, AUC {nums['INT8_AUC']}; BUS-BRA Dice {nums['BUSBRA_DICE']} AUC {nums['BUSBRA_AUC']}; BrEaST Dice {nums['BREAST_DICE']} AUC {nums['BREAST_AUC']}.
+{plain_abstract(nums)}
 
 ## Data
 Annotation-flag rate {nums['ANNOTATION_RATE']} ({nums['N_FLAGGED']}/{nums['N_TOTAL']}).
@@ -705,7 +1611,7 @@ Annotation-flag rate {nums['ANNOTATION_RATE']} ({nums['N_FLAGGED']}/{nums['N_TOT
 External: BUS-BRA n={nums['BUSBRA_N']}; BrEaST n={nums['BREAST_N']} (Pawłowska et al.).
 
 ## Results highlights
-Leakage Δ {nums['LEAK_DELTA']}; E-a flagged/clean {nums['EA_FLAGGED']}/{nums['EA_CLEAN']}; E-c external {nums['EC_BUSBRA']}/{nums['EC_BREAST']}; TTA ρ {nums['UNCERT_RHO']}; cov80 {nums['UNCERT_COV80']}; meas diam r {nums['MEAS_DIAM_R']} (n={nums['MEAS_N']}), ≥20mm discordance {nums['MEAS_T1T2']}.
+Leakage Δ {nums['LEAK_DELTA']}; E-a flagged/clean {nums['EA_FLAGGED']}/{nums['EA_CLEAN']}; E-c external {nums['EC_BUSBRA']}/{nums['EC_BREAST']}; TTA ρ {nums['UNCERT_RHO']}; cov80 {nums['UNCERT_COV80']}; meas diam r {nums['MEAS_DIAM_R']} (n={nums['MEAS_N']}), ≥20mm discordance {nums['MEAS_T1T2']}; v2 clean mean {nums['V2_CLEAN_MEAN']} (Δ {nums['V2_CLEAN_DELTA']}).
 
 ## AI-assistance
 {nums['HOW_BUILT']}
@@ -729,10 +1635,17 @@ Leakage Δ {nums['LEAK_DELTA']}; E-a flagged/clean {nums['EA_FLAGGED']}/{nums['E
 
 def main() -> int:
     nums = collect_numbers()
-    # Persist drift map (values that must appear in PDF text)
-    skip = {"HOW_BUILT", "PAGES_URL", "GITHUB_URL", "BUSUCLM_SENTENCE", "LEAK_SEEDS", "MODEL_SHA8"}
+    skip = {
+        "HOW_BUILT",
+        "PAGES_URL",
+        "GITHUB_URL",
+        "BUSUCLM_SENTENCE",
+        "LEAK_SEEDS",
+        "MODEL_SHA8",
+    }
     expected = {k: v for k, v in nums.items() if k not in skip}
     NUMBERS_JSON.write_text(json.dumps(expected, indent=2, sort_keys=True) + "\n")
+    write_plain_abstract_ts(nums)
     figs = make_figures()
     build_pdf(nums, figs)
 
@@ -740,36 +1653,50 @@ def main() -> int:
 
     reader = PdfReader(str(OUT_PDF))
     text = "\n".join((p.extract_text() or "") for p in reader.pages)
-    # Unicode check
     if "Paw" not in text and "Pawłowska" not in text:
-        # extraction may normalize; check PDF contains font and we wrote the string in filled md
         if "Pawłowska" not in FILLED_MD.read_text():
             raise SystemExit("Pawłowska missing from filled markdown")
     compact = " ".join(text.split())
     if "BUS-UCLM" not in compact or (
-        "requires a login" not in compact and "Normal false positives dominate" not in compact
+        "requires a login" not in compact
+        and "Normal false positives dominate" not in compact
+        and "normal false positives dominate" not in compact.lower()
     ):
-        raise SystemExit("Reader-facing BUS-UCLM sentence missing from PDF text")
+        # Accept either legacy phrasing or the plain-language sentence
+        if "BUS-UCLM" not in compact:
+            raise SystemExit("Reader-facing BUS-UCLM sentence missing from PDF text")
+        if "lesion outline-overlap score" not in compact.lower() and "requires a login" not in compact:
+            raise SystemExit("Reader-facing BUS-UCLM sentence missing from PDF text")
     if "data/external" in text:
         raise SystemExit("Internal data/external path leaked into PDF text")
     if "Pawłowska" not in FILLED_MD.read_text() and "Paw" not in text:
         raise SystemExit("Pawłowska / Paw missing from report")
-    offenders = re.findall(r"\bD(?:1[0-2]|[1-9])\b", text)
+    offenders = re.findall(r"\bD(?:1[0-7]|[1-9])\b", text)
     if offenders:
         raise SystemExit(f"Decision codes leaked into PDF text: {offenders}")
-    # Reject placeholders in reader text (allow source-path captions like results/*.json)
     for bad in ("n/a", "None/None", "TODO", "NaN"):
         if bad in text:
             raise SystemExit(f"Placeholder {bad!r} found in PDF text")
-    # Em dash alone as a table cell value
     if re.search(r"\n—\n", text):
         raise SystemExit("Placeholder em-dash cell found in PDF text")
+    if "Key findings in plain English" not in text and "Key findings in plain English" not in compact:
+        raise SystemExit("Key findings box missing from PDF")
+    if "Glossary" not in text:
+        raise SystemExit("Glossary section missing from PDF")
+    # Abstract jargon guard: only the Abstract section (before key findings)
+    abs_only = text
+    if "1. Abstract" in text and "Key findings in plain English" in text:
+        abs_only = text.split("1. Abstract", 1)[1].split("Key findings in plain English", 1)[0]
+    for banned in ("INT8", "ONNX", "TTA", "ECE", "pHash", "ResNet", "U-Net", "AUC"):
+        if banned in abs_only:
+            raise SystemExit(f"Banned jargon {banned!r} found in abstract")
     n_pages = len(reader.pages)
     print(f"Wrote {OUT_PDF} ({OUT_PDF.stat().st_size} bytes, {n_pages} pages)")
-    if n_pages < 6 or n_pages > 10:
-        print(f"WARNING: page count {n_pages} outside 6–10 target band")
-    else:
-        print(f"OK: page count {n_pages} within 6–10")
+    if n_pages < 15 or n_pages > 20:
+        raise SystemExit(f"Page count {n_pages} outside 15–20 target band")
+    print(f"OK: page count {n_pages} within 15–20")
+    abs_wc = len(plain_abstract(nums).split())
+    print(f"OK: abstract word count {abs_wc}")
     return 0
 
 

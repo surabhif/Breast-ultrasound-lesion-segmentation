@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MODEL_VERSION } from '../lib/constants'
+import { PLAIN_ABSTRACT } from '../lib/plainAbstract'
 import ThresholdExplorer from '../components/ThresholdExplorer'
 
 type MetricsBlock = {
@@ -298,6 +299,7 @@ export default function ResultsPage() {
       <header className="page-intro">
         <h1>Results</h1>
         <p>{data.disclaimer}</p>
+        <p>{PLAIN_ABSTRACT}</p>
         <p className="muted tiny">
           {data.label} · model v{data.model_version ?? MODEL_VERSION}
         </p>
