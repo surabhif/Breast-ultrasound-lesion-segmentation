@@ -24,7 +24,7 @@ Estimated axe violations across primary pages: **~14** (focus rings, unlabeled c
 | `/` | 0 | 0 | — |
 | `/demo` | 0 | 0 | — |
 | `/results` | 0 | 0 | — |
-| `/mistakes` | 0 | 0 | — |
+| `/model-errors` | 0 | 0 | — |
 | `/bi-rads` | 0 | 0 | — |
 | `/surgeons-view` | 0 | 0 | — |
 | `/portfolio` | 0 | 0 | — |

@@ -18,7 +18,7 @@ const routes = [
   '/',
   '/demo',
   '/results',
-  '/mistakes',
+  '/model-errors',
   '/bi-rads',
   '/surgeons-view',
   '/portfolio',

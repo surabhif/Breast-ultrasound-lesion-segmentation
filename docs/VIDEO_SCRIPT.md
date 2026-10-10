@@ -23,7 +23,7 @@ Research demo — not for clinical use.
 | 29–37s | Demo controls | Expert compare, threshold sliders, and research measurements |
 | 37–45s | Results charts | Results — Dice, ROC, and calibration from committed JSON |
 | 45–52s | External table | External validation on BUS-BRA and BrEaST |
-| 52–58s | Mistakes | Mistakes explorer — outline-only silhouettes for hard cases |
+| 52–58s | Model Errors | Model Errors explorer — outline-only silhouettes for hard cases |
 | 58–64s | BI-RADS | BI-RADS context — a model score is not a BI-RADS category |
 | 64–70s | Surgeon’s view | Surgeon's view — imaging size is not pathologic T-stage |
 | 70–75s | Portfolio | Portfolio — related oncology-AI student research demos |

@@ -68,7 +68,7 @@ export default function MistakesPage() {
   if (error) {
     return (
       <div className="fade-in">
-        <h1>Mistakes explorer</h1>
+        <h1>Model Errors explorer</h1>
         <p className="error-text">{error}</p>
       </div>
     )
@@ -76,7 +76,7 @@ export default function MistakesPage() {
   if (!data) {
     return (
       <div className="fade-in">
-        <h1>Mistakes explorer</h1>
+        <h1>Model Errors explorer</h1>
         <p className="muted">Loading…</p>
       </div>
     )
@@ -85,7 +85,7 @@ export default function MistakesPage() {
   return (
     <div className="fade-in mistakes-page">
       <header className="page-intro">
-        <h1>Mistakes explorer</h1>
+        <h1>Model Errors explorer</h1>
         <p>
           Browse the hardest cases from the held-out BUSI test set. BUSI ultrasound pixels are not
           shown here (licence); cards use outline-only silhouettes. Full CC BY images appear only

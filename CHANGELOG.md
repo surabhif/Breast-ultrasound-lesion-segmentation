@@ -49,7 +49,7 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 - Caliper/marker pixel masks + agent QA (≥60 flagged + 20 clean); Telea inpaint E-a/E-b/E-c (3 seeds).
 - Offline TTA uncertainty (`results/uncertainty.json`) + Demo agreement/heatmap.
 - Web Worker inference + self-hosted ORT WASM under `web/public/ort/`.
-- Demo mask/class threshold sliders; Results operating-point explorer; `/mistakes` explorer (≥20 AI notes).
+- Demo mask/class threshold sliders; Results operating-point explorer; `/model-errors` explorer (≥20 AI notes).
 - CC BY BrEaST before/after (synthetic calipers) on Results.
 
 ### Changed

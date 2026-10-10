@@ -54,7 +54,7 @@ First freeze-ready release of the breast ultrasound lesion segmentation research
 - Caliper/marker masks + Telea inpaint experiments (E-a / E-b / E-c)
 - **MODEL_POLICY:** best E-c seed did **not** pass external-Dice swap → **served model remains v1.0.0**
 - Offline TTA uncertainty (Spearman ρ ≈ 0.61); Demo agreement heatmap
-- Web Worker inference; self-hosted ORT WASM; threshold sliders; mistakes explorer
+- Web Worker inference; self-hosted ORT WASM; threshold sliders; Model Errors explorer
 - Clinician outreach / `/review` removed (D4 revoked)
 
 ---
