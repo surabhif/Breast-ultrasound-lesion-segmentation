@@ -12,7 +12,7 @@
 
 ## Abstract
 
-This high-school research project trains a ResNet-18 U-Net with an auxiliary benign-vs-malignant head on the BUSI breast ultrasound dataset, exports an INT8 ONNX model for fully in-browser inference, and reports honest internal and external metrics. On the held-out BUSI test set the **served INT8** model reaches Dice **{{INT8_DICE}}** (lesion-only **{{INT8_LESION_DICE}}**) and ROC-AUC **{{INT8_AUC}}**. External validation on BUS-BRA and BrEaST keeps segmentation closer to internal Dice (**{{BUSBRA_DICE}}** / **{{BREAST_DICE}}**) while classification AUC drops (**{{BUSBRA_AUC}}** / **{{BREAST_AUC}}**). Cleaning, leakage, caliper-inpainting, and TTA uncertainty experiments are included. Venue for this write-up: **site-only** (D5).
+This high-school research project trains a ResNet-18 U-Net with an auxiliary benign-vs-malignant head on the BUSI breast ultrasound dataset, exports an INT8 ONNX model for fully in-browser inference, and reports honest internal and external metrics. On the held-out BUSI test set the **served INT8** model reaches Dice **{{INT8_DICE}}** (lesion-only **{{INT8_LESION_DICE}}**) and ROC-AUC **{{INT8_AUC}}**. External validation on BUS-BRA and BrEaST keeps segmentation closer to internal Dice (**{{BUSBRA_DICE}}** / **{{BREAST_DICE}}**) while classification AUC drops (**{{BUSBRA_AUC}}** / **{{BREAST_AUC}}**). Cleaning, leakage, caliper-inpainting, and TTA uncertainty experiments are included. Venue for this write-up: **site-only**.
 
 ## Introduction
 
@@ -91,7 +91,7 @@ Model vs expert longest diameter (mm) Pearson proxy ≈ **{{MEAS_DIAM_R}}** (n={
 - Domain shift: classification AUC drops sharply on externals
 - Calipers / HUD may still act as shortcuts
 - 160² resolution loses fine detail; normal-image false positives ({{INT8_NFP}})
-- Not clinically validated; no clinician review (D4 revoked)
+- Not clinically validated; no clinician review on this project
 
 ## Ethics and licensing
 

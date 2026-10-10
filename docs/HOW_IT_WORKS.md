@@ -109,7 +109,7 @@ The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA**, **BrEaST
 - **Threshold sliders:** change mask and class cut-offs live on the Demo; on Results, explore sensitivity/specificity trade-offs from saved scores.
 - **Model Errors explorer:** filter hard cases with outline-only silhouettes and clearly labelled AI-generated notes.
 
-This project does **not** include expert medical review or outreach (D4 revoked).
+This project does **not** include expert medical review or outreach.
 
 ## Phase 3 (clinical context & polish)
 

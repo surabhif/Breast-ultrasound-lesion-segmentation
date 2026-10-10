@@ -976,8 +976,8 @@
       }
     },
     "skipped": {
-      "UDIAT": "Institutional licence agreement required \u2014 skipped per D1.",
-      "BUSIS": "Signed release / no redistribution \u2014 skipped per D1."
+      "UDIAT": "Requires an institutional licence agreement.",
+      "BUSIS": "No redistribution permitted."
     }
   },
   "measurement_agreement": {

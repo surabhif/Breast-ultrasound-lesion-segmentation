@@ -502,10 +502,8 @@ export default function ResultsPage() {
           </p>
           {data.external.skipped && Object.keys(data.external.skipped).length > 0 && (
             <p className="muted">
-              Skipped:{' '}
-              {Object.entries(data.external.skipped)
-                .map(([k, v]) => `${k} (${v.slice(0, 120)}…)`)
-                .join('; ')}
+              Not included: UDIAT (requires an institutional licence agreement) and BUSIS (no
+              redistribution permitted).
             </p>
           )}
           <p className="muted tiny">
