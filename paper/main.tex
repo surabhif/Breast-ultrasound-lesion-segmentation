@@ -1,0 +1,324 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{enumitem}
+\onehalfspacing
+
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
+
+\input{numbers}
+
+\title{Breast Ultrasound Lesion Segmentation:\\
+an In-Browser Research Demo on BUSI with External Validation}
+\author{Surabhi Fadnavis\\
+\textit{High-school senior, Georgia}\\
+\texttt{https://github.com/surabhif/Breast-ultrasound-lesion-segmentation}}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{center}
+\small\textit{Research demo --- not for clinical use. Model version \MetricModelVersion.}
+\end{center}
+
+\begin{abstract}
+We present a student research project and in-browser demonstration for breast ultrasound
+lesion segmentation on the BUSI dataset. A ResNet-18 U-Net is trained with grouped
+near-duplicate splits, exported to ONNX, and served as a dynamic INT8 model
+(\MetricOnnxMb\,MB) that runs fully client-side. On the held-out BUSI test set the served model
+reaches Dice~\MetricServedTestDice\ (95\% CI [\MetricServedTestDiceCIlo,~\MetricServedTestDiceCIhi]),
+lesion-only Dice~\MetricServedLesionDice, and benign-vs-malignant ROC-AUC~\MetricServedAuc.
+Frozen weights are evaluated without tuning on BUS-BRA (Dice~\MetricBusbraDice, AUC~\MetricBusbraAuc)
+and BrEaST (Dice~\MetricBreastDice, AUC~\MetricBreastAuc). Caliper/annotation audits, a pre-registered
+model-swap policy, and test-time uncertainty summaries are included. Normal images remain
+difficult (non-empty masks on \MetricNormalFP\ normals). This is a portfolio research demo, not a
+medical device.
+\end{abstract}
+
+\section{Introduction}
+
+Breast ultrasound is widely used as an adjunct to mammography, especially in dense breasts.
+Public research datasets such as BUSI~\cite{aldhabyani2020busi} enable students and
+independent researchers to study lesion segmentation and triage-style classification, but
+reported numbers are easy to over-interpret when splits leak near-duplicates, images contain
+burned-in calipers, or models never leave the training distribution.
+
+Student portfolio projects often stop at a training notebook. Clinically adjacent demos that
+run in a browser are rarer, yet they force the same engineering constraints that matter for
+honest reporting: a fixed preprocessing path, a quantized artifact small enough to download,
+and metrics that match what the user actually runs. They also make failure modes visible---empty
+masks on normals, brittle classification off-distribution, and optimistic BUSI scores on
+annotated frames---in a way a table alone does not.
+
+This project builds an end-to-end, reproducible pipeline: download and prepare BUSI, train a
+compact ResNet-18 U-Net, export and quantize to ONNX, and ship a React web demo that runs
+inference in the browser with onnxruntime-web. Metrics, failure galleries, and external
+validation live beside the demo on GitHub Pages. The goals are educational clarity and honest
+reporting---not clinical deployment.
+
+\textbf{Contributions.}
+(1)~An in-browser INT8 demo with training--serving parity (shared resize and morphology).
+(2)~Grouped near-duplicate splits and a caliper/annotation audit on BUSI.
+(3)~Pre-registered external validation of frozen model~\MetricModelVersion\ on BUS-BRA and BrEaST.
+(4)~A written MODEL\_POLICY for when a retrained candidate may replace the served model.
+(5)~Open citation/freeze scaffolding (CITATION.cff, Zenodo metadata, number-locked preprint
+sources) so a Dec~4 freeze can mint a DOI without rewriting results.
+
+\section{Related work and positioning}
+
+U-Net-style encoders remain a default for biomedical segmentation~\cite{ronneberger2015unet}.
+Breast ultrasound datasets have expanded beyond BUSI to multi-center collections with patient
+metadata and richer clinical fields, including BUS-BRA~\cite{gomezflores2024busbra},
+BrEaST~\cite{pawlowska2024breast}, and BUS-UCLM~\cite{vallez2025busuclm}. Literature Dice
+numbers vary widely with splits, resolutions, and whether normals are included; we therefore
+treat published tables as context, not as a leaderboard to beat, and document protocol
+differences in the companion site page \texttt{docs/LITERATURE\_COMPARISON.md}.
+
+This work is deliberately scoped as a \emph{research demo}: single student author, CPU-friendly
+training, browser inference, and explicit non-clinical disclaimers. We do not claim
+state-of-the-art segmentation. We do claim that the numbers shown next to the demo are the
+numbers of the served artifact, regenerated from committed JSON.
+
+\section{Methods}
+
+\subsection{Datasets and splits}
+
+\textbf{BUSI}~\cite{aldhabyani2020busi} provides breast ultrasound images with lesion masks
+and labels (benign, malignant, normal). The archive used here is obtained via a public
+Hugging Face mirror of \emph{Dataset\_BUSI\_with\_GT} ($\approx$780 images). BUSI does not
+provide patient identifiers. Splits therefore keep perceptual-hash near-duplicate clusters
+together so near-identical frames cannot appear in both train and test. Held-out sizes:
+train~\MetricNTrain, val~\MetricNVal, test~\MetricNTest. This is \emph{not} a true patient-level split.
+
+\textbf{External sets} (CC~BY~4.0; scored after protocol registration, no fine-tuning):
+BUS-BRA~\cite{gomezflores2024busbra} (\MetricBusbraN\ images, \texttt{n\_patients}${}=1064$ in the
+committed JSON) and BrEaST~\cite{pawlowska2024breast} (\MetricBreastN\ images / patients).
+BUS-UCLM~\cite{vallez2025busuclm} was planned as secondary but remains skipped in the committed
+run (\MetricBusuclmStatus; Mendeley interactive login required). UDIAT and BUSIS were skipped for
+licence / access reasons (decision log D1).
+
+\subsection{Model and training}
+
+Architecture: ResNet-18 encoder U-Net~\cite{ronneberger2015unet} with an auxiliary
+benign-vs-malignant head ($\approx$\MetricParamsM\ M parameters). Images are resized to
+\MetricImgSize$\times$\MetricImgSize\ with a shared half-pixel-center bilinear path used in training,
+Python evaluation, and the browser. Training used paired flips, small rotations, scale-crop,
+and brightness/contrast augmentation; loss combines pos-weighted BCE and soft Dice for
+segmentation with BCE for classification on B/M only. Optimizer: AdamW with cosine schedule;
+encoder freeze for the first few epochs; checkpoint selected on validation lesion Dice
+(CPU-friendly recipe; seed~42; fold~0 primary run, with a five-fold CV summary retained for
+diagnostics).
+
+\subsection{Post-processing and served artifact}
+
+Validation-tuned operating point (frozen for all reports): segmentation threshold
+\MetricSegThreshold, minimum connected-component area \MetricMinArea\ pixels (4-connectivity),
+classification threshold $0.5$. The training FP32 checkpoint is exported to ONNX and
+dynamically quantized to UINT8 weights for serving
+(\MetricOnnxMb\,MB vs \MetricFpMb\,MB FP32). The live demo loads
+\texttt{web/public/models/v\MetricModelVersion/busi\_unet.onnx}. Served INT8 metrics are computed
+with onnxruntime on CPU using the same postprocess as the browser.
+
+\subsection{Browser demo}
+
+The Vite/React TypeScript app runs onnxruntime-web in a Web Worker with self-hosted WASM,
+optional threshold sliders, sample galleries, expert-vs-model overlays, BI-RADS context pages,
+and Results pages backed by committed JSON. No ultrasound pixels leave the user's browser for
+inference; the About page states that the site uses no analytics cookies for tracking. A
+captioned walkthrough video and an auto-filled PDF report are shipped under
+\texttt{web/public/}.
+
+\subsection{External validation protocol and MODEL\_POLICY}
+
+Protocol text lives in \texttt{docs/EXTERNAL\_VALIDATION\_PROTOCOL.md} and was committed before
+Phase~1 scoring. External scoring uses identical preprocess/postprocess and the frozen INT8
+weights. A candidate v2 may replace served v1 before the Dec~4 freeze only if it matches or
+beats v1 on (a)~BUSI clean-subset Dice and (b)~external Dice on each primary scored set, and
+(c)~BUSI test AUC drops by at most $0.02$. Otherwise v1 remains served and v2 is published as
+an experiment only.
+
+\subsection{Additional analyses}
+
+Heuristic caliper/text flags, clean-vs-flagged Dice comparisons, a short leakage ablation
+(grouped vs random splits), Telea inpaint retrain experiments, offline flip-based TTA
+uncertainty, and BrEaST measurement-agreement summaries (research sizing only) are reported
+on the site and in committed JSON under \texttt{results/} and
+\texttt{web/public/results/metrics.json}. Clinician outreach was considered early and
+explicitly revoked (decision log D4); no reviewer acknowledgements appear on the site.
+
+\section{Results}
+
+All headline numbers below are macros generated from
+\texttt{web/public/results/metrics.json} via \texttt{scripts/export\_paper\_numbers.py}
+(\texttt{paper/numbers.tex}). Re-export and recompile after any metrics change;
+\texttt{scripts/check\_paper\_numbers\_drift.py} fails on drift.
+
+\subsection{BUSI held-out test (served INT8)}
+
+\begin{table}[ht]
+\centering
+\caption{BUSI test metrics for served INT8 (v\MetricModelVersion) vs FP32 training checkpoint.}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Metric & FP32 & INT8 (served) \\
+\midrule
+Test Dice (all) & \MetricFpTestDice & \MetricServedTestDice\ [\MetricServedTestDiceCIlo,~\MetricServedTestDiceCIhi] \\
+Lesion-only Dice & \MetricFpLesionDice & \MetricServedLesionDice\ [\MetricServedLesionDiceCIlo,~\MetricServedLesionDiceCIhi] \\
+Test IoU & \MetricFpIoU & \MetricServedIoU \\
+B vs M ROC-AUC & \MetricFpAuc & \MetricServedAuc \\
+Sensitivity / Specificity & --- & \MetricServedSens\ / \MetricServedSpec \\
+ECE & --- & \MetricServedEce \\
+Normal non-empty masks & --- & \MetricNormalFP \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Quantization changes Dice only slightly (INT8 often within bootstrap noise of FP32) while
+shrinking the download for browser use. Classification AUC on BUSI remains high
+(\MetricServedAuc) but calibration is imperfect (ECE~\MetricServedEce). The normal-class false
+positive rate (\MetricNormalFPrate) is a first-order usability failure for any ``run on a random
+ultrasound'' demo: empty-ground-truth frames still receive non-empty masks on
+\MetricNormalFP\ cases.
+
+\subsection{Cleaning / caliper audit}
+
+About \MetricAnnotRate\ of BUSI images were flagged for likely calipers or burned-in text by a
+heuristic audit. Overall Dice on flagged test frames (\MetricFlaggedDice) exceeds clean frames
+(\MetricCleanDice); inflation of all-minus-clean Dice is \MetricDiceInflation. Lesion-only Dice shows a
+similar gap (flagged~\MetricLesionFlaggedDice\ vs clean~\MetricLesionCleanDice). Readers should treat
+headline BUSI Dice as partly driven by easier annotated frames. Classification AUC on this
+stronger model is similar on clean vs flagged subsets; earlier weaker baselines showed larger
+gaps, so shortcut learning should be checked per recipe rather than assumed absent.
+
+\subsection{External validation (frozen INT8)}
+
+\begin{table}[ht]
+\centering
+\caption{External Dice and AUC for frozen served INT8 (no tuning).}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Dataset & $n$ & Dice & AUC \\
+\midrule
+BUSI (internal INT8) & \MetricNTest & \MetricServedTestDice & \MetricServedAuc \\
+BUS-BRA & \MetricBusbraN & \MetricBusbraDice & \MetricBusbraAuc \\
+BrEaST & \MetricBreastN & \MetricBreastDice & \MetricBreastAuc \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Segmentation transfers moderately (BUS-BRA Dice~\MetricBusbraDice; BrEaST~\MetricBreastDice).
+Classification AUC drops substantially off-distribution (BUS-BRA~\MetricBusbraAuc;
+BrEaST~\MetricBreastAuc), underscoring that BUSI triage scores are not portable without further work.
+Subgroup Dice by BI-RADS and scanner on BUS-BRA is reported in the site Results JSON for
+exploratory inspection; those rows were not used for threshold selection.
+
+\subsection{MODEL\_POLICY outcome (inpaint retrain)}
+
+A caliper-inpaint retrain (candidate v2) slightly improved clean-subset Dice
+(\MetricVtwoCleanDice\ vs v1~\MetricVoneCleanDice) and did not harm AUC under the $0.02$ budget, but
+\emph{failed} external Dice on BUS-BRA (\MetricVtwoBusbraDice\ vs \MetricVoneBusbraDice) and BrEaST
+(\MetricVtwoBreastDice\ vs \MetricVoneBreastDice). The site therefore continues to serve
+v\MetricModelVersion. Publishing the failed swap is intentional: it shows that cleaning training
+images can help an internal clean subset while hurting transfer.
+
+\subsection{Uncertainty, leakage, measurements}
+
+Flip-based TTA disagreement correlates with error (Spearman $\rho\approx$\MetricTtaSpearman);
+keeping the most certain 80\% of cases yields mean Dice~\MetricDiceAtEightyCov\ on the BUSI test
+summary. This is agreement under flips---not a calibrated error probability. A short
+grouped-vs-random leakage ablation on this schedule did not show large positive val inflation
+(random$-$grouped $\approx$\MetricLeakValDelta); leakage risk remains conceptually important because
+BUSI lacks patient IDs. On BrEaST, model vs expert longest-diameter correlation (mm,
+exploratory) is \MetricMeasDiamCorr; disagreement rate on a $20$\,mm threshold proxy is
+\MetricSizeDiscord. Imaging size is not pathological T-stage; these figures are research
+diagnostics only.
+
+\section{Limitations}
+
+\begin{itemize}[leftmargin=*,itemsep=0.35em]
+\item \textbf{Not for clinical use.} No clinician review; not a medical device; no diagnostic
+  claims. Site pages that mention BI-RADS or surgical sizing are educational framing only.
+\item BUSI lacks patient IDs; near-duplicate grouping is a proxy, not a guarantee against
+  leakage.
+\item High false-positive rate on normals (\MetricNormalFP).
+\item External classification AUC is much lower than internal BUSI AUC.
+\item Resolution is limited to \MetricImgSize$^2$ for CPU/browser practicality.
+\item BUS-UCLM not included in the committed scorecard (\MetricBusuclmStatus).
+\item Caliper detector is heuristic, not OCR; literature comparisons depend on heterogeneous
+  protocols across papers.
+\item Single primary training seed for the served model; CV folds are diagnostic, not an
+  ensemble deployed in the browser.
+\end{itemize}
+
+\section{Ethics, licensing, and credit}
+
+Code in this repository is released under the MIT license. BUSI redistribution terms remain
+those of the original dataset providers; only a minimal cited sample ships in the web tree.
+External demo samples use CC~BY sources with attribution. Personal information on the site is
+limited to the author's name and ``high-school senior, Georgia'' (decision log D7).
+
+\section{AI-use disclosure}
+
+Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).
+
+\section{Reproducibility and availability}
+
+Code, metrics JSON, ONNX weights, and the GitHub Pages demo are in
+\url{https://github.com/surabhif/Breast-ultrasound-lesion-segmentation}.
+Citation metadata: \texttt{CITATION.cff}; Zenodo deposit metadata: \texttt{.zenodo.json}. A DOI
+will be filled after the owner connects Zenodo and publishes a GitHub release
+(\texttt{docs/ZENODO\_STEPS.md}; agents must not create tags or releases). Paper numbers:
+\begin{verbatim}
+python scripts/export_paper_numbers.py
+cd paper && pdflatex main && pdflatex main
+python scripts/check_paper_numbers_drift.py
+\end{verbatim}
+Venue options (JEI vs arXiv vs site-only) are compared in \texttt{docs/SUBMISSION\_GUIDE.md};
+nothing in this preprint package constitutes a submission.
+
+\section*{Acknowledgments}
+
+No clinician reviewers. Training used public datasets cited above. Hosting is GitHub Pages.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+
+\bibitem{aldhabyani2020busi}
+W.~Al-Dhabyani, M.~Gomaa, H.~Khaled, and A.~Fahmy.
+\newblock Dataset of breast ultrasound images.
+\newblock \emph{Data in Brief}, 28:104863, 2020.
+\newblock \url{https://doi.org/10.1016/j.dib.2019.104863}.
+
+\bibitem{gomezflores2024busbra}
+W.~G\'omez-Flores et al.
+\newblock BUS-BRA: A breast ultrasound dataset for assessing computer-aided diagnosis systems.
+\newblock \emph{Medical Physics}, 51:3110--3123, 2024.
+\newblock \url{https://doi.org/10.1002/mp.16812}.
+
+\bibitem{pawlowska2024breast}
+A.~Paw{\l}owska et al.
+\newblock A curated benchmark dataset for ultrasound-based breast lesion analysis (BrEaST).
+\newblock \emph{Scientific Data}, 11:148, 2024.
+\newblock \url{https://doi.org/10.1038/s41597-024-02984-z}.
+
+\bibitem{vallez2025busuclm}
+N.~Vallez et al.
+\newblock BUS-UCLM: Breast ultrasound dataset from University of Castilla-La Mancha.
+\newblock \emph{Scientific Data}, 12:242, 2025.
+\newblock \url{https://doi.org/10.1038/s41597-025-04564-2}.
+
+\bibitem{ronneberger2015unet}
+O.~Ronneberger, P.~Fischer, and T.~Brox.
+\newblock U-Net: Convolutional networks for biomedical image segmentation.
+\newblock In \emph{MICCAI}, pages 234--241, 2015.
+
+\end{thebibliography}
+
+\end{document}

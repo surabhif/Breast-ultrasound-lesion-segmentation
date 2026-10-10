@@ -8,6 +8,24 @@ Research demo, not for clinical use.
 
 ---
 
+## 2026-10-10 — Phase 4 citation / preprint prep (D13–D15)
+
+Prep only — **no tags, releases, or submissions** by agents.
+
+### D13 — Zenodo / CITATION freeze path
+
+**Decided (prep):** Ship `.zenodo.json` (MIT, software, open) + enhanced `CITATION.cff` with preferred-citation and DOI placeholders. Owner follows `docs/ZENODO_STEPS.md` to connect Zenodo and mint a DOI from a GitHub Release at freeze. Agents must not create tags/releases.
+
+### D14 — Preprint package
+
+**Decided (prep):** Add LaTeX manuscript under `paper/` with numbers imported from `web/public/results/metrics.json` via `scripts/export_paper_numbers.py` and drift check `scripts/check_paper_numbers_drift.py`. Venue comparison in `docs/SUBMISSION_GUIDE.md` (JEI vs arXiv). **Do not submit** in this phase; owner chooses later. Note: JEI’s published AI policy (as of 2026-10-10) conflicts with this project’s AI-assisted build — arXiv or site-only are the realistic defaults unless the owner changes approach.
+
+### D15 — Dec 4 freeze checklist
+
+**Decided (prep):** Owner uses `docs/FREEZE_CHECKLIST.md` and draft `docs/RELEASE_NOTES_v1.0_DRAFT.md` for the freeze release. Served model remains **v1.0.0** unless MODEL_POLICY is newly satisfied. No clinician outreach.
+
+---
+
 ## 2026-10-08 — Phase 3 decisions (plan numbering D5–D12)
 
 Applied at Phase 3 (draft PR; owner merges). Numbering follows the enhancement plan.

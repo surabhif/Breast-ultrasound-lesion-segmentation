@@ -1,7 +1,10 @@
 cff-version: 1.2.0
-message: "If you use this research demo, please cite it as below."
+message: >-
+  If you use this research demo or cite the software, please use the metadata
+  below. A Zenodo DOI will be filled in after the owner mints one from a GitHub
+  release (see docs/ZENODO_STEPS.md). Agents must not create tags or releases.
 type: software
-title: "Breast Ultrasound Lesion Segmentation Research Demo"
+title: "Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation"
 version: 1.0.0
 date-released: "2026-10-08"
 authors:
@@ -12,16 +15,30 @@ url: "https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/"
 license: MIT
 abstract: >-
   High-school research demo: in-browser ResNet-18 U-Net lesion segmentation on
-  BUSI with external BUS-BRA / BrEaST validation. Not for clinical use.
-  Project by Surabhi Fadnavis. The code, analysis, text, and video were produced
-  with AI tools (Cursor).
+  BUSI with external BUS-BRA / BrEaST validation. Served model v1.0.0 INT8 ONNX.
+  Not for clinical use. Project by Surabhi Fadnavis. The code, analysis, text,
+  and video were produced with AI tools (Cursor).
 keywords:
   - breast ultrasound
   - lesion segmentation
   - BUSI
+  - external validation
   - ONNX
   - research demo
-# A Zenodo DOI can be added here after the owner mints one (requires owner login).
+# DOI placeholder — fill after Zenodo mints from a GitHub release (owner-only).
 # identifiers:
 #   - type: doi
 #     value: "10.5281/zenodo.XXXXXXX"
+preferred-citation:
+  type: software
+  title: "Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation"
+  authors:
+    - family-names: Fadnavis
+      given-names: Surabhi
+  year: 2026
+  version: "1.0.0"
+  url: "https://github.com/surabhif/Breast-ultrasound-lesion-segmentation"
+  # doi: "10.5281/zenodo.XXXXXXX"  # fill after Zenodo mint
+  notes: >-
+    DOI will be filled after the repository owner connects Zenodo and creates a
+    GitHub release. Research demo only — not for clinical use.

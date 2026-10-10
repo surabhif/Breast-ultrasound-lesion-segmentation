@@ -1,0 +1,31 @@
+{
+  "title": "Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation",
+  "description": "Research demo (not for clinical use) of an in-browser ResNet-18 U-Net for breast ultrasound lesion segmentation on the BUSI dataset, with external validation on BUS-BRA and BrEaST. Served model is v1.0.0 INT8 ONNX. Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).",
+  "creators": [
+    {
+      "name": "Fadnavis, Surabhi"
+    }
+  ],
+  "keywords": [
+    "breast ultrasound",
+    "lesion segmentation",
+    "BUSI",
+    "external validation",
+    "ONNX"
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/surabhif/Breast-ultrasound-lesion-segmentation",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/",
+      "relation": "isDocumentedBy",
+      "resource_type": "other"
+    }
+  ]
+}
