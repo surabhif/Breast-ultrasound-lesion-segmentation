@@ -2,7 +2,7 @@
 
 Research demo — not for clinical use.
 
-Audited with **axe-core** (Playwright) against local `vite preview` on 2026-10-08.
+Audited with **axe-core** (Playwright) against local `vite preview` on 2026-10-10.
 Tags: wcag2a, wcag2aa, wcag21a, wcag21aa.
 
 ## Before (Phase 2 baseline)
@@ -32,7 +32,7 @@ Estimated axe violations across primary pages: **~14** (focus rings, unlabeled c
 | `/model-card` | 0 | 0 | — |
 
 **Totals:** 0 axe violations (0 serious/critical) across 9 routes.  
-**After scores:** axe **100** on all routes (Phase 3b re-check after cite-block contrast + gauge ARIA fixes).
+**After scores:** axe **100** on all routes (re-check after Model Errors rename; cite-block contrast + gauge ARIA fixes retained).
 
 ### Fixes applied in Phase 3
 
