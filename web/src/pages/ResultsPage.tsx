@@ -109,21 +109,37 @@ type Metrics = {
     decision_sentence?: string
     swap_note?: string
     note?: string
+    busbra_label?: string
+    breast_label?: string
+    promotion_rule?: string
+    promoted_seed?: number | null
+    mean_pass?: boolean
     swap_criteria?: {
       criterion: string
       rule: string
       v1?: number | null
       v2?: number | null
+      v2_sd?: number | null
+      delta?: number | null
+      delta_ci95?: [number | null, number | null] | number[]
       passed: boolean
+      note?: string
     }[]
     table?: {
       name: string
       dice?: number
+      dice_sd?: number
       lesion_dice?: number
+      lesion_dice_sd?: number
       clean_dice?: number
+      clean_dice_sd?: number
       busbra_dice?: number
+      busbra_dice_sd?: number
+      busbra_label?: string
       breast_dice?: number
+      breast_dice_sd?: number
       auc?: number
+      auc_sd?: number
       int8_mb?: number
       swap_ok?: boolean
     }[]
@@ -706,9 +722,16 @@ export default function ResultsPage() {
           <h2 className="section-title">Phase 4 model candidates vs v1</h2>
           <p>
             {data.v2_experiment.note ??
-              'Multi-dataset v2 candidates (BUSI train + patient-grouped BUS-BRA train; held-out BUS-BRA test; BrEaST external) under the pre-registered MODEL_POLICY swap rule.'}{' '}
-            Source: <code>results/v2_experiment.json</code>.
+              'Multi-dataset v2 candidates (BUSI train + patient-grouped BUS-BRA train) under a fair swap rule.'}{' '}
+            <strong>BUS-BRA held-out is same-source for v2</strong> (v2 trains on BUS-BRA train); the v1
+            baseline is INT8 scored on the <em>identical</em> held-out IDs — not v1&apos;s full-set 0.714.{' '}
+            <strong>BrEaST is the only truly external test.</strong> Promotion uses the seed-
+            <em>mean</em>; if the mean fails any rule, v1 stays. Among passing seeds we promote the{' '}
+            <em>median</em> by clean Dice, not the best. Source: <code>results/v2_experiment.json</code>.
           </p>
+          {data.v2_experiment.promotion_rule && (
+            <p className="muted tiny">{data.v2_experiment.promotion_rule}</p>
+          )}
           {data.v2_experiment.swap_criteria && data.v2_experiment.swap_criteria.length > 0 && (
             <div className="table-wrap">
               <table>
@@ -717,17 +740,36 @@ export default function ResultsPage() {
                     <th>Criterion</th>
                     <th>Rule</th>
                     <th>v1</th>
-                    <th>Best v2</th>
+                    <th>v2 mean ± SD</th>
+                    <th>Δ (95% CI)</th>
                     <th>Result</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.v2_experiment.swap_criteria.map((row) => (
                     <tr key={row.criterion}>
-                      <td>{row.criterion}</td>
+                      <td>
+                        {row.criterion}
+                        {row.note ? <div className="muted tiny">{row.note}</div> : null}
+                      </td>
                       <td>{row.rule}</td>
                       <td>{row.v1 == null ? '—' : row.v1.toFixed(3)}</td>
-                      <td>{row.v2 == null ? '—' : row.v2.toFixed(3)}</td>
+                      <td>
+                        {row.v2 == null
+                          ? '—'
+                          : row.v2_sd == null
+                            ? row.v2.toFixed(3)
+                            : `${row.v2.toFixed(3)} ± ${row.v2_sd.toFixed(3)}`}
+                      </td>
+                      <td>
+                        {row.delta == null
+                          ? '—'
+                          : `${row.delta >= 0 ? '+' : ''}${row.delta.toFixed(4)}${
+                              row.delta_ci95 && row.delta_ci95[0] != null && row.delta_ci95[1] != null
+                                ? ` [${Number(row.delta_ci95[0]).toFixed(4)}, ${Number(row.delta_ci95[1]).toFixed(4)}]`
+                                : ''
+                            }`}
+                      </td>
                       <td>{row.passed ? 'Pass' : 'Fail'}</td>
                     </tr>
                   ))}
@@ -749,8 +791,8 @@ export default function ResultsPage() {
                     <th>Setting</th>
                     <th>Dice</th>
                     <th>Clean Dice</th>
-                    <th>BUS-BRA</th>
-                    <th>BrEaST</th>
+                    <th>BUS-BRA (same-source held-out)</th>
+                    <th>BrEaST (external)</th>
                     <th>AUC</th>
                     <th>INT8 MB</th>
                   </tr>
@@ -759,11 +801,26 @@ export default function ResultsPage() {
                   {data.v2_experiment.table.map((row) => (
                     <tr key={row.name}>
                       <td>{row.name}</td>
-                      <td>{fmt(row.dice)}</td>
-                      <td>{fmt(row.clean_dice)}</td>
-                      <td>{fmt(row.busbra_dice)}</td>
-                      <td>{fmt(row.breast_dice)}</td>
-                      <td>{fmt(row.auc)}</td>
+                      <td>
+                        {fmt(row.dice)}
+                        {row.dice_sd != null ? ` ± ${fmt(row.dice_sd)}` : ''}
+                      </td>
+                      <td>
+                        {fmt(row.clean_dice)}
+                        {row.clean_dice_sd != null ? ` ± ${fmt(row.clean_dice_sd)}` : ''}
+                      </td>
+                      <td>
+                        {fmt(row.busbra_dice)}
+                        {row.busbra_dice_sd != null ? ` ± ${fmt(row.busbra_dice_sd)}` : ''}
+                      </td>
+                      <td>
+                        {fmt(row.breast_dice)}
+                        {row.breast_dice_sd != null ? ` ± ${fmt(row.breast_dice_sd)}` : ''}
+                      </td>
+                      <td>
+                        {fmt(row.auc)}
+                        {row.auc_sd != null ? ` ± ${fmt(row.auc_sd)}` : ''}
+                      </td>
                       <td>{fmt(row.int8_mb, 1)}</td>
                     </tr>
                   ))}

@@ -496,15 +496,21 @@ def load_v1_baselines() -> dict:
     # Prefer served INT8 external numbers (protocol freeze)
     ext = metrics.get("external") or {}
     datasets = ext.get("datasets") or {}
-    busbra = (datasets.get("busbra") or {}).get("test_dice")
+    busbra_full = (datasets.get("busbra") or {}).get("test_dice")
     breast = (datasets.get("breast") or {}).get("test_dice")
     auc = (ext.get("internal_busi_int8") or {}).get("cls_roc_auc")
     if auc is None:
         auc = (metrics.get("served_int8") or {}).get("cls_roc_auc")
     served = metrics.get("served_int8") or metrics.get("metrics") or {}
+    # Fair BUS-BRA baseline: v1 INT8 on the same held-out split (written by eval_v1_busbra_heldout.py)
+    busbra_held = None
+    held_path = RESULTS / "v2" / "v1_busbra_heldout.json"
+    if held_path.exists():
+        busbra_held = json.loads(held_path.read_text()).get("dice_mean")
     return {
         "clean_dice": clean,
-        "busbra_dice": busbra,
+        "busbra_dice_fullset": busbra_full,  # display only; NOT used for swap
+        "busbra_heldout_dice": busbra_held,  # fair same-source held-out baseline
         "breast_dice": breast,
         "auc": auc,
         "test_dice": served.get("test_dice"),
@@ -514,6 +520,10 @@ def load_v1_baselines() -> dict:
 
 
 def apply_swap_checks(candidate: dict, v1: dict) -> dict:
+    """Per-seed checks using fair BUS-BRA held-out baseline (not full-set 0.714).
+
+    Final promotion is decided by apply_v2_swap.py on the 3-seed mean + median passer.
+    """
     c_clean = (candidate.get("test_clean_subset") or {}).get("dice_mean")
     c_auc = (candidate.get("test_original") or {}).get("classification", {}) or {}
     if isinstance(c_auc, dict):
@@ -521,9 +531,12 @@ def apply_swap_checks(candidate: dict, v1: dict) -> dict:
     c_busbra = (candidate.get("external_busbra_heldout") or {}).get("dice_mean")
     c_breast = (candidate.get("external_breast") or {}).get("dice_mean")
     int8_mb = candidate.get("onnx_int8_mb")
+    v1_busbra = v1.get("busbra_heldout_dice")
     checks = {
         "clean_dice_ok": c_clean is not None and v1["clean_dice"] is not None and c_clean >= v1["clean_dice"] - 1e-9,
-        "busbra_ok": c_busbra is not None and v1["busbra_dice"] is not None and c_busbra >= v1["busbra_dice"] - 1e-9,
+        "busbra_heldout_ok": (
+            c_busbra is not None and v1_busbra is not None and c_busbra >= v1_busbra - 1e-9
+        ),
         "breast_ok": c_breast is not None and v1["breast_dice"] is not None and c_breast >= v1["breast_dice"] - 1e-9,
         "auc_ok": c_auc is not None and v1["auc"] is not None and (v1["auc"] - c_auc) <= 0.02 + 1e-9,
         "size_ok": int8_mb is not None and int8_mb <= 25.5,
@@ -531,9 +544,10 @@ def apply_swap_checks(candidate: dict, v1: dict) -> dict:
     return {
         "checks": checks,
         "swap_ok": all(checks.values()),
+        "fair_busbra": True,
         "v2": {
             "clean_dice": c_clean,
-            "busbra_dice": c_busbra,
+            "busbra_heldout_dice": c_busbra,
             "breast_dice": c_breast,
             "auc": c_auc,
             "int8_mb": int8_mb,
@@ -614,22 +628,17 @@ def main() -> None:
             (V2_RESULTS / f"seed{seed}_FAILED.json").write_text(json.dumps(fail, indent=2) + "\n")
             print(f"[seed {seed}] FAILED: {e}")
 
-    ok_seeds = [s for s in seeds_out if s.get("swap", {}).get("swap_ok")]
-    # Prefer best clean Dice among swap-ok; else best clean among finished
     finished = [s for s in seeds_out if "test_clean_subset" in s]
-    best = None
-    if ok_seeds:
-        best = max(ok_seeds, key=lambda s: s["test_clean_subset"]["dice_mean"])
-    elif finished:
-        best = max(finished, key=lambda s: s["test_clean_subset"]["dice_mean"])
-
+    # Final promotion is decided by apply_v2_swap.py (seed-mean + median passer; fair BUS-BRA).
     table = [
         {
             "name": "v1.0.0 served INT8 (160² ResNet-18)",
             "dice": v1.get("test_dice"),
             "lesion_dice": v1.get("lesion_dice"),
             "clean_dice": v1.get("clean_dice"),
-            "busbra_dice": v1.get("busbra_dice"),
+            "busbra_dice": v1.get("busbra_heldout_dice"),
+            "busbra_label": "same-source held-out (v1 INT8 on v2 split)",
+            "busbra_fullset_ref_only": v1.get("busbra_dice_fullset"),
             "breast_dice": v1.get("breast_dice"),
             "auc": v1.get("auc"),
             "int8_mb": v1.get("int8_mb"),
@@ -644,6 +653,7 @@ def main() -> None:
                 "lesion_dice": (s.get("test_original") or {}).get("lesion_dice_mean"),
                 "clean_dice": (s.get("test_clean_subset") or {}).get("dice_mean"),
                 "busbra_dice": (s.get("external_busbra_heldout") or {}).get("dice_mean"),
+                "busbra_label": "same-source held-out",
                 "breast_dice": (s.get("external_breast") or {}).get("dice_mean"),
                 "auc": ((s.get("test_original") or {}).get("classification") or {}).get("roc_auc"),
                 "int8_mb": s.get("onnx_int8_mb"),
@@ -653,14 +663,14 @@ def main() -> None:
             }
         )
 
-    swap_ok = bool(best and best.get("swap", {}).get("swap_ok"))
     report = {
-        "label": "Phase 4 v2 multi-dataset candidates (MODEL_POLICY D3)",
+        "label": "Phase 4 v2 multi-dataset candidates (MODEL_POLICY D3, fair held-out)",
         "note": (
-            "Trained on BUSI train + patient-grouped BUS-BRA train; held-out BUS-BRA test; "
-            "BrEaST fully external. ResNet-34 @ 256, strong aug, Dice+focal"
+            "Trained on BUSI train + patient-grouped BUS-BRA train; BUS-BRA held-out is "
+            "same-source for v2 (compare to v1 INT8 on identical IDs); BrEaST fully external. "
+            "ResNet-34 @ 256, strong aug, Dice+focal"
             + (", Telea caliper inpaint on flagged BUSI" if args.inpaint else "")
-            + ". Honest reporting including failures."
+            + ". Final promotion via apply_v2_swap.py (seed-mean + median passer)."
         ),
         "hardware": {
             "device": str(DEVICE),
@@ -677,33 +687,13 @@ def main() -> None:
             "test_patients": int(busbra_test["patient_id"].nunique()),
         },
         "seeds": seeds_out,
-        "best": None
-        if best is None
-        else {
-            "seed": best["seed"],
-            "swap_ok": best.get("swap", {}).get("swap_ok"),
-            "checks": best.get("swap", {}).get("checks"),
-            "onnx_int8": best.get("onnx_int8"),
-            "onnx_sha256": best.get("onnx_sha256"),
-            "onnx_int8_mb": best.get("onnx_int8_mb"),
-            "metrics": best.get("swap", {}).get("v2"),
-            "postprocess": best.get("postprocess"),
-            "img_size": best.get("img_size"),
-            "model_kind": best.get("model_kind"),
-        },
+        "best": None,  # filled by apply_v2_swap.py as median passing seed
         "table": table,
         "model_policy_decision": {
-            "swap_ok": swap_ok,
-            "served_unchanged": not swap_ok,
-            "note": (
-                f"Best seed {best['seed']} passed MODEL_POLICY + size"
-                if swap_ok
-                else (
-                    f"No seed passed MODEL_POLICY + ≤25MB INT8"
-                    + (f"; best incomplete seed {best['seed']}" if best else "")
-                    + " — keep v1.0.0 served"
-                )
-            ),
+            "swap_ok": False,
+            "served_unchanged": True,
+            "note": "Pending apply_v2_swap.py (fair held-out BUS-BRA + seed-mean + median passer).",
+            "fair_busbra": True,
         },
     }
 

@@ -1,0 +1,26 @@
+{
+  "label": "v1.0.0 INT8 on Phase-4 patient-grouped BUS-BRA held-out split",
+  "note": "Fair baseline for v2: same held-out case IDs as results/v2/busbra_patient_split.json. Not comparable to full-set BUS-BRA Dice 0.714 (v1 never trained on BUS-BRA; v2 does).",
+  "role": "same_source_heldout_baseline",
+  "model_version": "1.0.0",
+  "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "img_size": 160,
+  "seg_threshold": 0.4,
+  "min_component_area": 40,
+  "n": 469,
+  "n_patients": 266,
+  "dice_mean": 0.7130324154048149,
+  "dice_ci95": [
+    0.6866139919835941,
+    0.7365246810679991
+  ],
+  "lesion_dice_mean": 0.7130324154048149,
+  "lesion_dice_ci95": [
+    0.6866139919835941,
+    0.7365246810679991
+  ],
+  "cls_roc_auc": 0.6702999794534621,
+  "split_seed": 42,
+  "test_frac": 0.25,
+  "source_split": "results/v2/busbra_patient_split.json"
+}
