@@ -37,10 +37,12 @@ describe('buildResultPdf', () => {
     expect(text.startsWith('%PDF-1.4')).toBe(true)
     expect(text).toContain('%%EOF')
     expect(text).toContain('Model version: 1.0.0')
-    expect(text).toContain('P(malignant): 42.0%')
+    // Parentheses are PDF-escaped as \( \)
+    expect(text).toContain('P\\(malignant\\): 42.0%')
     expect(text).toContain('Dice: n/a')
     expect(text).toContain('not for clinical use')
     expect(text).toContain('Your image stays in this browser')
+    expect(text).toContain('/Subtype /Image')
     expect(text).not.toMatch(/Dice: 0\./)
   })
 

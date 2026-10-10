@@ -606,7 +606,9 @@ export default function DemoPage() {
               <p className="muted tiny">
                 {selectedMeta
                   ? 'Per-image Dice appears for samples with expert masks.'
-                  : 'Upload has no expert outline — Dice is not shown.'}
+                  : sourceUrl
+                    ? 'Upload has no expert outline — Dice is not shown.'
+                    : 'Select a gallery sample with an expert mask to see Dice, or upload your own image.'}
               </p>
             )}
           </div>

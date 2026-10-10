@@ -62,22 +62,23 @@ export function buildResultPdf(input: ResultPdfInput): Blob {
   const imgX = MARGIN
   const imgY = PAGE_H - MARGIN - 28 - imgH
 
+  // Helvetica / WinAnsi: keep ASCII-safe punctuation in the content stream.
   const lines: string[] = [
-    'Breast Ultrasound Lesion Segmentation — research result',
+    'Breast Ultrasound Lesion Segmentation - research result',
     `Generated: ${when} UTC`,
     `Model version: ${input.modelVersion}`,
   ]
   if (input.sampleLabel) lines.push(`Sample: ${input.sampleLabel}`)
   lines.push(`P(malignant): ${(input.clsProb * 100).toFixed(1)}%`)
   if (input.dice != null) {
-    lines.push(`Dice: ${input.dice.toFixed(2)}${input.iou != null ? ` · IoU: ${input.iou.toFixed(2)}` : ''}`)
+    lines.push(`Dice: ${input.dice.toFixed(2)}${input.iou != null ? ` | IoU: ${input.iou.toFixed(2)}` : ''}`)
   } else {
     lines.push('Dice: n/a (no expert mask for this image)')
   }
   if (input.measurements) {
     const m = input.measurements
     let area = `Area: ${m.areaPx.toFixed(0)} px`
-    if (m.areaMm2 != null) area += ` (~${m.areaMm2.toFixed(2)} mm²)`
+    if (m.areaMm2 != null) area += ` (~${m.areaMm2.toFixed(2)} mm2)`
     lines.push(area)
     let diam = `Longest diameter: ${m.longestDiameterPx.toFixed(1)} px`
     if (m.longestDiameterMm != null) diam += ` (~${m.longestDiameterMm.toFixed(2)} mm)`
@@ -87,7 +88,7 @@ export function buildResultPdf(input: ResultPdfInput): Blob {
     lines.push(width)
   }
   lines.push('')
-  lines.push(...wrapLines('Research demo only — not for clinical use or diagnosis.', 72))
+  lines.push(...wrapLines('Research demo only - not for clinical use or diagnosis.', 72))
   lines.push(...wrapLines('Your image stays in this browser. Nothing is uploaded.', 72))
 
   const contentOps: string[] = []
@@ -96,7 +97,7 @@ export function buildResultPdf(input: ResultPdfInput): Blob {
   contentOps.push('/Im1 Do')
   contentOps.push('Q')
 
-  let textY = imgY - 22
+  const textY = imgY - 22
   contentOps.push('BT')
   contentOps.push('/F1 11 Tf')
   contentOps.push(`${MARGIN} ${textY} Td`)
@@ -122,7 +123,8 @@ export function buildResultPdf(input: ResultPdfInput): Blob {
   objects.push(`<< /Length ${contentStream.length} >>\nstream\n${contentStream}\nendstream`)
   // 5 Font
   objects.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>')
-  // 6 Image XObject — binary JPEG
+  // 6 Image XObject — binary JPEG (placeholder; written as bytes below)
+  objects.push('__IMAGE__')
   const imgHeader =
     `<< /Type /XObject /Subtype /Image /Width ${input.previewWidth} /Height ${input.previewHeight} ` +
     `/ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.byteLength} >>\nstream\n`
@@ -144,7 +146,7 @@ export function buildResultPdf(input: ResultPdfInput): Blob {
   for (let i = 0; i < objects.length; i++) {
     offsets.push(offset)
     const n = i + 1
-    if (n === 6) {
+    if (objects[i] === '__IMAGE__') {
       pushStr(`${n} 0 obj\n`)
       parts.push(imgObj)
       pushStr('\nendobj\n')
