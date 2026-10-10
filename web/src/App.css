@@ -627,6 +627,40 @@
   margin-top: 1rem;
 }
 
+.drop-zone {
+  margin-top: 1.1rem;
+  padding: 0.9rem 1rem;
+  border: 1px dashed var(--accent-border);
+  background: #fff;
+  border-radius: var(--radius);
+  transition: border-color 160ms var(--ease-snap), background 160ms var(--ease-snap);
+}
+
+.drop-zone.drag-over {
+  border-color: var(--accent-ink);
+  background: var(--accent-pale);
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.drop-zone-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.privacy-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+
+.drop-zone .muted {
+  color: var(--ink-soft);
+}
+
 .viewer {
   position: relative;
   background: #0e0e0e;
@@ -1618,8 +1652,16 @@ td {
 .score-card {
   margin: 0.5rem 0 0.75rem;
   padding: 0.6rem 0.75rem;
-  background: rgba(41, 115, 115, 0.08);
+  background: #fff;
+  border: 1px solid var(--line-strong);
   border-left: 3px solid var(--accent);
+}
+.score-card .muted {
+  color: var(--ink-soft);
+}
+.gt-card .muted,
+.gt-card .label {
+  color: var(--ink-soft);
 }
 .score-card-metrics {
   margin: 0 0 0.25rem;

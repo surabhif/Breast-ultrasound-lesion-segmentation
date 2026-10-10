@@ -61,3 +61,7 @@ jobs:
         run: |
           python -m pip install reportlab pypdf matplotlib
           python scripts/check_report_pdf_drift.py
+      - name: Paper numbers drift check
+        run: |
+          python scripts/export_paper_numbers.py
+          python scripts/check_paper_numbers_drift.py

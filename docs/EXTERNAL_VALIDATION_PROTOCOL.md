@@ -5,13 +5,22 @@
 
 ---
 
-## MODEL_POLICY — when may v2 replace served v1.0.0? (D3, 2026-10-08)
+## MODEL_POLICY — when may v2 replace served v1.0.0? (D3, 2026-10-08; fair Phase-4 amendment 2026-10-10)
 
 Pre-registered **before** any Phase 1/2 retraining. A candidate `v2` (e.g. inpainted or multi-dataset) may **replace** the served `v1.0.0` weights on the site **before the Dec 4 freeze** only if **all** of the following hold on committed JSON:
 
 1. **Clean-subset Dice** (BUSI held-out test images with `annotation_flag == false`) ≥ v1.0.0 clean-subset Dice.
-2. **External Dice** (mean overall Dice on each primary external set that was scored for v1 — BUS-BRA and BrEaST) ≥ the corresponding v1.0.0 external Dice.
+2. **External / held-out Dice** — see Phase-4 fairness note below.
 3. **AUC** (B vs M on BUSI held-out test) drops by **no more than 0.02** relative to v1.0.0.
+
+### Phase 4 fairness amendment (2026-10-10)
+
+When v2 is trained on **BUSI train + patient-grouped BUS-BRA train**:
+
+- **BUS-BRA held-out is same-source for v2** (not external). Compare v2 held-out Dice to **v1.0.0 INT8 on the identical held-out case IDs** (`results/v2/v1_busbra_heldout.json`), **not** to v1’s full-set Dice (~0.714).
+- **BrEaST remains the only truly external test**; require BrEaST Dice ≥ v1 BrEaST Dice.
+- Report **seed mean ± SD** and a **paired bootstrap 95% CI** for each delta (v2 − v1) across seeds.
+- **Promotion decision uses the 3-seed mean**: if the mean fails any rule, keep v1. Among seeds that individually pass, promote the **median-performing** seed by clean Dice (**not** the best). Also require INT8 ≤ ~25 MB.
 
 If any criterion fails, keep **v1.0.0 served** and publish v2 only as an experiment / Results sidebar. Thresholds, min-area, and architecture operating points for the v1 external report remain frozen (§4). **Phase 1 does not retrain.**
 
@@ -74,6 +83,7 @@ From `results/postprocess.json` / training val lesion-Dice selection — **not**
 
 - Citation: Vallez et al., *Sci Data* 2025;12:242 ([doi:10.1038/s41597-025-04564-2](https://doi.org/10.1038/s41597-025-04564-2) / [PubMed 39934113](https://pubmed.ncbi.nlm.nih.gov/39934113/))
 - Download: Mendeley Data [doi:10.17632/7fvgj4jsp7.3](https://doi.org/10.17632/7fvgj4jsp7.3) — dataset **CC BY 4.0**
+- Owner steps (manual download → `data/external/busuclm/`): **`docs/BUSUCLM_STEPS.md`**. Loader: `scripts/external/busuclm.py` (skips with `FileNotFoundError` when absent; `scripts/eval_external.py` records skip and merges when present).
 - Many normals; exclude Doppler/combined frames when flagged in metadata; patient-cluster bootstrap (38 patients)
 
 **Skipped:** UDIAT (institutional licence agreement); BUSIS (signed release / no redistribution). See `docs/DECISION_LOG.md` D1.

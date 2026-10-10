@@ -8,6 +8,32 @@ Research demo, not for clinical use.
 
 ---
 
+## 2026-10-10 — Phase 4 citation / preprint prep (D13–D15)
+
+Prep only — **no tags, releases, or submissions** by agents.
+
+### D13 — Zenodo / CITATION freeze path
+
+**Decided (prep):** Ship `.zenodo.json` (MIT, software, open) + enhanced `CITATION.cff` with preferred-citation and DOI placeholders. Owner follows `docs/ZENODO_STEPS.md` to connect Zenodo and mint a DOI from a GitHub Release at freeze. Agents must not create tags/releases.
+
+### D14 — Preprint package
+
+**Decided (prep):** Add LaTeX manuscript under `paper/` with numbers imported from `web/public/results/metrics.json` via `scripts/export_paper_numbers.py` and drift check `scripts/check_paper_numbers_drift.py`. Venue comparison in `docs/SUBMISSION_GUIDE.md` (JEI vs arXiv). **Do not submit** in this phase; owner chooses later. Note: JEI’s published AI policy (as of 2026-10-10) conflicts with this project’s AI-assisted build — arXiv or site-only are the realistic defaults unless the owner changes approach.
+
+### D15 — Dec 4 freeze checklist
+
+**Decided (prep):** Owner uses `docs/FREEZE_CHECKLIST.md` and draft `docs/RELEASE_NOTES_v1.0_DRAFT.md` for the freeze release. Served model remains **v1.0.0** unless MODEL_POLICY is newly satisfied. No clinician outreach.
+
+### D16 — Phase 4 v2 training attempt
+
+**Decided:** Train multi-dataset v2 candidates (BUSI train + patient-grouped BUS-BRA train; held-out BUS-BRA test; BrEaST fully external) with ResNet-34 @ 256², stronger augmentation, Dice+focal, optional Telea caliper inpaint, ~3 seeds. Promote to served **v2.0.0** only if MODEL_POLICY passes **and** INT8 ONNX ≤ ~25 MB with reasonable in-browser latency. Otherwise keep **v1.0.0** and publish the comparison on Results. No clinician outreach.
+
+### D17 — Fair Phase-4 swap comparison (2026-10-10)
+
+**Decided:** Because v2 trains on BUS-BRA, BUS-BRA held-out is **same-source**, not external. Score v1.0.0 INT8 on the **exact same held-out IDs** and compare against that. Label accordingly on Results, report, and paper. **BrEaST** is the only truly external test. Report seed mean ± SD and paired-bootstrap 95% CIs for deltas. Promote only if the **seed mean** passes all rules; among passing seeds take the **median** by clean Dice (not the best). No merge until owner review.
+
+---
+
 ## 2026-10-08 — Phase 3 decisions (plan numbering D5–D12)
 
 Applied at Phase 3 (draft PR; owner merges). Numbering follows the enhancement plan.

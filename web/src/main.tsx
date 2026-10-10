@@ -46,3 +46,13 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 )
+
+/** Register service worker for app-shell + ONNX offline cache (versioned by current.json cache_key). */
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  const swUrl = `${import.meta.env.BASE_URL}sw.js`
+  window.addEventListener('load', () => {
+    void navigator.serviceWorker.register(swUrl, { scope: import.meta.env.BASE_URL }).catch((err) => {
+      console.warn('Service worker registration failed', err)
+    })
+  })
+}

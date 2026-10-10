@@ -42,20 +42,18 @@ def build_manifest(root: Path = ROOT) -> pd.DataFrame:
     if raw is None:
         raise FileNotFoundError(
             "BUS-UCLM archive not found under data/external/busuclm/. "
-            "Mendeley Data (doi:10.17632/7fvgj4jsp7.3) returned HTTP 403 without interactive login "
-            "from this environment. Download manually, place under data/external/busuclm/, then re-run."
+            "Mendeley Data (doi:10.17632/7fvgj4jsp7.3) often returns HTTP 403 without interactive login. "
+            "Download the zip locally, extract under data/external/busuclm/ (see docs/BUSUCLM_STEPS.md), then re-run."
         )
 
     # Flexible layout: CSV if present, else folder walk with RGB masks (green=benign, red=malignant).
     csvs = list(raw.rglob("*.csv"))
     rows: list[dict] = []
     if csvs:
-        meta = pd.read_csv(csvs[0])
         # Best-effort column mapping — exact schema depends on the released CSV.
-        raise FileNotFoundError(
-            f"BUS-UCLM CSV found ({csvs[0]}) but automated column mapping is not configured yet; "
-            "document skip or extend busuclm.py after inspecting the local release."
-        )
+        # Prefer PNG image/mask heuristics below; CSV-only trees need a configured mapper.
+        _ = pd.read_csv(csvs[0])
+        # Fall through to folder walk; if that also yields nothing, raise a clear skip.
 
     # RGB mask convention from the Sci Data paper / Antillia notes
     for img in sorted(raw.rglob("*.png")):
@@ -97,7 +95,16 @@ def build_manifest(root: Path = ROOT) -> pd.DataFrame:
             }
         )
     if not rows:
-        raise FileNotFoundError("BUS-UCLM files present but no image/mask pairs matched heuristics.")
+        zips = list(root.glob("*.zip")) + list(root.rglob("*.zip"))
+        if zips:
+            raise FileNotFoundError(
+                f"BUS-UCLM zip present ({zips[0].name}) but not extracted, or no image/mask pairs matched. "
+                "Extract the Mendeley archive under data/external/busuclm/ (see docs/BUSUCLM_STEPS.md), then re-run."
+            )
+        raise FileNotFoundError(
+            "BUS-UCLM files present under data/external/busuclm/ but no image/mask pairs matched heuristics. "
+            "Check the extracted layout against docs/BUSUCLM_STEPS.md."
+        )
     df = ensure_manifest(pd.DataFrame(rows))
     # Exclude Doppler/combined when flagged
     df = df[~df["has_doppler"].astype(bool)].reset_index(drop=True)

@@ -20,6 +20,10 @@ export type ModelManifest = {
   filename: string
   size_bytes: number
   quantization: string
+  /** Spatial input size for ONNX (default 160 for v1.0.0). */
+  img_size?: number
+  architecture?: string
+  model_kind?: string
   postprocess: {
     seg_threshold: number
     min_component_area: number

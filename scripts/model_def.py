@@ -102,12 +102,20 @@ class _Up(nn.Module):
 
 
 class ResNetUNet(nn.Module):
-    """U-Net with torchvision ResNet-18 encoder; slim bilinear decoder for ~15MB INT8."""
+    """U-Net with torchvision ResNet encoder; slim bilinear decoder for browser INT8."""
 
-    def __init__(self, pretrained: bool = True) -> None:
+    def __init__(self, backbone: str = "resnet18", pretrained: bool = True) -> None:
         super().__init__()
-        weights = models.ResNet18_Weights.IMAGENET1K_V1 if pretrained else None
-        encoder = models.resnet18(weights=weights)
+        backbone = backbone.lower()
+        if backbone == "resnet18":
+            weights = models.ResNet18_Weights.IMAGENET1K_V1 if pretrained else None
+            encoder = models.resnet18(weights=weights)
+        elif backbone == "resnet34":
+            weights = models.ResNet34_Weights.IMAGENET1K_V1 if pretrained else None
+            encoder = models.resnet34(weights=weights)
+        else:
+            raise ValueError(f"Unsupported ResNet backbone: {backbone}")
+        self.backbone_name = backbone
         self.stem = nn.Sequential(encoder.conv1, encoder.bn1, encoder.relu)
         self.pool = encoder.maxpool
         self.layer1 = encoder.layer1  # 64
@@ -115,7 +123,7 @@ class ResNetUNet(nn.Module):
         self.layer3 = encoder.layer3  # 256
         self.layer4 = encoder.layer4  # 512
 
-        # Slimmer decoder than classic DoubleConv@256 to keep INT8 ≤ ~15 MB
+        # Slimmer decoder than classic DoubleConv@256 to keep INT8 browser-sized
         self.up4 = _Up(512, 128)
         self.dec4 = DoubleConv(128 + 256, 128)
         self.up3 = _Up(128, 64)
@@ -161,7 +169,9 @@ def build_model(kind: str = "resnet18", pretrained: bool = True) -> nn.Module:
     if kind in {"tiny", "quick", "baseline"}:
         return TinyUNet(base=16)
     if kind in {"resnet18", "full"}:
-        return ResNetUNet(pretrained=pretrained)
+        return ResNetUNet(backbone="resnet18", pretrained=pretrained)
+    if kind in {"resnet34", "r34"}:
+        return ResNetUNet(backbone="resnet34", pretrained=pretrained)
     raise ValueError(f"Unknown model kind: {kind}")
 
 
@@ -199,6 +209,38 @@ def combined_seg_loss(
     pw = torch.tensor([bce_pos_weight], device=logits.device, dtype=logits.dtype)
     bce = F.binary_cross_entropy_with_logits(logits, targets.float(), pos_weight=pw)
     return bce + dice_weight * soft_dice_loss(logits, targets)
+
+
+def focal_bce_with_logits(
+    logits: torch.Tensor,
+    targets: torch.Tensor,
+    gamma: float = 2.0,
+    alpha: float = 0.75,
+    eps: float = 1e-6,
+) -> torch.Tensor:
+    """Binary focal loss (positive-leaning alpha) for sparse lesions."""
+    targets = targets.float()
+    prob = torch.sigmoid(logits)
+    pt = prob * targets + (1.0 - prob) * (1.0 - targets)
+    w = alpha * targets + (1.0 - alpha) * (1.0 - targets)
+    loss = -w * (1.0 - pt).clamp(min=0.0).pow(gamma) * (
+        targets * (prob + eps).log() + (1.0 - targets) * (1.0 - prob + eps).log()
+    )
+    return loss.mean()
+
+
+def dice_focal_seg_loss(
+    logits: torch.Tensor,
+    targets: torch.Tensor,
+    dice_weight: float = 1.5,
+    focal_weight: float = 1.0,
+    gamma: float = 2.0,
+    alpha: float = 0.75,
+) -> torch.Tensor:
+    """Soft Dice + focal BCE (Phase 4 v2 candidate loss)."""
+    return focal_weight * focal_bce_with_logits(
+        logits, targets, gamma=gamma, alpha=alpha
+    ) + dice_weight * soft_dice_loss(logits, targets)
 
 
 def classification_loss(logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:

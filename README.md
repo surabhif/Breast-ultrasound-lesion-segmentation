@@ -20,10 +20,14 @@ End-to-end student research project on the [BUSI](https://doi.org/10.1016/j.dib.
 | `results/` | Real run JSONs, split file, caliper/duplicate audit CSV |
 | `docs/HOW_IT_WORKS.md` | Plain-language walkthrough for interviews |
 | `docs/EXTERNAL_VALIDATION_PROTOCOL.md` | Pre-registered BUS-BRA / BrEaST protocol + MODEL_POLICY (v1 scored) |
-| `docs/DECISION_LOG.md` | Owner decisions (D1–D3; D4 revoked) |
+| `docs/DECISION_LOG.md` | Owner decisions (D1–D3; D4 revoked; D5–D16) |
 | `docs/LITERATURE_COMPARISON.md` | Verified literature table + split/leakage notes |
+| `docs/ZENODO_STEPS.md` / `FREEZE_CHECKLIST.md` | Owner DOI mint + Dec 4 freeze |
+| `docs/SUBMISSION_GUIDE.md` | JEI vs arXiv (no auto-submit) |
+| `docs/BUSUCLM_STEPS.md` | Optional BUS-UCLM download → external table |
+| `paper/` | Preprint LaTeX + `main.pdf` (numbers from metrics JSON) |
 | `CHANGELOG.md` | App + model version history |
-| `web/` | Vite + React + TypeScript demo (onnxruntime-web) |
+| `web/` | Vite + React + TypeScript demo (onnxruntime-web; PWA offline) |
 | `.github/workflows/ci.yml` | Lint, typecheck, build, smoke, parity |
 | `.github/workflows/deploy-pages.yml` | GitHub Pages deploy |
 
@@ -33,7 +37,9 @@ The **full BUSI archive is not committed** (redistribution license is unclear). 
 
 ## Headline results (committed run)
 
-**Phase 2:** served model still **v1.0.0** (inpaint-retrain did not pass the external-Dice swap rule). See Results → “What if we erase the calipers?” and CHANGELOG.
+**Phase 4:** multi-dataset v2 candidates under the **fair** MODEL_POLICY (BUS-BRA = same-source held-out vs v1 on the identical split; BrEaST external; seed-mean + median passer). Seed-mean clean Dice failed (0.614 vs 0.623) → **served model stays v1.0.0**. See Results → “Phase 4 model candidates vs v1” and `results/v2_experiment.json`.
+
+**Phase 2:** inpaint-retrain did not pass the external-Dice swap rule. See Results → “What if we erase the calipers?” and CHANGELOG.
 
 
 CPU-trained ResNet-18 U-Net, 160×160, grouped held-out test; val-tuned threshold **0.4** + min-component area **40**. Model **v1.0.0**.

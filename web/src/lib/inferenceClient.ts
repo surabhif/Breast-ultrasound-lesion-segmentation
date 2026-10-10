@@ -87,6 +87,7 @@ function ensureWorker(): Promise<void> {
 async function fetchModelBuffer(onProgress?: ProgressCb): Promise<ArrayBuffer> {
   if (cachedBuffer) return cachedBuffer
   const manifest = await ensureModelManifest()
+  inferredSize = manifest.img_size && manifest.img_size > 0 ? manifest.img_size : IMG_SIZE
   const modelUrl = MODEL_URL()
   const cacheName = MODEL_CACHE()
 
@@ -172,7 +173,8 @@ export async function preloadModel(onProgress?: ProgressCb): Promise<void> {
     }
     w.postMessage(loadMsg, [loadMsg.buffer])
   })
-  inferredSize = IMG_SIZE
+  // Keep size from model.json (set in fetchModelBuffer); fall back to constant.
+  if (!inferredSize) inferredSize = IMG_SIZE
   onProgress?.({
     status: 'ready',
     loadedBytes: buffer.byteLength,

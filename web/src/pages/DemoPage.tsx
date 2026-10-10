@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import samplesManifest from '../data/samples.json'
 import externalSamples from '../data/external_samples.json'
-import { MODEL_STATUS, SEG_THRESHOLD } from '../lib/constants'
+import { MODEL_STATUS, MODEL_VERSION, SEG_THRESHOLD } from '../lib/constants'
 import {
   preloadModel,
   runInference,
@@ -14,8 +14,15 @@ import {
 import { downsampleMaskNearest, diceScore, iouScore } from '../lib/metrics'
 import { measureLesion, type LesionMeasurements } from '../lib/measure'
 import { maskToOverlay } from '../lib/image'
+import {
+  buildResultPdf,
+  canvasToJpegBytes,
+  downloadResultPdf,
+} from '../lib/resultPdf'
 import { overallUncertaintySummary, type TtaResult } from '../lib/tta'
 import { sampleHasExpert, sampleSourceLabel, sampleSpacingMm } from '../lib/sampleMeta'
+
+const PRIVACY_NOTE = 'Your image stays in this browser. Nothing is uploaded.'
 
 type Sample = {
   id: string
@@ -91,7 +98,11 @@ export default function DemoPage() {
     totalBytes: null,
     message: 'Model not loaded yet',
   })
+  const [dragOver, setDragOver] = useState(false)
+  const [pdfBusy, setPdfBusy] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
   const objectUrlRef = useRef<string | null>(null)
   const preloadDone = useRef(false)
   const analyzeGen = useRef(0)
@@ -305,13 +316,59 @@ export default function DemoPage() {
 
   const hasExpert = sampleHasExpert(selectedMeta)
 
+  function acceptImageFile(file: File | undefined | null) {
+    if (!file) return
+    // Some mobile camera picks omit MIME; accept empty type and sniff by name later in pipeline.
+    if (file.type && !file.type.startsWith('image/')) {
+      setError('Please choose an image file (PNG, JPEG, or similar).')
+      return
+    }
+    void analyze(file)
+  }
+
+  async function handleDownloadPdf() {
+    if (!result || !canvasRef.current) return
+    setPdfBusy(true)
+    setError(null)
+    try {
+      const jpeg = await canvasToJpegBytes(canvasRef.current)
+      const blob = buildResultPdf({
+        previewJpeg: jpeg,
+        previewWidth: canvasRef.current.width,
+        previewHeight: canvasRef.current.height,
+        clsProb: result.clsProb,
+        dice: hasExpert ? browserDice : null,
+        iou: hasExpert ? browserIoU : null,
+        measurements: measurements
+          ? {
+              areaPx: measurements.areaPx,
+              areaMm2: measurements.areaMm2,
+              longestDiameterPx: measurements.longestDiameterPx,
+              longestDiameterMm: measurements.longestDiameterMm,
+              perpendicularWidthPx: measurements.perpendicularWidthPx,
+              perpendicularWidthMm: measurements.perpendicularWidthMm,
+            }
+          : null,
+        modelVersion: MODEL_VERSION,
+        sampleLabel: selectedMeta?.label ?? (selectedId ? selectedId : 'user upload'),
+      })
+      downloadResultPdf(blob, `busi-result-${selectedId ?? 'upload'}.pdf`)
+    } catch (err) {
+      console.error(err)
+      setError(err instanceof Error ? err.message : 'PDF export failed')
+    } finally {
+      setPdfBusy(false)
+    }
+  }
+
   return (
     <div className="fade-in demo-page">
       <header className="page-intro">
         <h1>Try the detector</h1>
         <p>
-          Choose a BUSI gallery sample or a CC BY BrEaST sample, or upload your own ultrasound.
-          Inference runs entirely in your browser. Research demo — not for clinical use.
+          Choose a BUSI gallery sample or a CC BY BrEaST sample, or upload / capture your own
+          ultrasound. Inference runs entirely in your browser. Research demo — not for clinical
+          use.
         </p>
       </header>
 
@@ -393,22 +450,87 @@ export default function DemoPage() {
             ))}
           </div>
 
-          <div className="upload-row">
-            <label className="btn secondary">
-              Upload your own image
+          <div
+            className={`drop-zone${dragOver ? ' drag-over' : ''}`}
+            role="region"
+            aria-label="Upload ultrasound image. Drop an image here or use the buttons below."
+            onDragEnter={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setDragOver(true)
+            }}
+            onDragOver={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setDragOver(true)
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              if (e.currentTarget === e.target) setDragOver(false)
+            }}
+            onDrop={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setDragOver(false)
+              const file = e.dataTransfer.files?.[0]
+              acceptImageFile(file)
+            }}
+          >
+            <p className="drop-zone-title">Your own ultrasound</p>
+            <p className="privacy-note" role="note">
+              {PRIVACY_NOTE}
+            </p>
+            <p className="muted tiny" style={{ marginTop: '0.35rem' }}>
+              Drag and drop an image here, or use the buttons (keyboard-accessible file pickers).
+              Images are read as object URLs in this tab only.
+            </p>
+            <div className="upload-row">
+              <button
+                type="button"
+                className="btn secondary"
+                disabled={busy || loadProgress.status === 'error'}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Upload image
+              </button>
+              <button
+                type="button"
+                className="btn secondary"
+                disabled={busy || loadProgress.status === 'error'}
+                onClick={() => cameraInputRef.current?.click()}
+              >
+                Capture with camera
+              </button>
               <input
+                ref={fileInputRef}
+                id="demo-upload-input"
                 className="sr-only"
                 type="file"
                 accept="image/*"
                 disabled={busy || loadProgress.status === 'error'}
+                aria-label="Upload ultrasound image from device"
                 onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  if (file) void analyze(file)
+                  acceptImageFile(e.target.files?.[0])
                   e.target.value = ''
                 }}
               />
-            </label>
-            {busy && <span className="muted">Running model…</span>}
+              <input
+                ref={cameraInputRef}
+                id="demo-camera-input"
+                className="sr-only"
+                type="file"
+                accept="image/*"
+                capture="environment"
+                disabled={busy || loadProgress.status === 'error'}
+                aria-label="Capture ultrasound with device camera"
+                onChange={(e) => {
+                  acceptImageFile(e.target.files?.[0])
+                  e.target.value = ''
+                }}
+              />
+              {busy && <span className="muted">Running model…</span>}
+            </div>
           </div>
           {error && (
             <p className="error-text" role="alert">
@@ -420,33 +542,35 @@ export default function DemoPage() {
         <section className="panel">
           <h2 className="section-title">Mask overlay &amp; score</h2>
 
-          <div
-            className="compare-toggle"
-            role="group"
-            aria-label="Expert versus model view"
-          >
-            {(['model', 'expert', 'both', 'difference'] as CompareMode[]).map((m) => (
-              <button
-                key={m}
-                type="button"
-                className={compareMode === m ? 'active' : ''}
-                disabled={!hasExpert && m !== 'model'}
-                aria-pressed={compareMode === m}
-                onClick={() => setCompareMode(m)}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
-          {!hasExpert && (
-            <p className="muted tiny">Expert / Difference modes need a gallery sample with a mask.</p>
+          {hasExpert ? (
+            <div
+              className="compare-toggle"
+              role="group"
+              aria-label="Expert versus model view"
+            >
+              {(['model', 'expert', 'both', 'difference'] as CompareMode[]).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  className={compareMode === m ? 'active' : ''}
+                  aria-pressed={compareMode === m}
+                  onClick={() => setCompareMode(m)}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="muted tiny">
+              Expert compare and Dice are hidden for uploads (no ground-truth mask).
+            </p>
           )}
 
           <div className="viewer">
             {!sourceUrl && !busy && (
               <div className="viewer-empty">
                 <p>No image selected yet.</p>
-                <p className="muted">Click a gallery sample or upload an image.</p>
+                <p className="muted">Click a gallery sample, upload, or capture an image.</p>
               </div>
             )}
             {busy && !result && (
@@ -482,7 +606,9 @@ export default function DemoPage() {
               <p className="muted tiny">
                 {selectedMeta
                   ? 'Per-image Dice appears for samples with expert masks.'
-                  : 'Upload has no expert outline — Dice is not shown.'}
+                  : sourceUrl
+                    ? 'Upload has no expert outline — Dice is not shown.'
+                    : 'Select a gallery sample with an expert mask to see Dice, or upload your own image.'}
               </p>
             )}
           </div>
@@ -722,6 +848,22 @@ export default function DemoPage() {
             <p className="muted tiny" style={{ marginTop: '0.75rem' }}>
               {selectedMeta.attribution}
             </p>
+          )}
+
+          {result && (
+            <div className="upload-row" style={{ marginTop: '1rem' }}>
+              <button
+                type="button"
+                className="btn secondary"
+                disabled={pdfBusy || busy}
+                onClick={() => void handleDownloadPdf()}
+              >
+                {pdfBusy ? 'Preparing PDF…' : 'Download result PDF'}
+              </button>
+              <p className="muted tiny" style={{ margin: 0 }}>
+                One-page client-side PDF (preview + scores). {PRIVACY_NOTE}
+              </p>
+            </div>
           )}
 
           <details className="explainer heatmap-explainer">

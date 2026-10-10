@@ -20,7 +20,8 @@
   --bg-deep: #e5eeee;
   --ink: #0e0e0e;
   --ink-soft: #2a2a2a;
-  --muted: #5c6b6b;
+  /* Darker muted for AA on accent-pale / score-card tints (axe color-contrast). */
+  --muted: #4a5858;
   --line: #dce6e6;
   --line-strong: #c5d4d4;
   --panel: #ffffff;
@@ -30,7 +31,8 @@
   --warn: #ffffff;
 
   /* Semantic labels — keep B/M distinguishable from brand teal */
-  --malignant: #c81e4a;
+  /* Darker red so small badge text clears 4.5:1 on soft pink. */
+  --malignant: #a8123a;
   --malignant-soft: #ffe4ea;
   --malignant-border: #f0b4c0;
   --benign: #0e0e0e;
