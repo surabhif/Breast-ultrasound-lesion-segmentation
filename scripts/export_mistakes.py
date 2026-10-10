@@ -123,7 +123,7 @@ def main() -> None:
 
     rows = []
     notes_md = [
-        "# Error notes (mistakes explorer)",
+        "# Error notes (Model Errors explorer)",
         "",
         "**Source:** AI-generated analysis (Cursor agent). Research demo only.",
         "",

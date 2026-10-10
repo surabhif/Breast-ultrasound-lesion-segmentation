@@ -933,10 +933,10 @@ export default function ResultsPage() {
       )}
 
       <section className="panel" style={{ marginTop: '1rem' }}>
-        <h2 className="section-title">Mistakes explorer</h2>
+        <h2 className="section-title">Model Errors explorer</h2>
         <p>
           Browse filterable error cases with AI-generated analysis notes (outline silhouettes only for
-          BUSI). <Link to="/mistakes">Open mistakes explorer →</Link>
+          BUSI). <Link to="/model-errors">Open model errors explorer →</Link>
         </p>
       </section>
 

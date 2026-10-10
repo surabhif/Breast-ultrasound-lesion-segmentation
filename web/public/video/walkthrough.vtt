@@ -22,7 +22,7 @@ Results — Dice, ROC, and calibration from committed JSON
 External validation on BUS-BRA and BrEaST
 
 00:00:52.000 --> 00:00:58.000
-Mistakes explorer — outline-only silhouettes for hard cases
+Model Errors explorer — outline-only silhouettes for hard cases
 
 00:00:58.000 --> 00:01:04.000
 BI-RADS context — a model score is not a BI-RADS category

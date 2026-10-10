@@ -38,6 +38,7 @@ const routes = [
   'about',
   'demo',
   'model-card',
+  'model-errors',
   'mistakes',
   'bi-rads',
   'surgeons-view',

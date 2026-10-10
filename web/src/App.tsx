@@ -1,4 +1,4 @@
-import { NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import HomePage from './pages/HomePage'
 import DemoPage from './pages/DemoPage'
@@ -17,7 +17,7 @@ const TITLES: Record<string, string> = {
   '/': SITE.title,
   '/demo': `Try the detector · ${SITE.shortTitle}`,
   '/results': `Results · ${SITE.shortTitle}`,
-  '/mistakes': `Mistakes explorer · ${SITE.shortTitle}`,
+  '/model-errors': `Model Errors explorer · ${SITE.shortTitle}`,
   '/bi-rads': `BI-RADS context · ${SITE.shortTitle}`,
   '/surgeons-view': `Surgeon's view · ${SITE.shortTitle}`,
   '/portfolio': `Portfolio · ${SITE.shortTitle}`,
@@ -63,7 +63,7 @@ export default function App() {
               </NavLink>
               <NavLink to="/demo">Demo</NavLink>
               <NavLink to="/results">Results</NavLink>
-              <NavLink to="/mistakes">Mistakes</NavLink>
+              <NavLink to="/model-errors">Model Errors</NavLink>
               <NavMenu
                 label="Learn"
                 items={[
@@ -89,7 +89,8 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/results" element={<ResultsPage />} />
-          <Route path="/mistakes" element={<MistakesPage />} />
+          <Route path="/model-errors" element={<MistakesPage />} />
+          <Route path="/mistakes" element={<Navigate to="/model-errors" replace />} />
           <Route path="/bi-rads" element={<BiradsPage />} />
           <Route path="/surgeons-view" element={<SurgeonsViewPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />

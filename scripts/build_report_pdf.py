@@ -596,12 +596,12 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(P("5.7 Failure cases", "H2R"))
     story.append(
         P(
-            "Hard cases from the held-out test are published as outline-only silhouettes on the Mistakes "
+            "Hard cases from the held-out test are published as outline-only silhouettes on the Model Errors "
             "explorer (BUSI ultrasound pixels withheld on new visuals). The grid below samples those outlines."
         )
     )
     story.append(fig("fail", width=5.8 * inch))
-    story.append(P("Outline-only silhouettes for selected BUSI mistake cases.", "Cap"))
+    story.append(P("Outline-only silhouettes for selected BUSI model-error cases.", "Cap"))
 
     story.append(P("6. Limitations", "H1R"))
     for bullet in [

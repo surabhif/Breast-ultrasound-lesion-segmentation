@@ -85,12 +85,12 @@ SCENES = [
         "caption": "External validation on BUS-BRA and BrEaST",
     },
     {
-        "id": "mistakes",
+        "id": "model-errors",
         "kind": "page",
-        "path": "/mistakes",
+        "path": "/model-errors",
         "duration": 6,
         "wait_for": "h1",
-        "caption": "Mistakes explorer — outline-only silhouettes for hard cases",
+        "caption": "Model Errors explorer — outline-only silhouettes for hard cases",
     },
     {
         "id": "birads",

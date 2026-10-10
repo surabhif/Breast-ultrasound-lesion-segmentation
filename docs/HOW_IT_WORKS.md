@@ -107,7 +107,7 @@ The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA** and **BrE
 - **TTA uncertainty:** run the model several times with small flips/brightness changes; show an agreement chip and optional heatmap. This is *not* a probability of being wrong.
 - **Web Worker:** inference (and TTA) leave the UI thread so the page stays responsive; WASM files are self-hosted.
 - **Threshold sliders:** change mask and class cut-offs live on the Demo; on Results, explore sensitivity/specificity trade-offs from saved scores.
-- **Mistakes explorer:** filter hard cases with outline-only silhouettes and clearly labelled AI-generated notes.
+- **Model Errors explorer:** filter hard cases with outline-only silhouettes and clearly labelled AI-generated notes.
 
 This project does **not** include expert medical review or outreach (D4 revoked).
 
