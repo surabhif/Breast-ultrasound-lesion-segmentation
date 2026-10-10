@@ -140,9 +140,18 @@ captioned walkthrough video and an auto-filled PDF report are shipped under
 Protocol text lives in \texttt{docs/EXTERNAL\_VALIDATION\_PROTOCOL.md} and was committed before
 Phase~1 scoring. External scoring uses identical preprocess/postprocess and the frozen INT8
 weights. A candidate v2 may replace served v1 before the Dec~4 freeze only if it matches or
-beats v1 on (a)~BUSI clean-subset Dice and (b)~external Dice on each primary scored set, and
-(c)~BUSI test AUC drops by at most $0.02$. Otherwise v1 remains served and v2 is published as
-an experiment only.
+beats v1 on (a)~BUSI clean-subset Dice and (b)~held-out / external Dice under the fairness
+rule below, and (c)~BUSI test AUC drops by at most $0.02$. Otherwise v1 remains served and v2
+is published as an experiment only.
+
+\paragraph{Phase~4 fairness.}
+When v2 is trained on BUSI train plus a patient-grouped BUS-BRA train split, the BUS-BRA
+held-out set is \emph{same-source held-out} for v2 (not external). We therefore score
+v1.0.0 INT8 on the identical held-out case IDs and compare against that baseline, not against
+v1's full-set BUS-BRA Dice. BrEaST remains the only truly external test. We report seed
+mean${}\pm{}$SD and paired-bootstrap 95\% confidence intervals for each delta, decide
+promotion on the seed mean, and---if the mean passes---promote the median-performing
+passing seed by clean Dice (not the best).
 
 \subsection{Additional analyses}
 
