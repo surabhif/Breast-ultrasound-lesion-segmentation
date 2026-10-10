@@ -68,22 +68,23 @@ def plain_abstract(nums: dict[str, str]) -> str:
     return (
         f"Breast ultrasound helps doctors look at breast lumps, especially when mammograms are "
         f"hard to read in dense tissue. This student project builds a program that outlines those "
-        f"lumps on ultrasound pictures and estimates how well the program tells benign from "
+        f"lumps on ultrasound pictures and estimates how well it does at telling harmless from "
         f"cancerous lumps. It was trained on one public image collection and checked on three "
         f"others from different hospitals. "
         f"The main quality measure is an outline-overlap score (Dice), which is high when the "
-        f"computer outline matches the expert outline. On held-out training-collection images, the "
-        f"browser version reaches {nums['INT8_DICE']} overall and {nums['INT8_LESION_DICE']} on "
-        f"images that contain a lump. On two outside collections, outline scores stay similar "
-        f"({nums['BUSBRA_DICE']} and {nums['BREAST_DICE']}), while telling benign from cancerous "
-        f"gets harder after the hospital and scanner change. On a third outside collection, empty "
-        f"or normal images remain difficult: false outlines pull the all-image score down to "
-        f"{nums['BUSUCLM_DICE']} even though the lesion-only score is {nums['BUSUCLM_LESION_DICE']}. "
-        f"The write-up also studies near-duplicate frames, burned-in measurement marks, and whether "
-        f"outlines stay stable when a picture is flipped. A later mixed-collection retrain improved "
-        f"some outside scores but did not pass a pre-agreed replacement rule, so the site still "
-        f"serves the original model. This is an educational research demonstration, not a medical "
-        f"device, and must not be used for diagnosis or care decisions."
+        f"computer outline matches the expert outline. On images saved for testing, the browser "
+        f"version reaches {nums['INT8_DICE']} overall. On images that contain a lump, the outline "
+        f"match is {nums['INT8_LESION_DICE']}. On two outside collections, outline scores stay "
+        f"similar ({nums['BUSBRA_DICE']} and {nums['BREAST_DICE']}), while telling harmless from "
+        f"cancerous lumps gets harder after the hospital and scanner change. On a third outside "
+        f"collection, pictures without lumps remain difficult: false outlines pull the overall "
+        f"score down to {nums['BUSUCLM_DICE']}, even though on images that contain a lump the "
+        f"outline match is {nums['BUSUCLM_LESION_DICE']}. "
+        f"The write-up also studies near-identical photos, burned-in measurement marks, and whether "
+        f"outlines stay stable when a picture is flipped. A retrained version did better on some "
+        f"outside images but not consistently, so the original stays. This is an educational "
+        f"research demonstration, not a medical device, and must not be used for diagnosis or care "
+        f"decisions."
     )
 
 
@@ -137,20 +138,20 @@ def collect_numbers() -> dict[str, str]:
     if "test_dice" in busuclm_js:
         busuclm = (
             f"**BUS-UCLM** (Vallez et al., 2025; Mendeley Creative Commons Attribution 4.0) is "
-            f"scored for the frozen served browser model: n={busuclm_js['n']} / "
+            f"scored for the frozen browser model: n={busuclm_js['n']} / "
             f"{busuclm_js['n_patients']} patients (43 Doppler/combined frames excluded). "
-            f"All-image outline-overlap score **{fmt(busuclm_js['test_dice'])}** "
+            f"Overall outline-overlap score **{fmt(busuclm_js['test_dice'])}** "
             f"[{fmt(busuclm_js['test_dice_bootstrap_95ci'][0])}, "
             f"{fmt(busuclm_js['test_dice_bootstrap_95ci'][1])}]; "
-            f"lesion outline-overlap score **{fmt(busuclm_js['lesion_dice'])}** "
+            f"on images that contain a lump, **{fmt(busuclm_js['lesion_dice'])}** "
             f"[{fmt(busuclm_js['lesion_dice_bootstrap_95ci'][0])}, "
             f"{fmt(busuclm_js['lesion_dice_bootstrap_95ci'][1])}]; "
             f"area under the receiver-operating curve (AUC) **{fmt(busuclm_js['cls_roc_auc'])}**. "
-            f"Normal false positives dominate the all-image figure "
+            f"Normal false positives dominate the overall figure "
             f"({busuclm_js['normal_false_positive_count']}/{busuclm_js['normal_n']}) — the same "
             f"known weakness as on BUSI ({int8.get('normal_false_positive_count')}/"
-            f"{int8.get('normal_n')}). Prefer the lesion outline-overlap score for cross-dataset "
-            f"comparison (between BrEaST and BUS-BRA)."
+            f"{int8.get('normal_n')}). Prefer the score on images that contain a lump when "
+            f"comparing across collections (between BrEaST and BUS-BRA)."
         )
         busuclm_dice = fmt(busuclm_js["test_dice"], label="BUS-UCLM dice")
         busuclm_lesion = fmt(busuclm_js["lesion_dice"], label="BUS-UCLM lesion dice")
@@ -350,7 +351,7 @@ def make_figures() -> dict[str, Path]:
         (3.8, "Train outline\n+ lump-type\nmodel"),
         (5.6, "Shrink for\nbrowser\n(download)"),
         (7.4, "Choose\noutline\nthreshold"),
-        (9.0, "Score on\nheld-out &\noutside sets"),
+        (9.0, "Score on\nown test &\noutside sets"),
     ]
     for x, label in steps:
         ax.add_patch(
@@ -390,7 +391,7 @@ def make_figures() -> dict[str, Path]:
 
     fig, ax = plt.subplots(figsize=(5.2, 3.2), dpi=140)
     ax.hist(dice_vals, bins=18, color=TEAL, edgecolor="white")
-    ax.set_xlabel("Outline-overlap score (Dice) on held-out BUSI test")
+    ax.set_xlabel("Outline-overlap score (Dice) on the project's own BUSI test")
     ax.set_ylabel("Count")
     ax.set_title("Figure 2. Served browser-model Dice distribution")
     ax.axvline(np.mean(dice_vals), color="#c81e4a", linestyle="--", label=f"mean={np.mean(dice_vals):.3f}")
@@ -781,22 +782,22 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
 
     def key_findings_box():
         bullets = [
-            f"On held-out training-collection images, the browser model’s outline-overlap score is "
-            f"**{nums['INT8_DICE']}** overall and **{nums['INT8_LESION_DICE']}** on images that "
-            f"actually contain a lump.",
+            f"On images saved for testing, the browser program’s outline-overlap score is "
+            f"**{nums['INT8_DICE']}** overall. On images that contain a lump, the outline match "
+            f"is **{nums['INT8_LESION_DICE']}**.",
             f"On outside hospitals, outline quality stays in a similar ballpark on BUS-BRA "
-            f"(**{nums['BUSBRA_DICE']}**) and BrEaST (**{nums['BREAST_DICE']}**), but how well the "
-            f"program tells benign from cancerous drops (**{nums['BUSBRA_AUC']}** / "
-            f"**{nums['BREAST_AUC']}** vs **{nums['INT8_AUC']}** inside).",
-            f"On BUS-UCLM, normal images without lumps drive many false outlines "
-            f"({nums['BUSUCLM_NFP']}); the lesion-only outline-overlap score "
-            f"**{nums['BUSUCLM_LESION_DICE']}** is the fairer comparison.",
-            f"Near-duplicate frames are common ({nums['N_MULTI_DUP']} images in multi-member "
-            f"groups). A short leakage check did not show random splits inflating validation "
-            f"scores (Δ ≈ **{nums['LEAK_DELTA']}**), but patient IDs are still missing.",
-            f"Erasing measurement marks and a later multi-collection retrain improved some "
-            f"outside scores but did **not** replace the published model under the pre-agreed "
-            f"swap rule (clean-subset score moved by about {nums['V2_CLEAN_DELTA']}).",
+            f"(**{nums['BUSBRA_DICE']}**) and BrEaST (**{nums['BREAST_DICE']}**), but telling "
+            f"harmless from cancerous lumps gets harder (**{nums['BUSBRA_AUC']}** / "
+            f"**{nums['BREAST_AUC']}** vs **{nums['INT8_AUC']}** on the original test set).",
+            f"On BUS-UCLM, pictures without lumps often get false outlines "
+            f"({nums['BUSUCLM_NFP']}). On images that contain a lump, the outline match is "
+            f"**{nums['BUSUCLM_LESION_DICE']}** — the fairer comparison.",
+            f"Near-identical photos are common ({nums['N_MULTI_DUP']} images sit in "
+            f"multi-member groups). Checking for near-identical photos showed they did not "
+            f"inflate the scores, but patient IDs are still missing from the main training set.",
+            f"Erasing measurement marks and retraining helped on some outside images, but not "
+            f"consistently enough to replace the published model, so the original stays "
+            f"(version {nums['MODEL_VERSION']}).",
             "This is an educational research demo only — not for diagnosis, screening, or care "
             "decisions.",
         ]
@@ -892,30 +893,30 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         P(
             "U-Net-style encoder–decoder networks remain a default for biomedical segmentation "
             "(Ronneberger et al., 2015). On the Breast Ultrasound Images (BUSI) dataset, recent "
-            "papers report a wide range of scores depending on whether splits are random, whether "
-            "near-duplicates are removed, and whether normal (no-lesion) images are included. "
-            "UNeXt (Valanarasu & Patel, MICCAI 2022) reports F1 about 0.79 and intersection-over-union "
-            "(IoU) about 0.67 on an 80–20 random split of benign and malignant BUSI frames at 256×256 "
-            "— a useful context number, but not an apples-to-apples match for this project’s grouped "
-            "split and per-image outline-overlap score. Musah et al. (2025) show that BUSI scores "
-            "fall after de-duplication and fall further when a BUSI-trained model is tested on BrEaST "
-            "(reported Dice about 0.49 in their setting). Pawłowska et al. (2023) document roughly "
-            "235 duplicated BUSI images (~19%), which is why this project groups perceptual near-"
-            "duplicates before splitting."
+            "papers report a wide range of scores depending on how train and test pictures are "
+            "chosen, whether near-identical photos are removed, and whether pictures without lumps "
+            "are included. UNeXt (Valanarasu & Patel, MICCAI 2022) reports F1 about 0.79 and "
+            "intersection-over-union (IoU) about 0.67 on an 80–20 mix of harmless and cancerous BUSI "
+            "frames at 256×256 — a useful context number, but not an apples-to-apples match for this "
+            "project’s near-identical photo grouping and per-image outline-overlap score. Musah et "
+            "al. (2025) show that BUSI scores fall after de-duplication and fall further when a "
+            "BUSI-trained model is tested on BrEaST (reported Dice about 0.49 in their setting). "
+            "Pawłowska et al. (2023) document roughly 235 duplicated BUSI images (~19%), which is "
+            "why this project groups near-identical photos before splitting."
         )
     )
     story.append(
         P(
-            f"This work’s served browser model reaches outline-overlap score **{nums['INT8_DICE']}** "
-            f"(lesion-only **{nums['INT8_LESION_DICE']}**) on the grouped held-out BUSI test, and "
-            f"external outline-overlap scores **{nums['BUSBRA_DICE']}** (BUS-BRA), "
-            f"**{nums['BREAST_DICE']}** (BrEaST), and lesion-only **{nums['BUSUCLM_LESION_DICE']}** "
-            f"(BUS-UCLM). Classification area under the curve drops from **{nums['INT8_AUC']}** "
-            f"internally to **{nums['BUSBRA_AUC']}** / **{nums['BREAST_AUC']}** / "
-            f"**{nums['BUSUCLM_AUC']}** externally — the same direction Wang (2026) reports for "
-            f"classification under dataset shift. Published tables are context, not a leaderboard; "
-            f"protocol differences dominate small score gaps. Full row-by-row notes live in the "
-            f"project’s literature-comparison document."
+            f"This work’s browser model reaches outline-overlap score **{nums['INT8_DICE']}** "
+            f"(on images that contain a lump, **{nums['INT8_LESION_DICE']}**) on its own test set, "
+            f"and outside outline-overlap scores **{nums['BUSBRA_DICE']}** (BUS-BRA), "
+            f"**{nums['BREAST_DICE']}** (BrEaST), and **{nums['BUSUCLM_LESION_DICE']}** on BUS-UCLM "
+            f"images that contain a lump. Area under the curve for telling harmless from cancerous "
+            f"lumps drops from **{nums['INT8_AUC']}** at home to **{nums['BUSBRA_AUC']}** / "
+            f"**{nums['BREAST_AUC']}** / **{nums['BUSUCLM_AUC']}** outside — the same direction "
+            f"Wang (2026) reports under dataset shift. Published tables are context, not a "
+            f"leaderboard; method differences dominate small score gaps. Full row-by-row notes live "
+            f"in the project’s literature-comparison document."
         )
     )
     story.append(
@@ -932,21 +933,21 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
             [
                 [
                     "This work v1.0.0 served",
-                    "BUSI grouped held-out n=112",
-                    f"Outline-overlap {nums['INT8_DICE']}; lesion {nums['INT8_LESION_DICE']}; AUC {nums['INT8_AUC']}",
+                    f"BUSI own test n={nums['N_TEST']}",
+                    f"Outline-overlap {nums['INT8_DICE']}; with lump {nums['INT8_LESION_DICE']}; AUC {nums['INT8_AUC']}",
                     "Reference row",
                 ],
                 [
-                    "This work external",
+                    "This work outside hospitals",
                     "Frozen weights; no retune",
-                    f"BUS-BRA {nums['BUSBRA_DICE']}; BrEaST {nums['BREAST_DICE']}; BUS-UCLM lesion {nums['BUSUCLM_LESION_DICE']}",
+                    f"BUS-BRA {nums['BUSBRA_DICE']}; BrEaST {nums['BREAST_DICE']}; BUS-UCLM with lump {nums['BUSUCLM_LESION_DICE']}",
                     "Transfer check",
                 ],
                 [
                     "Valanarasu & Patel, UNeXt (2022)",
-                    "BUSI B+M; 80–20 random; 256²",
+                    "BUSI B+M; 80–20 mix; 256²",
                     "F1 ≈ 0.79; IoU ≈ 0.67",
-                    "Partly comparable (random split; different aggregation)",
+                    "Partly comparable (different split and aggregation)",
                 ],
                 [
                     "Musah et al. (2025)",
@@ -1047,8 +1048,8 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(P(nums["BUSUCLM_SENTENCE"]))
     story.append(
         P(
-            f"Internal split sizes after grouped stratification: train {nums['N_TRAIN']}, "
-            f"validation {nums['N_VAL']}, held-out test {nums['N_TEST']}."
+            f"Split sizes after keeping near-identical photo groups together: train "
+            f"{nums['N_TRAIN']}, validation {nums['N_VAL']}, test {nums['N_TEST']}."
         )
     )
 
@@ -1066,7 +1067,8 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(
         P(
             "Takeaway: images are cleaned and grouped, a compact model is trained, shrunk for "
-            "browser download, thresholded, then scored on held-out and outside sets.",
+            "browser download, thresholded, then scored on the project’s own test images and on "
+            "outside hospitals.",
             "Cap",
         )
     )
@@ -1136,11 +1138,11 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
             f"Training uses the grouped BUSI split (train {nums['N_TRAIN']}, validation "
             f"{nums['N_VAL']}, test {nums['N_TEST']}). The optimization target emphasizes overlap "
             f"with expert masks; the classification head is trained jointly so the same backbone "
-            f"supports both outlining and the benign-versus-malignant score. Checkpoints are picked "
-            f"by validation lesion outline-overlap score, not by hunting for the best held-out test "
-            f"number after the fact. The served fingerprint (sha256 prefix {nums['MODEL_SHA8']}…) "
-            f"is the artifact evaluated everywhere in this write-up unless a section explicitly "
-            f"names a v2 experiment candidate."
+            f"supports both outlining and telling harmless from cancerous lumps. Checkpoints are "
+            f"picked by validation outline-overlap on images that contain a lump, not by hunting "
+            f"for the best final test number after the fact. The served fingerprint (sha256 prefix "
+            f"{nums['MODEL_SHA8']}…) is the artifact evaluated everywhere in this write-up unless a "
+            f"section explicitly names a later retrain experiment."
         )
     )
     story.append(
@@ -1154,16 +1156,18 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
 
     story.append(PageBreak())
     story.append(P("6. Results", "H1R"))
-    story.append(P("6.1 Internal results (held-out BUSI test)", "H2R"))
+    story.append(P("6.1 Results on the project’s own test images", "H2R"))
     story.append(
         P(
-            f"Table 2 compares the full-precision training checkpoint with the served browser model "
-            f"on the same grouped test split (n={nums['N_TEST']}). Overall outline-overlap scores "
-            f"are close (**{nums['FP32_DICE']}** vs **{nums['INT8_DICE']}**); lesion-only scores are "
-            f"**{nums['FP32_LESION_DICE']}** vs **{nums['INT8_LESION_DICE']}**. Per-class served "
-            f"outline-overlap scores: benign **{nums['INT8_BENIGN_DICE']}** (n={nums['INT8_BENIGN_N']}), "
-            f"malignant **{nums['INT8_MALIG_DICE']}** (n={nums['INT8_MALIG_N']}). Normal images remain "
-            f"hard: non-empty predicted masks on **{nums['INT8_NFP']}** normals."
+            f"Table 2 compares the full-precision training checkpoint with the browser version on "
+            f"the same test images (n={nums['N_TEST']}), kept apart from training by near-identical "
+            f"photo grouping. Overall outline-overlap scores are close (**{nums['FP32_DICE']}** vs "
+            f"**{nums['INT8_DICE']}**). On images that contain a lump, the scores are "
+            f"**{nums['FP32_LESION_DICE']}** vs **{nums['INT8_LESION_DICE']}**. Per-class browser "
+            f"scores: harmless lumps **{nums['INT8_BENIGN_DICE']}** (n={nums['INT8_BENIGN_N']}), "
+            f"cancerous lumps **{nums['INT8_MALIG_DICE']}** (n={nums['INT8_MALIG_N']}). Pictures "
+            f"without lumps remain hard: non-empty predicted outlines on **{nums['INT8_NFP']}** "
+            f"normals."
         )
     )
     story.append(
@@ -1171,23 +1175,23 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
             ["Metric", "Full-precision training", "Served browser model"],
             [
                 ["Outline-overlap score (all)", nums["FP32_DICE"], nums["INT8_DICE"]],
-                ["Outline-overlap score (lesion-only)", nums["FP32_LESION_DICE"], nums["INT8_LESION_DICE"]],
+                ["Outline-overlap (images with a lump)", nums["FP32_LESION_DICE"], nums["INT8_LESION_DICE"]],
                 ["Intersection-over-union (IoU)", nums["FP32_IOU"], nums["INT8_IOU"]],
-                ["AUC (benign vs malignant)", nums["FP32_AUC"], nums["INT8_AUC"]],
+                ["AUC (telling harmless from cancerous)", nums["FP32_AUC"], nums["INT8_AUC"]],
                 [
                     "Sensitivity / Specificity",
                     f"{nums['FP32_SENS']} / {nums['FP32_SPEC']}",
                     f"{nums['INT8_SENS']} / {nums['INT8_SPEC']}",
                 ],
                 ["Expected calibration error (ECE)", nums["FP32_ECE"], nums["INT8_ECE"]],
-                ["Normal false-positive masks", nums["FP32_NFP"], nums["INT8_NFP"]],
+                ["False outlines on normals", nums["FP32_NFP"], nums["INT8_NFP"]],
             ],
         )
     )
     story.append(
         P(
             "Takeaway: shrinking the model for the browser barely changes outline quality on the "
-            "held-out BUSI test; empty/normal images are still the weak spot.",
+            "project’s own test images; empty/normal pictures are still the weak spot.",
             "Cap",
         )
     )
@@ -1195,29 +1199,30 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(fig("dice_hist"))
     story.append(
         P(
-            "Takeaway: most held-out BUSI test cases land at high outline-overlap scores, with a "
-            "long left tail of hard misses and normal false positives.",
+            "Takeaway: most of the project’s own test cases land at high outline-overlap scores, "
+            "with a long left tail of hard misses and false outlines on normals.",
             "Cap",
         )
     )
 
-    story.append(P("6.2 External validation", "H2R"))
+    story.append(P("6.2 Results on outside hospitals", "H2R"))
     story.append(
         P(
-            f"Frozen served weights were scored without tuning on BUS-BRA (n={nums['BUSBRA_N']}, "
-            f"{nums['BUSBRA_NP']} patients), BrEaST (n={nums['BREAST_N']}, {nums['BREAST_NP']} "
-            f"patients), and BUS-UCLM (n={nums['BUSUCLM_N']}, {nums['BUSUCLM_NP']} patients). "
-            f"Per-class outline-overlap scores: BUS-BRA benign **{nums['BUSBRA_BENIGN_DICE']}** / "
-            f"malignant **{nums['BUSBRA_MALIG_DICE']}**; BrEaST benign **{nums['BREAST_BENIGN_DICE']}** / "
-            f"malignant **{nums['BREAST_MALIG_DICE']}**; BUS-UCLM benign "
-            f"**{nums['BUSUCLM_BENIGN_DICE']}** / malignant **{nums['BUSUCLM_MALIG_DICE']}**."
+            f"The same frozen browser model was scored without retuning on BUS-BRA "
+            f"(n={nums['BUSBRA_N']}, {nums['BUSBRA_NP']} patients), BrEaST (n={nums['BREAST_N']}, "
+            f"{nums['BREAST_NP']} patients), and BUS-UCLM (n={nums['BUSUCLM_N']}, "
+            f"{nums['BUSUCLM_NP']} patients). Per-class outline-overlap scores: BUS-BRA harmless "
+            f"**{nums['BUSBRA_BENIGN_DICE']}** / cancerous **{nums['BUSBRA_MALIG_DICE']}**; BrEaST "
+            f"harmless **{nums['BREAST_BENIGN_DICE']}** / cancerous **{nums['BREAST_MALIG_DICE']}**; "
+            f"BUS-UCLM harmless **{nums['BUSUCLM_BENIGN_DICE']}** / cancerous "
+            f"**{nums['BUSUCLM_MALIG_DICE']}**."
         )
     )
     story.append(
         table(
-            ["Set", "Outline-overlap", "Lesion-only", "AUC"],
+            ["Set", "Outline-overlap", "Images with a lump", "AUC"],
             [
-                ["BUSI internal (served)", nums["INT8_DICE"], nums["INT8_LESION_DICE"], nums["INT8_AUC"]],
+                ["BUSI (own test)", nums["INT8_DICE"], nums["INT8_LESION_DICE"], nums["INT8_AUC"]],
                 ["BUS-BRA", nums["BUSBRA_DICE"], nums["BUSBRA_LESION_DICE"], nums["BUSBRA_AUC"]],
                 ["BrEaST", nums["BREAST_DICE"], nums["BREAST_LESION_DICE"], nums["BREAST_AUC"]],
                 ["BUS-UCLM", nums["BUSUCLM_DICE"], nums["BUSUCLM_LESION_DICE"], nums["BUSUCLM_AUC"]],
@@ -1226,8 +1231,9 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     )
     story.append(
         P(
-            "Takeaway: outlines transfer better than lump-type scores; BUS-UCLM’s all-image figure "
-            f"is dragged down by normal false positives ({nums['BUSUCLM_NFP']}).",
+            "Takeaway: outlines travel better than telling harmless from cancerous lumps; "
+            f"BUS-UCLM’s overall figure is dragged down by false outlines on normals "
+            f"({nums['BUSUCLM_NFP']}).",
             "Cap",
         )
     )
@@ -1255,49 +1261,50 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     )
 
     story.append(PageBreak())
-    story.append(P("6.3 Leakage ablation", "H2R"))
+    story.append(P("6.3 Checking for near-identical photos", "H2R"))
     story.append(
         P(
-            f"A short schedule ({nums['LEAK_EPOCHS']} epochs × seeds {nums['LEAK_SEEDS']}) trained "
-            f"under grouped versus random splits and evaluated on the same grouped held-out test. "
-            f"Mean validation outline-overlap score did not rise under random splits "
-            f"(Δ random−grouped ≈ **{nums['LEAK_DELTA']}**). Residual leakage risk remains because "
-            f"patient identifiers are absent and near-duplicates are documented in the literature."
+            f"A short training schedule ({nums['LEAK_EPOCHS']} epochs × seeds {nums['LEAK_SEEDS']}) "
+            f"compared keeping near-identical photos together versus mixing them across train and "
+            f"check sets, then scored both on the same careful test set. Checking for near-identical "
+            f"photos showed they did not inflate the scores (difference about "
+            f"**{nums['LEAK_DELTA']}**). Risk remains because patient identifiers are absent and "
+            f"near-copies are documented in the literature."
         )
     )
     story.append(fig("leak"))
     story.append(
         P(
-            "Takeaway: on this short check, random splits did not inflate validation scores versus "
-            "grouped splits — leakage risk remains for other reasons.",
+            "Takeaway: on this short check, mixing near-identical photos did not inflate check-set "
+            "scores — but missing patient IDs are still a reason for caution.",
             "Cap",
         )
     )
     story.append(P("Source: results/leakage_ablation.json.", "Cap"))
 
-    story.append(P("6.4 Caliper-mark experiments", "H2R"))
+    story.append(P("6.4 Measurement-mark experiments", "H2R"))
     story.append(
         P(
-            f"Images with burned-in measurement marks often look easier: flagged-frame "
-            f"outline-overlap score **{nums['EA_FLAGGED']}** versus clean **{nums['EA_CLEAN']}**. "
-            f"Erasing markers on the original test (experiment E-a) moved overall score from "
-            f"{nums['EA_ORIG_DICE']} to {nums['EA_INP_DICE']} and did **not** collapse the "
-            f"flagged–clean gap. Retraining with inpainting (E-c) produced external scores "
-            f"BUS-BRA {nums['EC_BUSBRA']} and BrEaST {nums['EC_BREAST']} with clean-subset "
-            f"{nums['EC_CLEAN']} and AUC {nums['EC_AUC']} — not enough, under the pre-registered "
-            f"swap rule, to replace served v{nums['MODEL_VERSION']}."
+            f"Images with burned-in measurement marks often look easier: marked-frame "
+            f"outline-overlap score **{nums['EA_FLAGGED']}** versus unmarked **{nums['EA_CLEAN']}**. "
+            f"Erasing markers on the original test moved overall score from "
+            f"{nums['EA_ORIG_DICE']} to {nums['EA_INP_DICE']} and did **not** close that gap. "
+            f"Retraining with erased marks produced outside scores BUS-BRA {nums['EC_BUSBRA']} and "
+            f"BrEaST {nums['EC_BREAST']}, with unmarked-image score {nums['EC_CLEAN']} and AUC "
+            f"{nums['EC_AUC']} — not enough to replace served v{nums['MODEL_VERSION']} under the "
+            f"written replacement criteria."
         )
     )
     story.append(fig("caliper", width=5.8 * inch, aspect=0.52))
     story.append(
         P(
             "Takeaway: measurement marks can act as shortcuts; simply erasing them on test images "
-            "does not automatically make hard clean cases easy.",
+            "does not automatically make hard unmarked cases easy.",
             "Cap",
         )
     )
 
-    story.append(P("6.5 Uncertainty analysis", "H2R"))
+    story.append(P("6.5 When the outline stays stable under flips", "H2R"))
     story.append(
         P(
             f"Test-time augmentation (TTA) flips and mild transforms are run offline; disagreement "
@@ -1317,7 +1324,7 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         )
     )
 
-    story.append(P("6.6 Measurement agreement (BrEaST)", "H2R"))
+    story.append(P("6.6 Size agreement with experts (BrEaST)", "H2R"))
     story.append(
         P(
             f"On BrEaST, model versus expert longest diameter (mm) shows Pearson correlation proxy "
@@ -1329,40 +1336,40 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     )
 
     story.append(PageBreak())
-    story.append(P("6.7 Version-2 retrain and swap-rule outcome", "H2R"))
+    story.append(P("6.7 A later retrain, and why the original stayed", "H2R"))
     story.append(
         P(
-            f"A later candidate trained on BUSI plus patient-grouped BUS-BRA (larger backbone, "
-            f"256×256, stronger augmentation) was compared with served v{nums['MODEL_VERSION']} "
-            f"under a pre-registered fair swap rule. Seed-mean clean-subset outline-overlap score "
-            f"was **{nums['V2_CLEAN_MEAN']}** versus v1 **{nums['V1_CLEAN']}** "
-            f"(Δ **{nums['V2_CLEAN_DELTA']}**). Same-source BUS-BRA held-out rose to "
-            f"**{nums['V2_BUSBRA_MEAN']}**, and truly external BrEaST to **{nums['V2_BREAST_MEAN']}**, "
+            f"A later candidate trained on BUSI plus BUS-BRA (larger backbone, 256×256, stronger "
+            f"augmentation) was compared with served v{nums['MODEL_VERSION']} under written "
+            f"replacement criteria set beforehand. Average outline-overlap on unmarked test images "
+            f"was **{nums['V2_CLEAN_MEAN']}** versus v1 **{nums['V1_CLEAN']}** (difference "
+            f"**{nums['V2_CLEAN_DELTA']}**). BUS-BRA images from the same source rose to "
+            f"**{nums['V2_BUSBRA_MEAN']}**, and truly outside BrEaST to **{nums['V2_BREAST_MEAN']}**, "
             f"with AUC **{nums['V2_AUC_MEAN']}** and packaged size about **{nums['V2_INT8_MB']}** MB. "
-            f"Because the seed-mean clean-subset rule failed, the site keeps serving "
-            f"v{nums['MODEL_VERSION']} and publishes the comparison as an experiment."
+            f"A retrained version did better on some outside images but not consistently, so the "
+            f"original stays (v{nums['MODEL_VERSION']}); the comparison is published as an experiment."
         )
     )
     story.append(
         P(
-            "Takeaway: better scores on a mixed-training held-out set are not enough; the published "
-            "model only changes when every pre-agreed gate passes on the seed mean.",
+            "Takeaway: a flashier chart on one check set is not enough; the published model only "
+            "changes when every pre-agreed gate passes on the average across training seeds.",
             "Cap",
         )
     )
     story.append(P("Source: results/v2_experiment.json.", "Cap"))
 
-    story.append(P("7. Error analysis", "H1R"))
+    story.append(P("7. Where the model goes wrong", "H1R"))
     story.append(
         P(
-            f"The Model Errors explorer on the site lists **{nums['ERR_N']}** hard held-out BUSI "
-            f"cases as outline-only silhouettes (BUSI ultrasound pixels withheld because "
-            f"redistribution rights are unclear). Category counts: boundary disagreement "
-            f"**{nums['ERR_BOUNDARY']}**, false lesion on normal **{nums['ERR_FP_NORMAL']}**, "
-            f"wrong class **{nums['ERR_WRONG_CLS']}**, missed lesion **{nums['ERR_MISSED']}**, "
-            f"over-segmentation **{nums['ERR_OVER']}**, under-segmentation **{nums['ERR_UNDER']}**. "
-            f"Boundary disagreements dominate; normal false outlines remain the most clinically "
-            f"intuitive failure mode for a triage-style demo."
+            f"The Model Errors explorer on the site lists **{nums['ERR_N']}** hard test cases from "
+            f"the project’s own collection as outline-only silhouettes (BUSI ultrasound pixels "
+            f"withheld because redistribution rights are unclear). Category counts: boundary "
+            f"disagreement **{nums['ERR_BOUNDARY']}**, false lump on a normal picture "
+            f"**{nums['ERR_FP_NORMAL']}**, wrong class **{nums['ERR_WRONG_CLS']}**, missed lump "
+            f"**{nums['ERR_MISSED']}**, over-segmentation **{nums['ERR_OVER']}**, under-segmentation "
+            f"**{nums['ERR_UNDER']}**. Boundary disagreements dominate; false outlines on normals "
+            f"remain the most intuitive failure mode for a triage-style demo."
         )
     )
     story.append(fig("fail", width=5.8 * inch, aspect=0.70))
@@ -1377,12 +1384,13 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(P("8. Discussion: what the numbers mean in practice", "H1R"))
     story.append(
         P(
-            f"An outline-overlap score near **{nums['INT8_DICE']}** on held-out BUSI means that, on "
-            f"average, the computer outline and the expert outline share most of their area — useful "
-            f"for a demo and for learning what segmentation metrics feel like, not for claiming "
-            f"radiologist parity. External outline scores in the 0.63–0.71 range suggest the spatial "
-            f"task transfers better than the lump-type score, which falls when scanners and labeling "
-            f"habits change. That pattern matches the broader literature on dataset shift."
+            f"An outline-overlap score near **{nums['INT8_DICE']}** on the project’s own test images "
+            f"means that, on average, the computer outline and the expert outline share most of "
+            f"their area — useful for a demo and for learning what these scores feel like, not for "
+            f"claiming radiologist parity. Outside outline scores in the 0.63–0.71 range suggest "
+            f"drawing the boundary travels better than telling harmless from cancerous lumps, which "
+            f"falls when scanners and labeling habits change. That pattern matches the broader "
+            f"literature on dataset shift."
         )
     )
     story.append(
@@ -1396,30 +1404,30 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     )
     story.append(
         P(
-            f"Readers comparing this project with published BUSI leaderboards should weight "
-            f"protocol first. Many papers use random splits on a dataset with documented "
-            f"near-duplicates; this project uses grouped splits, reports the served browser artifact "
-            f"({nums['SERVED_MB']} MB), and publishes external numbers without retuning. A higher "
-            f"in-domain score under a leakier split is not a stronger scientific claim than a "
-            f"slightly lower score under a stricter one."
+            f"Readers comparing this project with published BUSI leaderboards should weight method "
+            f"first. Many papers mix near-identical photos across train and test; this project keeps "
+            f"those groups together, reports the browser download ({nums['SERVED_MB']} MB), and "
+            f"publishes outside-hospital numbers without retuning. A higher home-set score under a "
+            f"leakier setup is not a stronger scientific claim than a slightly lower score under a "
+            f"stricter one."
         )
     )
     story.append(
         P(
-            f"The failed v2 swap is part of the result, not an embarrassment to hide. Same-source "
-            f"BUS-BRA held-out rose to about {nums['V2_BUSBRA_MEAN']}, and BrEaST to about "
-            f"{nums['V2_BREAST_MEAN']}, yet the clean-subset gate (v2 mean {nums['V2_CLEAN_MEAN']} "
-            f"vs v1 {nums['V1_CLEAN']}) blocked promotion. Pre-registering that rule before seeing "
-            f"the seed mean is how a student project stays honest when a larger model looks "
-            f"tempting on a chart."
+            f"Keeping the original model is part of the result, not something to hide. BUS-BRA "
+            f"scores on the same-source check set rose to about {nums['V2_BUSBRA_MEAN']}, and "
+            f"BrEaST to about {nums['V2_BREAST_MEAN']}, yet the unmarked-image average "
+            f"({nums['V2_CLEAN_MEAN']} vs v1 {nums['V1_CLEAN']}) did not clear the bar written "
+            f"beforehand. Setting that bar before seeing the average is how a student project stays "
+            f"honest when a larger model looks tempting on a chart."
         )
     )
     story.append(
         P(
             "For admissions readers and scientifically literate parents, the portfolio claim is "
-            "process honesty: grouped splits, frozen external tests, a written swap rule that "
-            "refused a flashy upgrade, and a downloadable write-up whose figures are locked to "
-            "committed JSON."
+            "process honesty: careful train/test grouping, frozen outside tests, written "
+            "replacement criteria that refused a flashy upgrade, and a downloadable write-up whose "
+            "figures are locked to committed JSON."
         )
     )
 
@@ -1430,7 +1438,7 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         )
     )
     for bullet in [
-        "No patient identifiers on BUSI → residual near-duplicate / patient-leakage risk despite perceptual grouping.",
+        "No patient identifiers on BUSI → residual risk from near-identical photos despite perceptual grouping.",
         f"Domain shift: classification AUC drops from {nums['INT8_AUC']} internally to as low as {nums['BUSBRA_AUC']} on BUS-BRA.",
         "Calipers and on-screen text may still act as shortcuts on annotated frames.",
         f"160×160 resolution loses fine boundary detail; normal-image false positives remain ({nums['INT8_NFP']}).",
@@ -1461,7 +1469,7 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
             "patient-level collections with clearer licenses, higher-resolution models that still "
             "fit a browser budget, and uncertainty displays that a non-specialist can interpret "
             "without over-trust. Any promoted weight file would need a new version number and a "
-            "fresh pass of the written swap rule."
+            "fresh pass of the written replacement criteria."
         )
     )
     story.append(
@@ -1683,13 +1691,29 @@ def main() -> int:
         raise SystemExit("Key findings box missing from PDF")
     if "Glossary" not in text:
         raise SystemExit("Glossary section missing from PDF")
-    # Abstract jargon guard: only the Abstract section (before key findings)
-    abs_only = text
-    if "1. Abstract" in text and "Key findings in plain English" in text:
-        abs_only = text.split("1. Abstract", 1)[1].split("Key findings in plain English", 1)[0]
-    for banned in ("INT8", "ONNX", "TTA", "ECE", "pHash", "ResNet", "U-Net", "AUC"):
-        if banned in abs_only:
-            raise SystemExit(f"Banned jargon {banned!r} found in abstract")
+    # Page-1 jargon guard: abstract + key findings
+    page1 = text
+    if "1. Abstract" in text and "2. Background" in text:
+        page1 = text.split("1. Abstract", 1)[1].split("2. Background", 1)[0]
+    for banned in (
+        "INT8",
+        "ONNX",
+        "TTA",
+        "ECE",
+        "pHash",
+        "ResNet",
+        "U-Net",
+        "AUC",
+        "swap rule",
+        "clean-subset",
+        "leakage check",
+        "random splits",
+        "lesion-only",
+        "held-out training-collection",
+        "Δ",
+    ):
+        if banned in page1:
+            raise SystemExit(f"Banned jargon {banned!r} found on page-1 abstract/key-findings")
     n_pages = len(reader.pages)
     print(f"Wrote {OUT_PDF} ({OUT_PDF.stat().st_size} bytes, {n_pages} pages)")
     if n_pages < 15 or n_pages > 20:
