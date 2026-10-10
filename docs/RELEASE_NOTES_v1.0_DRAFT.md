@@ -42,7 +42,7 @@ First freeze-ready release of the breast ultrasound lesion segmentation research
 
 - Frozen **v1.0.0 INT8** scored on **BUS-BRA** and **BrEaST** (no external tuning)
 - BUS-BRA Dice **0.714** / AUC **0.638**; BrEaST Dice **0.627** / AUC **0.721**
-- BUS-UCLM skipped (Mendeley login / HTTP 403 from non-interactive download)
+- BUS-UCLM scored (owner local copy): all-image Dice **0.386**, lesion Dice **0.679**, AUC **0.780** (320/413 normal FPs; 43 Doppler/combined excluded)
 - Demo: expert-vs-model compare, lesion measurements; BrEaST measurement agreement offline
 - Leakage ablation (grouped vs random splits); literature comparison page
 - Decision log D1–D3; **D4 clinician review later revoked**
@@ -83,7 +83,7 @@ First freeze-ready release of the breast ultrasound lesion segmentation research
 - BUSI has no patient IDs; near-dup grouping ≠ true patient split
 - High normal false-positive rate (12/19)
 - External classification AUC drops vs internal BUSI
-- BUS-UCLM not scored unless owner downloads and re-runs
+- BUS-UCLM all-image Dice is pulled down by normal false positives (320/413); prefer lesion Dice for cross-dataset comparison
 
 ---
 

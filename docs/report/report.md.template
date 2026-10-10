@@ -12,7 +12,7 @@
 
 ## Abstract
 
-This high-school research project trains a ResNet-18 U-Net with an auxiliary benign-vs-malignant head on the BUSI breast ultrasound dataset, exports an INT8 ONNX model for fully in-browser inference, and reports honest internal and external metrics. On the held-out BUSI test set the **served INT8** model reaches Dice **{{INT8_DICE}}** (lesion-only **{{INT8_LESION_DICE}}**) and ROC-AUC **{{INT8_AUC}}**. External validation on BUS-BRA and BrEaST keeps segmentation closer to internal Dice (**{{BUSBRA_DICE}}** / **{{BREAST_DICE}}**) while classification AUC drops (**{{BUSBRA_AUC}}** / **{{BREAST_AUC}}**). Cleaning, leakage, caliper-inpainting, and TTA uncertainty experiments are included. Venue for this write-up: **site-only** (D5).
+This high-school research project trains a ResNet-18 U-Net with an auxiliary benign-vs-malignant head on the BUSI breast ultrasound dataset, exports an INT8 ONNX model for fully in-browser inference, and reports honest internal and external metrics. On the held-out BUSI test set the **served INT8** model reaches Dice **{{INT8_DICE}}** (lesion-only **{{INT8_LESION_DICE}}**) and ROC-AUC **{{INT8_AUC}}**. External validation on BUS-BRA and BrEaST keeps segmentation closer to internal Dice (**{{BUSBRA_DICE}}** / **{{BREAST_DICE}}**) while classification AUC drops (**{{BUSBRA_AUC}}** / **{{BREAST_AUC}}**). Cleaning, leakage, caliper-inpainting, and TTA uncertainty experiments are included. Venue for this write-up: **site-only**.
 
 ## Introduction
 
@@ -32,7 +32,9 @@ Per pre-registered protocol (`docs/EXTERNAL_VALIDATION_PROTOCOL.md`) and owner d
 
 - **BUS-BRA** (Gómez-Flores et al., 2024; Zenodo CC BY 4.0): n={{BUSBRA_N}}, patients≈{{BUSBRA_NP}}
 - **BrEaST** (Pawłowska et al., 2024; TCIA CC BY 4.0): n={{BREAST_N}}, patients={{BREAST_NP}}
-- **BUS-UCLM**: skipped ({{BUSUCLM_SKIP}})
+- **BUS-UCLM** (Vallez et al., 2025; Mendeley CC BY 4.0): n={{BUSUCLM_N}}, patients={{BUSUCLM_NP}}; all-image Dice {{BUSUCLM_DICE}}, lesion {{BUSUCLM_LESION_DICE}}, AUC {{BUSUCLM_AUC}}; normal FPs {{BUSUCLM_NFP}}
+
+{{BUSUCLM_SENTENCE}}
 
 ## Methods
 
@@ -63,8 +65,9 @@ Sources: `results/full_run.json`, `results/served_int8_test.json`.
 | BUSI internal | {{INT8_DICE}} | {{INT8_LESION_DICE}} | {{INT8_AUC}} |
 | BUS-BRA | {{BUSBRA_DICE}} | {{BUSBRA_LESION_DICE}} | {{BUSBRA_AUC}} |
 | BrEaST | {{BREAST_DICE}} | {{BREAST_LESION_DICE}} | {{BREAST_AUC}} |
+| BUS-UCLM | {{BUSUCLM_DICE}} | {{BUSUCLM_LESION_DICE}} | {{BUSUCLM_AUC}} |
 
-Sources: `results/external/busbra.json`, `results/external/breast.json`.
+Sources: `results/external/busbra.json`, `breast.json`, `busuclm.json`. BUS-UCLM normal FPs {{BUSUCLM_NFP}}.
 
 ### Leakage ablation
 
@@ -88,7 +91,7 @@ Model vs expert longest diameter (mm) Pearson proxy ≈ **{{MEAS_DIAM_R}}** (n={
 - Domain shift: classification AUC drops sharply on externals
 - Calipers / HUD may still act as shortcuts
 - 160² resolution loses fine detail; normal-image false positives ({{INT8_NFP}})
-- Not clinically validated; no clinician review (D4 revoked)
+- Not clinically validated; no clinician review on this project
 
 ## Ethics and licensing
 

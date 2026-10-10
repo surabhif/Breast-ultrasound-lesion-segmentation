@@ -1,6 +1,6 @@
 # BUS-UCLM download steps (owner)
 
-Secondary external set. The loader at `scripts/external/busuclm.py` **skips cleanly** when the archive is absent (writes `results/external/busuclm_SKIPPED.json` and records the reason in `web/public/results/metrics.json`). Do **not** invent or commit raw images.
+Secondary external set. The loader at `scripts/external/busuclm.py` reads `;`-separated `INFO.csv` (patient ID = file prefix; excludes Doppler/Combined), and **skips cleanly** when the archive is absent. Committed scores live in `results/external/busuclm.json` (owner local eval). Do **not** invent or commit raw images.
 
 Research evaluation only — not for clinical use.
 

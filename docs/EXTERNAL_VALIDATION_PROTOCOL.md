@@ -83,8 +83,8 @@ From `results/postprocess.json` / training val lesion-Dice selection — **not**
 
 - Citation: Vallez et al., *Sci Data* 2025;12:242 ([doi:10.1038/s41597-025-04564-2](https://doi.org/10.1038/s41597-025-04564-2) / [PubMed 39934113](https://pubmed.ncbi.nlm.nih.gov/39934113/))
 - Download: Mendeley Data [doi:10.17632/7fvgj4jsp7.3](https://doi.org/10.17632/7fvgj4jsp7.3) — dataset **CC BY 4.0**
-- Owner steps (manual download → `data/external/busuclm/`): **`docs/BUSUCLM_STEPS.md`**. Loader: `scripts/external/busuclm.py` (skips with `FileNotFoundError` when absent; `scripts/eval_external.py` records skip and merges when present).
-- Many normals; exclude Doppler/combined frames when flagged in metadata; patient-cluster bootstrap (38 patients)
+- Owner steps (manual download → `data/external/busuclm/`): **`docs/BUSUCLM_STEPS.md`**. Loader: `scripts/external/busuclm.py` (`;`-separated `INFO.csv`, patient ID from file prefix, excludes Doppler/Combined; skips with `FileNotFoundError` when absent).
+- **Scored (committed):** frozen v1.0.0 INT8, n=640 / 38 patients (43 Doppler/combined excluded). All-image Dice **0.386** [0.326, 0.449]; lesion Dice **0.679** [0.593, 0.755]; AUC **0.780**; normal FPs **320/413**. Prefer lesion Dice for cross-dataset comparison — all-image Dice is dominated by false positives on normals (same weakness as BUSI 12/19). Source: `results/external/busuclm.json` (owner local eval; images not redistributed).
 
 **Skipped:** UDIAT (institutional licence agreement); BUSIS (signed release / no redistribution). See `docs/DECISION_LOG.md` D1.
 

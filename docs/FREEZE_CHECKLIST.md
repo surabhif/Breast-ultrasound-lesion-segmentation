@@ -19,8 +19,8 @@ Research demo — not for clinical use. No clinician outreach (D4 revoked).
 
 ## BUS-UCLM (optional secondary)
 
-- [ ] If available: owner downloads BUS-UCLM (Mendeley), places under `data/external/busuclm/`, re-runs external eval, commits JSON
-- [ ] If still unavailable: leave skipped status + reason in metrics / protocol (current state)
+- [x] Owner downloaded BUS-UCLM (Mendeley), evaluated frozen v1.0.0 INT8 locally, committed `results/external/busuclm.json` (n=640, 38 patients; 43 Doppler/combined excluded)
+- [x] Metrics merged into `web/public/results/metrics.json` external block (images not redistributed)
 
 ## Citation / DOI
 

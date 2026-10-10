@@ -48,9 +48,11 @@ def load_mask_binary(path: str | Path | None, img_size: int = 160) -> np.ndarray
     p = Path(str(path))
     if not p.exists():
         return np.zeros((img_size, img_size), dtype=bool)
-    m = Image.open(p).convert("L")
+    m = Image.open(p).convert("RGB")
     m = m.resize((img_size, img_size), Image.NEAREST)
-    return np.asarray(m) > 127
+    # Max over channels: identical to the old L>127 rule for grayscale/binary masks,
+    # but also keeps pure-red (255,0,0) BUS-UCLM malignant masks (L≈76).
+    return np.asarray(m).max(axis=2) > 127
 
 
 def or_merge_masks(paths: list[str | Path], img_size: int = 160) -> np.ndarray:

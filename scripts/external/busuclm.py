@@ -52,11 +52,34 @@ def build_manifest(root: Path = ROOT) -> pd.DataFrame:
     if csvs:
         # Best-effort column mapping — exact schema depends on the released CSV.
         # Prefer PNG image/mask heuristics below; CSV-only trees need a configured mapper.
-        _ = pd.read_csv(csvs[0])
+        info = pd.read_csv(csvs[0], sep=";")
+        if {"Image", "Label"}.issubset(info.columns):
+            img_dir = csvs[0].parent / "images"
+            mask_dir = csvs[0].parent / "masks"
+            for _, r in info.iterrows():
+                img, mask = img_dir / r["Image"], mask_dir / r["Image"]
+                if not img.exists():
+                    continue
+                flags = (str(r.get("Doppler", "No")).strip().lower(), str(r.get("Combined", "No")).strip().lower())
+                rows.append(
+                    {
+                        "case_id": Path(r["Image"]).stem,
+                        "image_path": str(img),
+                        "mask_path": str(mask) if mask.exists() else None,
+                        "label": str(r["Label"]).strip().lower(),
+                        # File prefix (e.g. ALWI_000) is the anonymised patient code.
+                        "patient_id": str(r["Image"]).split("_")[0],
+                        "scanner": "Siemens ACUSON S2000",
+                        "birads": None,
+                        "pixel_size_mm": None,
+                        "has_doppler": any(f.startswith("y") for f in flags),
+                        "dataset": "busuclm",
+                    }
+                )
         # Fall through to folder walk; if that also yields nothing, raise a clear skip.
 
     # RGB mask convention from the Sci Data paper / Antillia notes
-    for img in sorted(raw.rglob("*.png")):
+    for img in ([] if rows else sorted(raw.rglob("*.png"))):
         name = img.name.lower()
         if "mask" in name or img.parent.name.lower() in {"masks", "mask", "gt"}:
             continue

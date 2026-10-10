@@ -12,6 +12,7 @@ Published BUSI numbers often use **random** train/test splits on a dataset with 
 | **This work (v1.0.0 INT8)** | ResNet-18 U-Net 160² | BUSI grouped held-out test n=112 | Dice 0.697; lesion Dice 0.764; AUC 0.931 | Reference |
 | **This work (external)** | same frozen INT8 | BUS-BRA n=1875 (patient-cluster CI) | Dice 0.714; AUC 0.638 | External transfer |
 | **This work (external)** | same frozen INT8 | BrEaST n=256 | Dice 0.627; lesion 0.629; AUC 0.721 | External transfer |
+| **This work (external)** | same frozen INT8 | BUS-UCLM n=640 / 38 pts (43 Doppler/combined excluded) | All-image Dice 0.386; lesion 0.679; AUC 0.780; normal FP 320/413 | External transfer — prefer lesion Dice; all-image Dice is FP-dominated |
 | Valanarasu & Patel, UNeXt, MICCAI 2022 ([arXiv:2203.04967](https://arxiv.org/abs/2203.04967)) | UNeXt (+ U-Net baselines) | BUSI 647 B+M; **80–20 random** ×3; 256² | UNeXt F1 79.37±0.57, IoU 66.95±1.22 | Partly — random split; F1 aggregation may differ from per-image Dice |
 | Musah et al., arXiv:2508.17768 (2025) | nnU-Net ResEnc | BUSI-Full vs de-duplicated; also train BUSI→test BrEaST | Full Dice 0.7514 vs dedup ~0.71–0.72; **BUSI→BrEaST Dice 0.4855** | Yes for OOD logic; different model/resolution |
 | Pawłowska et al., *Data in Brief* 2023 ([PMC10293973](https://pmc.ncbi.nlm.nih.gov/articles/PMC10293973/)) | data audit | BUSI | 235 duplicates (~19%); axilla/needle issues; usable counts in letter table | Basis for leakage/dup discussion |
@@ -29,4 +30,4 @@ Published BUSI numbers often use **random** train/test splits on a dataset with 
 
 ## Takeaway for visitors
 
-A high in-domain Dice under random splits is not the same claim as **grouped-split** Dice or **external** Dice. Our external Dice stays in a similar ballpark to internal Dice on BUS-BRA, but **AUC falls sharply** under dataset shift — consistent with the direction reported by Musah et al. (segmentation OOD) and Wang (classification OOD).
+A high in-domain Dice under random splits is not the same claim as **grouped-split** Dice or **external** Dice. Our external Dice stays in a similar ballpark to internal Dice on BUS-BRA, but **AUC falls sharply** under dataset shift — consistent with the direction reported by Musah et al. (segmentation OOD) and Wang (classification OOD). On BUS-UCLM, all-image Dice (~0.386) is mostly normal false positives (320/413); lesion Dice (~0.679) sits between BrEaST (~0.629) and BUS-BRA (~0.714).

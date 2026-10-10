@@ -98,6 +98,8 @@ Do not claim specific tasks Surabhi personally drafted or recorded.
 
 **Decided:** Use **BUS-BRA** and **BrEaST** as primary external sets; **BUS-UCLM** as secondary. Skip **UDIAT** and **BUSIS** (licence / institutional-access friction). Verify CC BY 4.0 (or equivalent) and access route before scoring. Cite each dataset; do not commit raw images except small CC BY samples on the site with attribution.
 
+**Update (2026-10-10):** Owner downloaded BUS-UCLM and scored frozen v1.0.0 INT8 locally (sha matched `current.json`; seg 0.4 / min area 40 / cls 0.5; patient bootstrap 1000, seed 42). Committed `results/external/busuclm.json` (n=640, 38 patients; 43 Doppler/combined excluded). All-image Dice 0.386 is dominated by 320/413 normal FPs; lesion Dice 0.679 is the fairer cross-dataset figure. Images stay local / not redistributed.
+
 ### D2 — BUSI imagery on the site
 
 **Decided:** Keep BUSI pixels limited to the samples and failure cases already shipped. New visuals (explorer, social preview) use **CC BY external** images. Elsewhere, BUSI rows may show metrics plus **outline-only silhouettes** (no ultrasound pixels).

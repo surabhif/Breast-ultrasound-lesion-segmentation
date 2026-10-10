@@ -32,7 +32,7 @@ Estimated axe violations across primary pages: **~14** (focus rings, unlabeled c
 | `/model-card` | 0 | 0 | — |
 
 **Totals:** 0 axe violations (0 serious/critical) across 9 routes.  
-**After scores:** axe **100** on all routes (re-check after Model Errors rename; cite-block contrast + gauge ARIA fixes retained).
+**After scores:** axe **100** on all routes (re-check after BUS-UCLM Results update).
 
 ### Fixes applied in Phase 3
 
