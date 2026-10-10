@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
 import { SITE } from '../lib/constants'
+import { PLAIN_ABSTRACT } from '../lib/plainAbstract'
 
 const BASE = import.meta.env.BASE_URL
 
@@ -73,6 +74,7 @@ export default function AboutPage() {
       </figure>
 
       <h2>Research write-up</h2>
+      <p>{PLAIN_ABSTRACT}</p>
       <p>
         A site-only research report (not a journal submission) with numbers filled from committed
         results JSON:

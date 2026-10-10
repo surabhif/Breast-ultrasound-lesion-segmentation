@@ -30,19 +30,26 @@ DOI: \url{https://doi.org/10.5281/zenodo.23286597}}
 \end{center}
 
 \begin{abstract}
-We present a student research project and in-browser demonstration for breast ultrasound
-lesion segmentation on the BUSI dataset. A ResNet-18 U-Net is trained with grouped
-near-duplicate splits, exported to ONNX, and served as a dynamic INT8 model
-(\MetricOnnxMb\,MB) that runs fully client-side. On the held-out BUSI test set the served model
-reaches Dice~\MetricServedTestDice\ (95\% CI [\MetricServedTestDiceCIlo,~\MetricServedTestDiceCIhi]),
-lesion-only Dice~\MetricServedLesionDice, and benign-vs-malignant ROC-AUC~\MetricServedAuc.
-Frozen weights are evaluated without tuning on BUS-BRA (Dice~\MetricBusbraDice, AUC~\MetricBusbraAuc),
-BrEaST (Dice~\MetricBreastDice, AUC~\MetricBreastAuc), and BUS-UCLM (all-image
-Dice~\MetricBusuclmDice, lesion Dice~\MetricBusuclmLesionDice, AUC~\MetricBusuclmAuc;
-normal FPs~\MetricBusuclmNormalFP). Caliper/annotation audits, a pre-registered
-model-swap policy, and test-time uncertainty summaries are included. Normal images remain
-difficult (non-empty masks on \MetricNormalFP\ normals). This is a portfolio research demo, not a
-medical device.
+Breast ultrasound helps doctors look at breast lumps, especially when mammograms are hard to
+read in dense tissue. This student project builds a program that outlines those lumps on
+ultrasound pictures and estimates how well it does at telling harmless from cancerous lumps.
+It was trained on one public image collection and checked on three others from different
+hospitals. The main quality measure is an outline-overlap score (Dice), which is high when
+the computer outline matches the expert outline. On images saved for testing, the browser
+version (\MetricOnnxMb\,MB) reaches \MetricServedTestDice\ (95\% CI
+[\MetricServedTestDiceCIlo,~\MetricServedTestDiceCIhi]) overall. On images that contain a
+lump, the outline match is \MetricServedLesionDice. On two outside collections, outline
+scores stay similar (\MetricBusbraDice\ and \MetricBreastDice), while telling harmless from
+cancerous lumps gets harder after the hospital and scanner change (\MetricBusbraAuc\ /
+\MetricBreastAuc\ / \MetricBusuclmAuc\ versus \MetricServedAuc\ on the original test set). On
+a third outside collection, pictures without lumps remain difficult: false outlines pull the
+overall score down to \MetricBusuclmDice, even though on images that contain a lump the
+outline match is \MetricBusuclmLesionDice\ (false outlines on normals \MetricBusuclmNormalFP;
+BUSI normals \MetricNormalFP). The write-up also studies near-identical photos, burned-in
+measurement marks, and whether outlines stay stable when a picture is flipped. A retrained
+version did better on some outside images but not consistently, so the original stays. This
+is an educational research demonstration, not a medical device, and must not be used for
+diagnosis or care decisions.
 \end{abstract}
 
 \section{Introduction}
