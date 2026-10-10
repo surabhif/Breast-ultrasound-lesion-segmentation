@@ -19,11 +19,20 @@ describe('PWA / model cache key wiring', () => {
   it('service worker purges old busi- caches when cache_key changes', () => {
     const sw = readFileSync(resolve(__dirname, '../../public/sw.js'), 'utf8')
     expect(sw).toContain('busi-shell-')
+    expect(sw).toContain('SHELL_REVISION')
+    expect(sw).toContain("SHELL_REVISION = 'v2'")
     expect(sw).toContain('busi-unet-')
     expect(sw).toContain('cache_key')
     expect(sw).toContain('caches.delete')
     expect(sw).toContain('models/current.json')
     expect(sw).toContain('busi_unet.onnx')
+    expect(sw).toContain('skipWaiting')
+    expect(sw).toContain('clients.claim')
+    expect(sw).toContain('pathnameHasExtension')
+    expect(sw).toContain('isCacheFirstAsset')
+    // Navigations / shell docs must try the network before any HTML fallback.
+    expect(sw).toMatch(/spaNav \|\| shellDoc/)
+    expect(sw).toContain('cachedAppShell')
   })
 
   it('manifest exists and uses brand teal theme', () => {

@@ -2,7 +2,63 @@
 /* eslint-disable no-restricted-globals */
 
 const SHELL_PREFIX = 'busi-shell-'
+/** Bump when shell fetch/nav strategy changes so activate purges hijacked caches. */
+const SHELL_REVISION = 'v2'
 const MODEL_PREFIX = 'busi-unet-'
+
+function shellCacheName(cacheKey) {
+  return `${SHELL_PREFIX}${SHELL_REVISION}-${cacheKey}`
+}
+
+/** True when the last path segment looks like a real file (report.pdf, video.mp4, …). */
+function pathnameHasExtension(pathname) {
+  const seg = pathname.split('/').filter(Boolean).pop() || ''
+  return /\.[a-zA-Z0-9]{1,12}$/.test(seg)
+}
+
+function isScopeRootOrIndex(url, scope) {
+  const scopeUrl = new URL(scope)
+  const indexUrl = new URL('index.html', scope)
+  return (
+    url.pathname === scopeUrl.pathname ||
+    url.pathname === indexUrl.pathname ||
+    url.href === scopeUrl.href ||
+    url.href === indexUrl.href
+  )
+}
+
+/** Model weights, ORT WASM, and Vite hashed /assets — safe to serve cache-first. */
+function isCacheFirstAsset(url) {
+  const p = url.pathname
+  if (p.includes('/assets/')) return true
+  if (p.endsWith('.onnx')) return true
+  if (p.endsWith('.wasm')) return true
+  if (p.includes('/ort/') && (p.endsWith('.mjs') || p.endsWith('.js'))) return true
+  return false
+}
+
+async function openCurrentShellCache() {
+  const keys = await caches.keys()
+  const shell = keys.find((k) => k.startsWith(`${SHELL_PREFIX}${SHELL_REVISION}-`))
+  return shell ? caches.open(shell) : null
+}
+
+async function putInShellCache(req, res) {
+  try {
+    const cache = await openCurrentShellCache()
+    if (cache) await cache.put(req, res.clone())
+  } catch {
+    /* ignore quota / abort */
+  }
+}
+
+async function cachedAppShell(scope) {
+  return (
+    (await caches.match(new URL('index.html', scope).href)) ||
+    (await caches.match(scope)) ||
+    null
+  )
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -14,7 +70,7 @@ self.addEventListener('install', (event) => {
       const cur = await curRes.json()
       const cacheKey = cur.cache_key || `busi-unet-v${cur.version}`
       const modelPath = `${String(cur.path || '').replace(/^\//, '')}/busi_unet.onnx`
-      const shellName = SHELL_PREFIX + cacheKey
+      const shellName = shellCacheName(cacheKey)
       const modelName = cacheKey
 
       const shellUrls = [
@@ -83,7 +139,7 @@ self.addEventListener('activate', (event) => {
       }
       const keep = new Set()
       if (cacheKey) {
-        keep.add(SHELL_PREFIX + cacheKey)
+        keep.add(shellCacheName(cacheKey))
         keep.add(cacheKey)
       }
       const keys = await caches.keys()
@@ -105,54 +161,62 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url)
   if (url.origin !== self.location.origin) return
 
+  const scope = self.registration.scope
+  const navigate = req.mode === 'navigate'
+  const spaNav = navigate && !pathnameHasExtension(url.pathname)
+  const shellDoc = isScopeRootOrIndex(url, scope)
+  const cacheFirst = isCacheFirstAsset(url)
+
   event.respondWith(
     (async () => {
-      const cached = await caches.match(req)
-      if (cached) return cached
-
-      // Navigation: serve cached shell index when offline
-      if (req.mode === 'navigate') {
-        const scope = self.registration.scope
-        const shellHit =
-          (await caches.match(new URL('index.html', scope).href)) ||
-          (await caches.match(scope))
-        if (shellHit) return shellHit
-      }
-
-      try {
+      // Cache-first: ONNX, WASM, hashed /assets only.
+      if (cacheFirst) {
+        const cached = await caches.match(req)
+        if (cached) return cached
         const res = await fetch(req)
-        if (res.ok && shouldRuntimeCache(url)) {
-          const keys = await caches.keys()
-          const shell = keys.find((k) => k.startsWith(SHELL_PREFIX))
-          if (shell) {
-            const cache = await caches.open(shell)
-            void cache.put(req, res.clone())
+        if (res.ok) {
+          try {
+            const keys = await caches.keys()
+            const bucket =
+              keys.find((k) => k.startsWith(`${SHELL_PREFIX}${SHELL_REVISION}-`)) ||
+              keys.find((k) => k.startsWith(MODEL_PREFIX))
+            if (bucket) {
+              const cache = await caches.open(bucket)
+              await cache.put(req, res.clone())
+            }
+          } catch {
+            /* ignore */
           }
         }
         return res
+      }
+
+      // Network-first for SPA navigations and the app shell documents (index / scope root).
+      // Shell fallback only when the network fails, and never for real files (.pdf, .mp4, …).
+      if (spaNav || shellDoc) {
+        try {
+          const res = await fetch(req)
+          if (res.ok) await putInShellCache(req, res)
+          return res
+        } catch (err) {
+          const shell = await cachedAppShell(scope)
+          if (shell) return shell
+          const cached = await caches.match(req)
+          if (cached) return cached
+          throw err
+        }
+      }
+
+      // File requests (including navigate to report.pdf / video / images): network, then
+      // that URL's own cache entry — never the HTML shell.
+      try {
+        const res = await fetch(req)
+        return res
       } catch (err) {
-        const fallback =
-          (await caches.match(req)) ||
-          (req.mode === 'navigate'
-            ? await caches.match(new URL('index.html', self.registration.scope).href)
-            : undefined)
-        if (fallback) return fallback
+        const cached = await caches.match(req)
+        if (cached) return cached
         throw err
       }
     })(),
   )
 })
-
-function shouldRuntimeCache(url) {
-  const path = url.pathname
-  return (
-    path.endsWith('.js') ||
-    path.endsWith('.css') ||
-    path.endsWith('.wasm') ||
-    path.endsWith('.mjs') ||
-    path.endsWith('.svg') ||
-    path.endsWith('.png') ||
-    path.endsWith('.woff2') ||
-    path.includes('/assets/')
-  )
-}
