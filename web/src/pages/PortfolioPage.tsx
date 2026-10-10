@@ -20,7 +20,7 @@ const PROJECTS: ProjectCard[] = [
   {
     title: 'Breast ultrasound lesion segmentation',
     blurb:
-      'In-browser U-Net on BUSI with external BUS-BRA / BrEaST checks, caliper audits, and honest limitations.',
+      'In-browser U-Net on BUSI with external BUS-BRA / BrEaST / BUS-UCLM checks, caliper audits, and honest limitations.',
     repoUrl: 'https://github.com/surabhif/Breast-ultrasound-lesion-segmentation',
     liveUrl: 'https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/',
     doiUrl: SITE.doiUrl,

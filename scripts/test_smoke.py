@@ -91,6 +91,10 @@ def test_external_results_or_skip_documented():
     assert "external" in metrics and "datasets" in metrics["external"]
     assert "busbra" in metrics["external"]["datasets"]
     assert "breast" in metrics["external"]["datasets"]
+    busuclm = metrics["external"]["datasets"].get("busuclm") or {}
+    assert "test_dice" in busuclm, "BUS-UCLM results should be merged into metrics.json"
+    assert not (ext / "busuclm_SKIPPED.json").exists()
+    assert "BUS-UCLM" not in (metrics["external"].get("skipped") or {})
 
 
 if __name__ == "__main__":
@@ -100,4 +104,13 @@ if __name__ == "__main__":
     test_onnx_runs()
     test_external_protocol_preregistered()
     test_external_results_or_skip_documented()
+    from test_external_loaders import (
+        test_busbra_breast_loaders_skip_without_archive,
+        test_busuclm_info_csv_parse_and_doppler_filter,
+        test_load_mask_binary_grayscale_and_pure_red,
+    )
+
+    test_load_mask_binary_grayscale_and_pure_red()
+    test_busuclm_info_csv_parse_and_doppler_filter()
+    test_busbra_breast_loaders_skip_without_archive()
     print("All smoke tests passed.")

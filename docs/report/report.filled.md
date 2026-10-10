@@ -10,7 +10,7 @@ Served INT8 Dice 0.697, lesion Dice 0.764, AUC 0.931; BUS-BRA Dice 0.714 AUC 0.6
 
 ## Data
 Annotation-flag rate 46.9% (366/780).
-BUS-UCLM was not included because its Mendeley Data download requires a login (the request returned HTTP 403).
+**BUS-UCLM** (Vallez et al., 2025; Mendeley CC BY 4.0) is scored for frozen v1.0.0 INT8: n=640 / 38 patients (43 Doppler/combined frames excluded). All-image Dice **0.386** [0.326, 0.449]; lesion Dice **0.679** [0.593, 0.755]; AUC **0.780**. Normal false positives dominate the all-image figure (320/413) — the same known weakness as on BUSI (12/19). Prefer lesion Dice for cross-dataset comparison (between BrEaST and BUS-BRA).
 External: BUS-BRA n=1875; BrEaST n=256 (Pawłowska et al.).
 
 ## Results highlights

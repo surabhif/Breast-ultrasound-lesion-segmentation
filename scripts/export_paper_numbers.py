@@ -61,7 +61,14 @@ def collect(m: dict) -> dict[str, str]:
 
     busbra_ok = "test_dice" in busbra
     breast_ok = "test_dice" in breast
-    busuclm_status = busuclm.get("status", "unknown")
+    busuclm_ok = "test_dice" in busuclm
+    busuclm_status = (
+        busuclm.get("status")
+        if "status" in busuclm
+        else ("scored" if busuclm_ok else "unknown")
+    )
+    busuclm_nfp = int(busuclm.get("normal_false_positive_count", 0)) if busuclm_ok else 0
+    busuclm_nn = int(busuclm.get("normal_n", 0)) if busuclm_ok else 0
 
     nfp = int(si.get("normal_false_positive_count", 12))
     nn = int(si.get("normal_n", 19))
@@ -123,6 +130,12 @@ def collect(m: dict) -> dict[str, str]:
         "MetricBreastDice": r3(breast["test_dice"]) if breast_ok else "n/a",
         "MetricBreastAuc": r3(breast["cls_roc_auc"]) if breast_ok else "n/a",
         "MetricBusuclmStatus": busuclm_status,
+        "MetricBusuclmN": str(int(busuclm["n"])) if busuclm_ok else "n/a",
+        "MetricBusuclmPatients": str(int(busuclm.get("n_patients", 0))) if busuclm_ok else "n/a",
+        "MetricBusuclmDice": r3(busuclm["test_dice"]) if busuclm_ok else "n/a",
+        "MetricBusuclmLesionDice": r3(busuclm["lesion_dice"]) if busuclm_ok else "n/a",
+        "MetricBusuclmAuc": r3(busuclm["cls_roc_auc"]) if busuclm_ok else "n/a",
+        "MetricBusuclmNormalFP": f"{busuclm_nfp}/{busuclm_nn}" if busuclm_ok else "n/a",
         # Uncertainty / leakage / swap
         "MetricTtaSpearman": r3(uncert.get("spearman_rho")),
         "MetricDiceAtEightyCov": r3(uncert.get("dice_at_80_coverage")),

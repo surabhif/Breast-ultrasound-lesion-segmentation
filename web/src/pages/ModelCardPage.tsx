@@ -106,10 +106,11 @@ export default function ModelCardPage() {
       <h2 id="limitations">Limitations</h2>
       <ul>
         <li>
-          Domain shift: frozen v1.0.0 INT8 on BUS-BRA Dice ≈ 0.714 (AUC ≈ 0.638) and BrEaST Dice ≈
-          0.627 (AUC ≈ 0.721) vs internal Dice ≈ 0.697 / AUC ≈ 0.931 — segmentation holds better
-          than classification. BUS-UCLM skipped (Mendeley access 403 in this environment). See
-          Results → External validation.
+          Domain shift: frozen v1.0.0 INT8 on BUS-BRA Dice ≈ 0.714 (AUC ≈ 0.638), BrEaST Dice ≈
+          0.627 (AUC ≈ 0.721), and BUS-UCLM all-image Dice ≈ 0.386 / lesion Dice ≈ 0.679 (AUC ≈
+          0.780; 320/413 normal false positives) vs internal Dice ≈ 0.697 / AUC ≈ 0.931 —
+          segmentation holds better than classification when lesions are present, but normals
+          remain a known weakness. See Results → External validation.
         </li>
         <li>No patient IDs → residual leakage risk beyond near-duplicate hashing</li>
         <li>Caliper and HUD artifacts may still act as shortcuts</li>

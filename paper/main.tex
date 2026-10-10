@@ -36,8 +36,10 @@ near-duplicate splits, exported to ONNX, and served as a dynamic INT8 model
 (\MetricOnnxMb\,MB) that runs fully client-side. On the held-out BUSI test set the served model
 reaches Dice~\MetricServedTestDice\ (95\% CI [\MetricServedTestDiceCIlo,~\MetricServedTestDiceCIhi]),
 lesion-only Dice~\MetricServedLesionDice, and benign-vs-malignant ROC-AUC~\MetricServedAuc.
-Frozen weights are evaluated without tuning on BUS-BRA (Dice~\MetricBusbraDice, AUC~\MetricBusbraAuc)
-and BrEaST (Dice~\MetricBreastDice, AUC~\MetricBreastAuc). Caliper/annotation audits, a pre-registered
+Frozen weights are evaluated without tuning on BUS-BRA (Dice~\MetricBusbraDice, AUC~\MetricBusbraAuc),
+BrEaST (Dice~\MetricBreastDice, AUC~\MetricBreastAuc), and BUS-UCLM (all-image
+Dice~\MetricBusuclmDice, lesion Dice~\MetricBusuclmLesionDice, AUC~\MetricBusuclmAuc;
+normal FPs~\MetricBusuclmNormalFP). Caliper/annotation audits, a pre-registered
 model-swap policy, and test-time uncertainty summaries are included. Normal images remain
 difficult (non-empty masks on \MetricNormalFP\ normals). This is a portfolio research demo, not a
 medical device.
@@ -101,9 +103,9 @@ train~\MetricNTrain, val~\MetricNVal, test~\MetricNTest. This is \emph{not} a tr
 \textbf{External sets} (CC~BY~4.0; scored after protocol registration, no fine-tuning):
 BUS-BRA~\cite{gomezflores2024busbra} (\MetricBusbraN\ images, \texttt{n\_patients}${}=1064$ in the
 committed JSON) and BrEaST~\cite{pawlowska2024breast} (\MetricBreastN\ images / patients).
-BUS-UCLM~\cite{vallez2025busuclm} was planned as secondary but remains skipped in the committed
-run (\MetricBusuclmStatus; Mendeley interactive login required). UDIAT and BUSIS were skipped for
-licence / access reasons (decision log D1).
+BUS-UCLM~\cite{vallez2025busuclm} is the secondary set (\MetricBusuclmN\ images /
+\MetricBusuclmPatients\ patients after excluding Doppler/combined frames; status
+\MetricBusuclmStatus). UDIAT and BUSIS were skipped for licence / access reasons (decision log D1).
 
 \subsection{Model and training}
 
@@ -219,13 +221,16 @@ Dataset & $n$ & Dice & AUC \\
 BUSI (internal INT8) & \MetricNTest & \MetricServedTestDice & \MetricServedAuc \\
 BUS-BRA & \MetricBusbraN & \MetricBusbraDice & \MetricBusbraAuc \\
 BrEaST & \MetricBreastN & \MetricBreastDice & \MetricBreastAuc \\
+BUS-UCLM & \MetricBusuclmN & \MetricBusuclmDice$^{\dagger}$ & \MetricBusuclmAuc \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Segmentation transfers moderately (BUS-BRA Dice~\MetricBusbraDice; BrEaST~\MetricBreastDice).
-Classification AUC drops substantially off-distribution (BUS-BRA~\MetricBusbraAuc;
-BrEaST~\MetricBreastAuc), underscoring that BUSI triage scores are not portable without further work.
+Segmentation transfers moderately (BUS-BRA Dice~\MetricBusbraDice; BrEaST~\MetricBreastDice;
+BUS-UCLM lesion Dice~\MetricBusuclmLesionDice). BUS-UCLM all-image Dice~\MetricBusuclmDice\ is
+pulled down by normal false positives (\MetricBusuclmNormalFP). Classification AUC drops
+substantially off-distribution (BUS-BRA~\MetricBusbraAuc; BrEaST~\MetricBreastAuc;
+BUS-UCLM~\MetricBusuclmAuc), underscoring that BUSI triage scores are not portable without further work.
 Subgroup Dice by BI-RADS and scanner on BUS-BRA is reported in the site Results JSON for
 exploratory inspection; those rows were not used for threshold selection.
 
@@ -260,7 +265,8 @@ diagnostics only.
 \item High false-positive rate on normals (\MetricNormalFP).
 \item External classification AUC is much lower than internal BUSI AUC.
 \item Resolution is limited to \MetricImgSize$^2$ for CPU/browser practicality.
-\item BUS-UCLM not included in the committed scorecard (\MetricBusuclmStatus).
+\item BUS-UCLM all-image Dice is low (\MetricBusuclmDice) largely from normal false positives
+  (\MetricBusuclmNormalFP); lesion Dice \MetricBusuclmLesionDice\ is the fairer transfer figure.
 \item Caliper detector is heuristic, not OCR; literature comparisons depend on heterogeneous
   protocols across papers.
 \item Single primary training seed for the served model; CV folds are diagnostic, not an

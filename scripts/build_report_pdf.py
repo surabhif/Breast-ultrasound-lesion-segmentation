@@ -105,10 +105,32 @@ def collect_numbers() -> dict[str, str]:
     if cov80 is None:
         raise SystemExit("Missing uncertainty risk-coverage at 0.8")
 
-    busuclm = (
-        "BUS-UCLM was not included because its Mendeley Data download requires a login "
-        "(the request returned HTTP 403)."
-    )
+    busuclm_js = load(ROOT / "results" / "external" / "busuclm.json")
+    if "test_dice" in busuclm_js:
+        busuclm = (
+            f"**BUS-UCLM** (Vallez et al., 2025; Mendeley CC BY 4.0) is scored for frozen v1.0.0 INT8: "
+            f"n={busuclm_js['n']} / {busuclm_js['n_patients']} patients "
+            f"(43 Doppler/combined frames excluded). All-image Dice **{fmt(busuclm_js['test_dice'])}** "
+            f"[{fmt(busuclm_js['test_dice_bootstrap_95ci'][0])}, {fmt(busuclm_js['test_dice_bootstrap_95ci'][1])}]; "
+            f"lesion Dice **{fmt(busuclm_js['lesion_dice'])}** "
+            f"[{fmt(busuclm_js['lesion_dice_bootstrap_95ci'][0])}, {fmt(busuclm_js['lesion_dice_bootstrap_95ci'][1])}]; "
+            f"AUC **{fmt(busuclm_js['cls_roc_auc'])}**. Normal false positives dominate the all-image figure "
+            f"({busuclm_js['normal_false_positive_count']}/{busuclm_js['normal_n']}) — the same known weakness "
+            f"as on BUSI ({int8.get('normal_false_positive_count')}/{int8.get('normal_n')}). "
+            f"Prefer lesion Dice for cross-dataset comparison (between BrEaST and BUS-BRA)."
+        )
+        busuclm_dice = fmt(busuclm_js["test_dice"], label="BUS-UCLM dice")
+        busuclm_lesion = fmt(busuclm_js["lesion_dice"], label="BUS-UCLM lesion dice")
+        busuclm_auc = fmt(busuclm_js["cls_roc_auc"], label="BUS-UCLM auc")
+        busuclm_n = str(busuclm_js["n"])
+        busuclm_np = str(busuclm_js["n_patients"])
+        busuclm_nfp = f"{busuclm_js['normal_false_positive_count']}/{busuclm_js['normal_n']}"
+    else:
+        busuclm = (
+            "BUS-UCLM was not included because its Mendeley Data download requires a login "
+            "(the request returned HTTP 403)."
+        )
+        busuclm_dice = busuclm_lesion = busuclm_auc = busuclm_n = busuclm_np = busuclm_nfp = "n/a"
 
     dc = clean["dataset_counts"]
     nums = {
@@ -147,6 +169,12 @@ def collect_numbers() -> dict[str, str]:
         "BREAST_N": str(breast.get("n")),
         "BREAST_NP": str(breast.get("n_patients")),
         "BUSUCLM_SENTENCE": busuclm,
+        "BUSUCLM_DICE": busuclm_dice,
+        "BUSUCLM_LESION_DICE": busuclm_lesion,
+        "BUSUCLM_AUC": busuclm_auc,
+        "BUSUCLM_N": busuclm_n,
+        "BUSUCLM_NP": busuclm_np,
+        "BUSUCLM_NFP": busuclm_nfp,
         "ANNOTATION_RATE": pct(dc["annotation_rate"], label="annotation_rate"),
         "N_FLAGGED": str(dc["n_annotation_flagged"]),
         "N_TOTAL": str(dc["n_total"]),
@@ -179,6 +207,8 @@ def collect_numbers() -> dict[str, str]:
     forbidden = ("n/a", "None", "TODO", "NaN", "data/external/")
     for k, v in nums.items():
         if k in ("HOW_BUILT", "PAGES_URL", "GITHUB_URL", "DOI_URL", "BUSUCLM_SENTENCE"):
+            continue
+        if v == "n/a":
             continue
         for bad in forbidden:
             if bad in v:
@@ -535,10 +565,17 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
                 ["BUSI internal", nums["INT8_DICE"], nums["INT8_LESION_DICE"], nums["INT8_AUC"]],
                 ["BUS-BRA", nums["BUSBRA_DICE"], nums["BUSBRA_LESION_DICE"], nums["BUSBRA_AUC"]],
                 ["BrEaST", nums["BREAST_DICE"], nums["BREAST_LESION_DICE"], nums["BREAST_AUC"]],
+                ["BUS-UCLM", nums["BUSUCLM_DICE"], nums["BUSUCLM_LESION_DICE"], nums["BUSUCLM_AUC"]],
             ],
         )
     )
-    story.append(P("Sources: results/external/busbra.json, results/external/breast.json.", "Cap"))
+    story.append(
+        P(
+            "Sources: results/external/busbra.json, breast.json, busuclm.json. "
+            f"BUS-UCLM normal FPs {nums['BUSUCLM_NFP']} (n={nums['BUSUCLM_N']}, patients={nums['BUSUCLM_NP']}).",
+            "Cap",
+        )
+    )
     story.append(fig("roc"))
     story.append(P("Classification ROC on BUSI versus external sets (when curves are stored).", "Cap"))
     story.append(fig("cal"))
@@ -709,7 +746,9 @@ def main() -> int:
         if "Pawłowska" not in FILLED_MD.read_text():
             raise SystemExit("Pawłowska missing from filled markdown")
     compact = " ".join(text.split())
-    if "Mendeley Data download requires a login" not in compact:
+    if "BUS-UCLM" not in compact or (
+        "requires a login" not in compact and "Normal false positives dominate" not in compact
+    ):
         raise SystemExit("Reader-facing BUS-UCLM sentence missing from PDF text")
     if "data/external" in text:
         raise SystemExit("Internal data/external path leaked into PDF text")

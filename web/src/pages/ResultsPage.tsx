@@ -429,7 +429,15 @@ export default function ResultsPage() {
                   .filter(([, row]) => row.test_dice != null)
                   .map(([name, row]) => (
                   <tr key={name}>
-                    <td>{name === 'busbra' ? 'BUS-BRA' : name === 'breast' ? 'BrEaST' : name}</td>
+                    <td>
+                      {name === 'busbra'
+                        ? 'BUS-BRA'
+                        : name === 'breast'
+                          ? 'BrEaST'
+                          : name === 'busuclm'
+                            ? 'BUS-UCLM'
+                            : name}
+                    </td>
                     <td>
                       {row.n}
                       {row.n_patients != null ? ` / ${row.n_patients} pts` : ''}
@@ -458,7 +466,14 @@ export default function ResultsPage() {
               ...Object.entries(data.external.datasets ?? {})
                 .filter(([, row]) => row.test_dice != null)
                 .map(([name, row]) => ({
-                name: name === 'busbra' ? 'BUS-BRA' : name === 'breast' ? 'BrEaST' : name,
+                name:
+                  name === 'busbra'
+                    ? 'BUS-BRA'
+                    : name === 'breast'
+                      ? 'BrEaST'
+                      : name === 'busuclm'
+                        ? 'BUS-UCLM'
+                        : name,
                 dice: row.test_dice,
               })),
             ].map((row) => (
@@ -477,8 +492,13 @@ export default function ResultsPage() {
           <p>
             <strong>Honest reading:</strong> overall Dice on BUS-BRA stays close to internal Dice,
             but <strong>AUC drops sharply</strong> under dataset shift (BUS-BRA ~0.64, BrEaST
-            ~0.72 vs internal ~0.93). Segmentation transfers better than the auxiliary classifier
-            here. ECE also worsens externally.
+            ~0.72 vs internal ~0.93). On <strong>BUS-UCLM</strong> (n=640, 38 patients; 43
+            Doppler/combined frames excluded), all-image Dice is only ~0.386 because{' '}
+            <strong>320 / 413 normals</strong> get a non-empty mask — the same normal
+            false-positive weakness seen on BUSI (12/19). Lesion-only Dice (~0.679 [0.593, 0.755])
+            is the fairer cross-dataset comparison: a bit below BUS-BRA (~0.714) and above BrEaST
+            (~0.629). BUS-UCLM B/M AUC is ~0.780. Segmentation still transfers better than the
+            auxiliary classifier overall; ECE worsens externally.
           </p>
           {data.external.skipped && Object.keys(data.external.skipped).length > 0 && (
             <p className="muted">
@@ -490,8 +510,8 @@ export default function ResultsPage() {
           )}
           <p className="muted tiny">
             Attribution: Gómez-Flores et al. 2024 (BUS-BRA, Zenodo CC BY 4.0); Pawłowska et al. 2024
-            (BrEaST / TCIA CC BY 4.0). Images resized for evaluation — not redistributed in the repo
-            except small CC BY demo samples.
+            (BrEaST / TCIA CC BY 4.0); Vallez et al. 2025 (BUS-UCLM, Mendeley CC BY 4.0). Images
+            resized for evaluation — not redistributed in the repo except small CC BY demo samples.
           </p>
         </section>
       )}

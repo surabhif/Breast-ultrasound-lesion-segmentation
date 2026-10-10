@@ -80,6 +80,9 @@ def main() -> int:
     if "HTTP 403 wit)" in pdf_text:
         print("FAIL: BUS-UCLM sentence truncated")
         return 1
+    if "BUS-UCLM" not in pdf_text and "BUS-UCLM" not in compact:
+        print("FAIL: BUS-UCLM missing from PDF text")
+        return 1
 
     print(f"OK: {len(drift_keys)} numbers match results JSON and appear in {OUT_PDF.name}")
     return 0

@@ -10,7 +10,8 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 - **v2 training pipeline** (`scripts/train_v2.py`, `scripts/apply_v2_swap.py`): BUSI train + patient-grouped BUS-BRA train; held-out BUS-BRA test; BrEaST external; ResNet-34 @ 256²; Dice+focal; stronger aug; optional Telea inpaint; ~3 seeds. Results comparison table on `/results` (`v2_experiment`). Swap only under MODEL_POLICY (D3) + INT8 ≤ ~25 MB.
 - Citation / freeze pack: `.zenodo.json`, enhanced `CITATION.cff`, `docs/ZENODO_STEPS.md`, `docs/RELEASE_NOTES_v1.0_DRAFT.md`, `docs/FREEZE_CHECKLIST.md` (no tags/releases by agents).
 - Preprint pack: `paper/` LaTeX (6–8 pp) with auto-pulled numbers + drift check; `docs/SUBMISSION_GUIDE.md` (JEI vs arXiv). No submissions.
-- BUS-UCLM: hardened loader + `docs/BUSUCLM_STEPS.md`; eval skips cleanly when archive absent.
+- BUS-UCLM: hardened loader (`INFO.csv` `;` parse, patient prefix, Doppler/Combined exclude; RGB `load_mask_binary` keeps pure-red masks) + `docs/BUSUCLM_STEPS.md`; eval skips cleanly when archive absent.
+- **BUS-UCLM scored** (owner local copy → `results/external/busuclm.json`): n=640 / 38 pts; all-image Dice **0.386**, lesion Dice **0.679** [0.593, 0.755], AUC **0.780**; normal FPs **320/413**. Merged into Results external table.
 - Demo: drag-and-drop / upload (browser-only + privacy note), client-side one-page result PDF, mobile camera capture, PWA/offline (shell + model cached by `current.json` cache_key).
 
 ### Model
@@ -75,7 +76,7 @@ E-a: erasing markers did **not** drop flagged Dice toward clean (flagged Dice st
 
 ### Added
 
-- External validation of frozen **v1.0.0 INT8** on **BUS-BRA** and **BrEaST** (`results/external/*`); BUS-UCLM skipped (Mendeley HTTP 403 without interactive login).
+- External validation of frozen **v1.0.0 INT8** on **BUS-BRA** and **BrEaST** (`results/external/*`); BUS-UCLM later scored on owner local copy (see Unreleased).
 - Results sections: External validation + Comparison with published work; `docs/LITERATURE_COMPARISON.md`.
 - Demo: expert-vs-model compare modes + per-image Dice; lesion measurements (px / mm on BrEaST).
 - Offline measurement agreement on BrEaST (`results/measurement_agreement.json`).

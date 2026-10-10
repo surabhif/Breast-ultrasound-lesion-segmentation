@@ -888,12 +888,94 @@
       },
       "busuclm": {
         "dataset": "busuclm",
-        "reason": "BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) returned HTTP 403 without interactive login from this environment. Download manually, place under data/external/busuclm/, then re-run.",
-        "status": "skipped"
+        "model_version": "1.0.0",
+        "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+        "protocol": "docs/EXTERNAL_VALIDATION_PROTOCOL.md",
+        "n": 640,
+        "n_patients": 38,
+        "seg_threshold": 0.4,
+        "min_component_area": 40,
+        "cls_threshold": 0.5,
+        "test_dice": 0.3861262931885445,
+        "test_dice_bootstrap_95ci": [
+          0.3263634170940513,
+          0.4487685097225877
+        ],
+        "test_iou": 0.3548809534648611,
+        "test_iou_bootstrap_95ci": [
+          0.2958733973538153,
+          0.4145206929566245
+        ],
+        "lesion_dice": 0.6789463750383192,
+        "lesion_dice_bootstrap_95ci": [
+          0.5926530498453862,
+          0.7546392064061026
+        ],
+        "by_label": {
+          "benign": {
+            "n": 156,
+            "dice_mean": 0.7022993512408073,
+            "dice_ci95": [
+              0.5928141832070649,
+              0.7857756323308847
+            ]
+          },
+          "malignant": {
+            "n": 71,
+            "dice_mean": 0.6276356104244014,
+            "dice_ci95": [
+              0.5069782936579108,
+              0.7497614521371225
+            ]
+          },
+          "normal": {
+            "n": 413,
+            "dice_mean": 0.22518159929048437,
+            "dice_ci95": [
+              0.1650439527691961,
+              0.2918741651781327
+            ]
+          }
+        },
+        "normal_false_positive_count": 320,
+        "normal_n": 413,
+        "cls_roc_auc": 0.7802455760202238,
+        "cls_sensitivity": 0.6056338028169014,
+        "cls_specificity": 0.7756410256410257,
+        "cls_ece": 0.1915987454321941,
+        "confusion_matrix": {
+          "labels": [
+            "benign",
+            "malignant"
+          ],
+          "matrix": [
+            [
+              121,
+              35
+            ],
+            [
+              28,
+              43
+            ]
+          ]
+        },
+        "subgroups": {
+          "by_scanner": {
+            "Siemens ACUSON S2000": {
+              "n": 640,
+              "dice_mean": 0.3861262931885445,
+              "dice_ci95": [
+                0.3263634170940513,
+                0.4487685097225877
+              ]
+            }
+          }
+        },
+        "attribution": "Vallez et al., Sci Data 2025; Mendeley 7fvgj4jsp7; CC BY 4.0",
+        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160\u00b2 (shared bilinear). 43 Doppler/combined images excluded per INFO.csv flags. Evaluated off-CI on the owner's local copy; images not redistributed."
       }
     },
     "skipped": {
-      "BUS-UCLM": "Mendeley Data (doi:10.17632/7fvgj4jsp7.3) returned HTTP 403 without interactive login; CC BY 4.0. Loader ready at scripts/external/busuclm.py.",
       "UDIAT": "Institutional licence agreement required \u2014 skipped per D1.",
       "BUSIS": "Signed release / no redistribution \u2014 skipped per D1."
     }

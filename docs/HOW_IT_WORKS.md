@@ -99,7 +99,7 @@ You can say:
 
 ## External validation (Phase 1)
 
-The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA** and **BrEaST** with the pre-registered protocol (no tuning). Dice stayed in a similar ballpark to BUSI on BUS-BRA, but **benign-vs-malignant AUC dropped a lot** under shift. That is the honest headline: segmentation transferred better than the auxiliary classifier. BUS-UCLM was skipped when the Mendeley download was unavailable without interactive login.
+The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA**, **BrEaST**, and **BUS-UCLM** with the pre-registered protocol (no tuning). Dice stayed in a similar ballpark to BUSI on BUS-BRA, but **benign-vs-malignant AUC dropped a lot** under shift. On BUS-UCLM, all-image Dice is low (~0.386) mainly because of **normal false positives** (320/413); lesion-only Dice (~0.679) is the fairer comparison. Honest headline: segmentation transfers better than the auxiliary classifier when lesions are present, but normals remain a known weakness.
 
 ## Phase 2 (robustness & uncertainty)
 
