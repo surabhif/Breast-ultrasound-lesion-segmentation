@@ -74,6 +74,7 @@ From `results/postprocess.json` / training val lesion-Dice selection — **not**
 
 - Citation: Vallez et al., *Sci Data* 2025;12:242 ([doi:10.1038/s41597-025-04564-2](https://doi.org/10.1038/s41597-025-04564-2) / [PubMed 39934113](https://pubmed.ncbi.nlm.nih.gov/39934113/))
 - Download: Mendeley Data [doi:10.17632/7fvgj4jsp7.3](https://doi.org/10.17632/7fvgj4jsp7.3) — dataset **CC BY 4.0**
+- Owner steps (manual download → `data/external/busuclm/`): **`docs/BUSUCLM_STEPS.md`**. Loader: `scripts/external/busuclm.py` (skips with `FileNotFoundError` when absent; `scripts/eval_external.py` records skip and merges when present).
 - Many normals; exclude Doppler/combined frames when flagged in metadata; patient-cluster bootstrap (38 patients)
 
 **Skipped:** UDIAT (institutional licence agreement); BUSIS (signed release / no redistribution). See `docs/DECISION_LOG.md` D1.

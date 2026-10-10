@@ -1,0 +1,19 @@
+{
+  "name": "Breast Ultrasound Lesion Segmentation",
+  "short_name": "BUSI Lesion Seg",
+  "description": "In-browser research demo for breast ultrasound lesion segmentation. Not for clinical use.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#297373",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
