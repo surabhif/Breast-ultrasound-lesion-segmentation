@@ -104,6 +104,32 @@ type Metrics = {
     before_after_note?: string
     table?: { name: string; dice?: number; lesion_dice?: number; auc?: number }[]
   }
+  v2_experiment?: {
+    served_unchanged?: boolean
+    decision_sentence?: string
+    swap_note?: string
+    note?: string
+    swap_criteria?: {
+      criterion: string
+      rule: string
+      v1?: number | null
+      v2?: number | null
+      passed: boolean
+    }[]
+    table?: {
+      name: string
+      dice?: number
+      lesion_dice?: number
+      clean_dice?: number
+      busbra_dice?: number
+      breast_dice?: number
+      auc?: number
+      int8_mb?: number
+      swap_ok?: boolean
+    }[]
+    config?: Record<string, unknown>
+    busbra_split?: Record<string, unknown>
+  }
   uncertainty?: {
     spearman_rho?: number
     spearman_p?: number
@@ -674,6 +700,79 @@ export default function ResultsPage() {
       </section>
 
       {scores && <ThresholdExplorer data={scores} />}
+
+      {data.v2_experiment && (
+        <section className="panel" style={{ marginTop: '1rem' }} id="v2-comparison">
+          <h2 className="section-title">Phase 4 model candidates vs v1</h2>
+          <p>
+            {data.v2_experiment.note ??
+              'Multi-dataset v2 candidates (BUSI train + patient-grouped BUS-BRA train; held-out BUS-BRA test; BrEaST external) under the pre-registered MODEL_POLICY swap rule.'}{' '}
+            Source: <code>results/v2_experiment.json</code>.
+          </p>
+          {data.v2_experiment.swap_criteria && data.v2_experiment.swap_criteria.length > 0 && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Criterion</th>
+                    <th>Rule</th>
+                    <th>v1</th>
+                    <th>Best v2</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.v2_experiment.swap_criteria.map((row) => (
+                    <tr key={row.criterion}>
+                      <td>{row.criterion}</td>
+                      <td>{row.rule}</td>
+                      <td>{row.v1 == null ? '—' : row.v1.toFixed(3)}</td>
+                      <td>{row.v2 == null ? '—' : row.v2.toFixed(3)}</td>
+                      <td>{row.passed ? 'Pass' : 'Fail'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <p>
+            {data.v2_experiment.decision_sentence ??
+              (data.v2_experiment.served_unchanged !== false
+                ? 'v2 did not meet the rule, so the site keeps serving v1.0.0.'
+                : 'v2 met the rule, so the site serves v2.0.0.')}
+          </p>
+          {data.v2_experiment.table && data.v2_experiment.table.length > 0 && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Setting</th>
+                    <th>Dice</th>
+                    <th>Clean Dice</th>
+                    <th>BUS-BRA</th>
+                    <th>BrEaST</th>
+                    <th>AUC</th>
+                    <th>INT8 MB</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.v2_experiment.table.map((row) => (
+                    <tr key={row.name}>
+                      <td>{row.name}</td>
+                      <td>{fmt(row.dice)}</td>
+                      <td>{fmt(row.clean_dice)}</td>
+                      <td>{fmt(row.busbra_dice)}</td>
+                      <td>{fmt(row.breast_dice)}</td>
+                      <td>{fmt(row.auc)}</td>
+                      <td>{fmt(row.int8_mb, 1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      )}
 
       {data.inpaint_experiment && (
         <section className="panel" style={{ marginTop: '1rem' }} id="caliper-inpaint">

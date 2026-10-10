@@ -3,7 +3,21 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
-## [Unreleased] — Phase 3 (2026-10-08)
+## [Unreleased] — Phase 4 (2026-10-10)
+
+### Added
+
+- **v2 training pipeline** (`scripts/train_v2.py`, `scripts/apply_v2_swap.py`): BUSI train + patient-grouped BUS-BRA train; held-out BUS-BRA test; BrEaST external; ResNet-34 @ 256²; Dice+focal; stronger aug; optional Telea inpaint; ~3 seeds. Results comparison table on `/results` (`v2_experiment`). Swap only under MODEL_POLICY (D3) + INT8 ≤ ~25 MB.
+- Citation / freeze pack: `.zenodo.json`, enhanced `CITATION.cff`, `docs/ZENODO_STEPS.md`, `docs/RELEASE_NOTES_v1.0_DRAFT.md`, `docs/FREEZE_CHECKLIST.md` (no tags/releases by agents).
+- Preprint pack: `paper/` LaTeX (6–8 pp) with auto-pulled numbers + drift check; `docs/SUBMISSION_GUIDE.md` (JEI vs arXiv). No submissions.
+- BUS-UCLM: hardened loader + `docs/BUSUCLM_STEPS.md`; eval skips cleanly when archive absent.
+- Demo: drag-and-drop / upload (browser-only + privacy note), client-side one-page result PDF, mobile camera capture, PWA/offline (shell + model cached by `current.json` cache_key).
+
+### Model
+
+- Served weights remain **v1.0.0** until a candidate passes the swap rule (see Results → Phase 4 comparison and `results/v2_experiment.json`).
+
+## [Phase 3] — 2026-10-08
 
 ### Added
 

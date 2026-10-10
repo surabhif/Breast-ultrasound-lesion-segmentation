@@ -24,6 +24,10 @@ Prep only — **no tags, releases, or submissions** by agents.
 
 **Decided (prep):** Owner uses `docs/FREEZE_CHECKLIST.md` and draft `docs/RELEASE_NOTES_v1.0_DRAFT.md` for the freeze release. Served model remains **v1.0.0** unless MODEL_POLICY is newly satisfied. No clinician outreach.
 
+### D16 — Phase 4 v2 training attempt (swap rule unchanged)
+
+**Decided:** Train multi-dataset v2 candidates (BUSI train + patient-grouped BUS-BRA train; held-out BUS-BRA test; BrEaST fully external) with ResNet-34 @ 256², stronger augmentation, Dice+focal, optional Telea caliper inpaint, ~3 seeds. Promote to served **v2.0.0** only if MODEL_POLICY (D3) passes **and** INT8 ONNX ≤ ~25 MB with reasonable in-browser latency. Otherwise keep **v1.0.0** and publish the comparison on Results. No clinician outreach.
+
 ---
 
 ## 2026-10-08 — Phase 3 decisions (plan numbering D5–D12)
