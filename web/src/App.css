@@ -1967,3 +1967,25 @@ button:focus-visible,
     transition: none !important;
   }
 }
+
+/* Plain-language technical details disclosure */
+.tech-details {
+  margin: 0.75rem 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #c5d6d6;
+  border-radius: 6px;
+  background: #f4f8f8;
+  font-size: 0.92rem;
+}
+.tech-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #297373;
+}
+.tech-details[open] summary {
+  margin-bottom: 0.5rem;
+}
+.tech-details p,
+.tech-details ul {
+  margin: 0.35rem 0;
+}

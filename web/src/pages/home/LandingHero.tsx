@@ -11,13 +11,10 @@ export function LandingHero() {
         A research project by <strong>Surabhi Fadnavis</strong>
       </p>
       <p className="landing-lede">
-        An educational web app about one research question on public breast ultrasound:{' '}
-        <em>
-          can a small model outline a lesion in the browser — and how honest are the scores when
-          calipers and near-duplicates exist?
-        </em>{' '}
-        Walk through a short tour, then try a research demo that predicts a lesion mask and a
-        benign-vs-malignant score — all in your browser.
+        This site asks a simple research question about public breast ultrasound. Can a small
+        program outline a lump in your browser? Do the published scores still hold when images
+        share near-copies or burned-in measurement marks? Take a short tour, then try a demo that
+        draws an outline and estimates whether a lump looks harmless or cancerous.
       </p>
       <div className="landing-actions">
         <a
@@ -37,21 +34,20 @@ export function LandingHero() {
       <nav className="landing-wwh" aria-label="Guide sections">
         <a href="#why">
           <b>Why</b>
-          <span>Why ultrasound lesions matter and why computers might help.</span>
+          <span>Why outlining lumps on ultrasound matters for research.</span>
         </a>
         <a href="#what">
           <b>What</b>
-          <span>Explainer, detector, results, and model card.</span>
+          <span>Tour, detector, results, and model notes.</span>
         </a>
         <a href="#how">
           <b>How</b>
-          <span>How to use the detector in your browser.</span>
+          <span>How to run the detector in your browser.</span>
         </a>
       </nav>
       <p className="landing-disclaimer" role="note">
-        <strong>Educational only — not for clinical use.</strong> Built on a public research
-        dataset. Not a diagnostic tool, not clinically validated, and never for decisions about
-        anyone&apos;s health.
+        <strong>Educational only. Not for clinical use.</strong> Built on a public research
+        dataset. Not a diagnostic tool. Never use it for anyone&apos;s health decisions.
       </p>
     </header>
   )

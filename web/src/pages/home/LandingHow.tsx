@@ -15,10 +15,10 @@ export function LandingHow() {
 
       <ol className="landing-steps">
         <li>
-          <strong>Start with the explainer (recommended).</strong>
+          <strong>Start with the tour (recommended).</strong>
           <p>
-            Step through the five tour scenes for context on ultrasound, BUSI labels,
-            segmentation, data pitfalls, and the browser demo.{' '}
+            Walk through five short scenes on ultrasound, BUSI labels, outlining, data pitfalls,
+            and the browser demo.{' '}
             <button
               type="button"
               className="landing-jumplink inline"
@@ -31,38 +31,37 @@ export function LandingHow() {
         <li>
           <strong>Open “Try the detector.”</strong>
           <p>
-            The model downloads once (~{MODEL_STATUS.sizeHintMb}&nbsp;MB) with a progress
-            indicator. Later visits load it from your browser cache.
+            The model downloads once (~{MODEL_STATUS.sizeHintMb}&nbsp;MB) with a progress bar.
+            Later visits load it from your browser cache.
           </p>
         </li>
         <li>
           <strong>Choose an image.</strong>
           <p>
-            Pick a gallery sample (held-out BUSI test images) or upload your own. Breast ultrasound
-            frames similar to BUSI give the most meaningful results.
+            Pick a gallery sample from the BUSI test set, or upload your own. Breast ultrasound
+            frames like BUSI give the most meaningful results.
           </p>
         </li>
         <li>
           <strong>Read the result.</strong>
           <p>
-            Note the lesion mask overlay and the benign-vs-malignant score. Use the opacity slider
-            to compare the outline with the ultrasound. For gallery samples, compare with the known
-            BUSI label.
+            Look at the lump outline overlay and the harmless vs cancerous score. Fade the overlay
+            to compare with the ultrasound. For gallery samples, compare with the known BUSI label.
           </p>
         </li>
         <li>
           <strong>Interpret carefully.</strong>
           <p>
             Visit <Link to="/results">Results</Link> and the{' '}
-            <Link to="/model-card">Model card</Link> to understand accuracy and failure modes. A
-            mask and score are not a patient diagnosis.
+            <Link to="/model-card">Model card</Link> for accuracy and failure modes. An outline and
+            score are not a patient diagnosis.
           </p>
         </li>
       </ol>
 
       <p className="landing-callout note">
-        <strong>Runs in your browser.</strong> Inference uses ONNX Runtime Web on your device.
-        Uploaded images are not sent to a server for analysis.
+        <strong>Runs in your browser.</strong> The model runs on your device. Uploaded images are
+        not sent to a server for analysis.
       </p>
 
       <div className="landing-actions">

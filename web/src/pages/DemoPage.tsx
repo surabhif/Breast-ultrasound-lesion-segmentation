@@ -561,7 +561,8 @@ export default function DemoPage() {
             </div>
           ) : (
             <p className="muted tiny">
-              Expert compare and Dice are hidden for uploads (no ground-truth mask).
+              Expert compare and outline-overlap score (Dice) are hidden for uploads (no expert
+              outline).
             </p>
           )}
 
@@ -585,7 +586,7 @@ export default function DemoPage() {
               <>
                 <p className="score-card-metrics">
                   <strong>
-                    Outline-overlap score (Dice) {browserDice.toFixed(2)} · IoU{' '}
+                    Outline-overlap score (Dice) {browserDice.toFixed(2)} out of 1 · IoU{' '}
                     {browserIoU?.toFixed(2)}
                   </strong>
                 </p>
@@ -607,8 +608,8 @@ export default function DemoPage() {
                 {selectedMeta
                   ? 'Per-image outline-overlap score (Dice) appears when an expert outline exists.'
                   : sourceUrl
-                    ? 'Upload has no expert outline. Dice is not shown.'
-                    : 'Pick a gallery sample with an expert outline to see Dice, or upload your own image.'}
+                    ? 'Upload has no expert outline. Outline-overlap score (Dice) is not shown.'
+                    : 'Pick a gallery sample with an expert outline to see the outline-overlap score (Dice), or upload your own image.'}
               </p>
             )}
           </div>
@@ -654,7 +655,7 @@ export default function DemoPage() {
                 <p className="muted">No ground truth for uploads.</p>
               )}
               <p className="tiny muted">
-                Mean mask activation: {result ? result.maskMean.toFixed(3) : '—'}
+                Mean outline activity: {result ? result.maskMean.toFixed(3) : '—'}
               </p>
             </div>
           </div>

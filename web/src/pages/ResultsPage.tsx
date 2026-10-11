@@ -320,9 +320,9 @@ export default function ResultsPage() {
         <section className="panel" style={{ marginTop: 0 }}>
           <h2 className="section-title">Training checkpoint vs browser model</h2>
           <p>
-            Headline numbers use the <strong>browser model</strong> (v{data.model_version ?? MODEL_VERSION})
-            on the grouped test split. We show the full-precision training run beside it for
-            comparison.
+            The main scores below are for the <strong>browser model</strong> (v
+            {data.model_version ?? MODEL_VERSION}) on the careful test split. The full-precision
+            training run sits beside it for comparison.
           </p>
           <details className="tech-details">
             <summary>Technical details</summary>
@@ -341,7 +341,7 @@ export default function ResultsPage() {
               cancerous AUC moves {fmt(Math.abs(aucDelta ?? 0), 3)}{' '}
               {(aucDelta ?? 0) < 0 ? 'lower' : 'higher'} ({fmt(m.cls_roc_auc)} →{' '}
               {fmt(served.cls_roc_auc)}). False lump outlines on harmless images:{' '}
-              {served.normal_false_positive_count}/{served.normal_n} (same rate as training’s
+              {served.normal_false_positive_count}/{served.normal_n} (same rate as training,
               12/19).
             </p>
           )}
@@ -383,7 +383,7 @@ export default function ResultsPage() {
                   <td>{fmt(served.test_iou)}</td>
                 </tr>
                 <tr>
-                  <td>Cls ROC-AUC</td>
+                  <td>Harmless vs cancerous (AUC)</td>
                   <td>{fmt(m.cls_roc_auc)}</td>
                   <td>{fmt(served.cls_roc_auc)}</td>
                 </tr>
@@ -501,14 +501,14 @@ export default function ResultsPage() {
             ))}
           </div>
           <p>
-            <strong>Summary:</strong> overall outline-overlap score (Dice) on BUS-BRA stays close to
-            internal BUSI (~0.68 out of 1). Harmless vs cancerous AUC falls on new datasets (BUS-BRA
-            ~0.64, BrEaST ~0.72 vs internal ~0.93). On BUS-UCLM (n=640, 38 patients; 43
-            Doppler/combined frames excluded), all-image Dice is ~0.386 because 320 of 413 harmless
-            images get a non-empty outline. That matches the BUSI pattern (12 of 19 harmless images).
-            Lesion-only Dice (~0.679 [0.593, 0.755]) is a fairer cross-dataset read: a bit below
-            BUS-BRA (~0.714) and above BrEaST (~0.629). BUS-UCLM harmless vs cancerous AUC is
-            ~0.780. Lump outlining holds up better than the side score on new data.
+            Overall outline-overlap score (Dice) on BUS-BRA stays close to internal BUSI (~0.68 out
+            of 1). Harmless vs cancerous AUC falls on new datasets (BUS-BRA ~0.64, BrEaST ~0.72 vs
+            internal ~0.93). On BUS-UCLM (n=640, 38 patients; 43 Doppler/combined frames excluded),
+            all-image Dice is ~0.386 because 320 of 413 harmless images get a non-empty outline. That
+            matches the BUSI pattern (12 of 19 harmless images). Lesion-only Dice (~0.679 [0.593,
+            0.755]) is a fairer cross-dataset read: a bit below BUS-BRA (~0.714) and above BrEaST
+            (~0.629). BUS-UCLM harmless vs cancerous AUC is ~0.780. Lump outlining holds up better
+            than the side score on new data.
           </p>
           <details className="tech-details">
             <summary>Technical details</summary>
@@ -525,7 +525,7 @@ export default function ResultsPage() {
           <p className="muted tiny">
             Attribution: Gómez-Flores et al. 2024 (BUS-BRA, Zenodo CC BY 4.0); Pawłowska et al. 2024
             (BrEaST / TCIA CC BY 4.0); Vallez et al. 2025 (BUS-UCLM, Mendeley CC BY 4.0). Images
-            resized for evaluation — not redistributed in the repo except small CC BY demo samples.
+            resized for evaluation. Not redistributed in the repo except small CC BY demo samples.
           </p>
         </section>
       )}
@@ -542,17 +542,17 @@ export default function ResultsPage() {
             ~235 duplicates (~19%). Our numbers use <strong>grouped</strong> near-dup splits.
           </li>
           <li>
-            Musah et al. 2025 report BUSI→BrEaST Dice ~0.49 for a different, larger model — our
-            frozen v1 BrEaST Dice is ~0.63 (different recipe/resolution; still a real OOD drop vs
-            some in-domain papers claiming 0.8+ under random splits).
+            Musah et al. 2025 report BUSI→BrEaST Dice ~0.49 for a different, larger model. Our frozen
+            v1 BrEaST Dice is ~0.63 (different recipe and resolution). That is still a real drop on
+            new data vs some same-set papers claiming 0.8+ under random splits.
           </li>
           <li>
-            Wang 2026 (classification) reports internal→external AUROC drops; our B/M AUC drop is
-            in the same <em>direction</em>.
+            Wang 2026 (classification) reports drops from home to outside sets. Our harmless vs
+            cancerous AUC drop moves in the same <em>direction</em>.
           </li>
           <li>
-            Full-scale leakage ablation (6 ep × 3 seeds, same grouped test): random training did{' '}
-            <strong>not</strong> inflate val lesion-Dice vs grouped (Δ ≈ −0.018). See{' '}
+            Leakage check (same grouped test): random training did <strong>not</strong> inflate
+            validation lump-only Dice vs grouped splits (Δ ≈ −0.018). See{' '}
             <code>results/leakage_ablation.json</code>.
           </li>
         </ul>

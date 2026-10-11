@@ -1,6 +1,6 @@
 {
-  "disclaimer": "Research demo \u2014 not for clinical use. BUSI ultrasound pixels omitted (outline silhouettes only). Notes are AI-generated analysis.",
-  "notes_label": "AI-generated analysis",
+  "disclaimer": "Research demo. Not for clinical use. BUSI ultrasound pixels omitted (outline silhouettes only). Notes are AI-written case comments.",
+  "notes_label": "AI-written case comments",
   "legend": {
     "expert": "Expert outline (blue)",
     "model": "Model outline (orange)",
@@ -15,7 +15,7 @@
       "cls_prob": 0.9842665195465088,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": false,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_126.png",
       "dataset": "busi_test"
@@ -27,7 +27,7 @@
       "cls_prob": 0.9846029281616211,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": false,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_28.png",
       "dataset": "busi_test"
@@ -39,7 +39,7 @@
       "cls_prob": 0.8296997547149658,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": true,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_94.png",
       "dataset": "busi_test"
@@ -51,7 +51,7 @@
       "cls_prob": 0.01730245351791382,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": false,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_92.png",
       "dataset": "busi_test"
@@ -75,7 +75,7 @@
       "cls_prob": 0.0007133781909942627,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": true,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_116.png",
       "dataset": "busi_test"
@@ -87,7 +87,7 @@
       "cls_prob": 0.04685559868812561,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": true,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_81.png",
       "dataset": "busi_test"
@@ -99,7 +99,7 @@
       "cls_prob": 0.08993533253669739,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": true,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_23.png",
       "dataset": "busi_test"
@@ -123,7 +123,7 @@
       "cls_prob": 0.11589023470878601,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": true,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_80.png",
       "dataset": "busi_test"
@@ -159,7 +159,7 @@
       "cls_prob": 1.2516975402832031e-05,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": true,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_77.png",
       "dataset": "busi_test"
@@ -183,7 +183,7 @@
       "cls_prob": 0.3658948540687561,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": false,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_60.png",
       "dataset": "busi_test"
@@ -195,7 +195,7 @@
       "cls_prob": 0.48801130056381226,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": false,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_69.png",
       "dataset": "busi_test"
@@ -207,7 +207,7 @@
       "cls_prob": 0.26054829359054565,
       "error_type": "false_lesion_on_normal",
       "annotation_flag": false,
-      "note": "Model drew a lesion-like region on a normal study \u2014 classic over-call; calipers/texture may cue a false blob.",
+      "note": "Model drew a lesion-like region on a normal study — classic over-call; calipers/texture may cue a false blob.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/normal__normal_58.png",
       "dataset": "busi_test"
@@ -267,7 +267,7 @@
       "cls_prob": 0.5539756417274475,
       "error_type": "wrong_class",
       "annotation_flag": false,
-      "note": "Benign/malignant score disagreed with the label at the 0.5 operating point \u2014 auxiliary head error, not only segmentation.",
+      "note": "Benign/malignant score disagreed with the label at the 0.5 operating point — auxiliary head error, not only segmentation.",
       "note_source": "AI-generated analysis",
       "silhouette_src": "results/mistakes_silhouettes/benign__benign_37.png",
       "dataset": "busi_test"

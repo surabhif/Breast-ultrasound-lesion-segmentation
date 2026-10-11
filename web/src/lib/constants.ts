@@ -90,7 +90,7 @@ export const MODEL_STATUS = {
 export const SITE = {
   title: 'Breast Ultrasound Lesion Segmentation',
   shortTitle: 'BUSI Lesion Seg',
-  tagline: 'In-browser research demo on the BUSI ultrasound dataset',
+  tagline: 'Browser research demo on the BUSI ultrasound dataset',
   githubUrl: 'https://github.com/surabhif/Breast-ultrasound-lesion-segmentation',
   pagesUrl: 'https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/',
   /** Zenodo version DOI for the v1.0.0 GitHub Release (record 23286597). */

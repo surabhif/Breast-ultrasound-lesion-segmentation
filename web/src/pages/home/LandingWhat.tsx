@@ -13,7 +13,7 @@ export function LandingWhat() {
       </div>
 
       <p className="landing-intro">
-        A static website: no account, no installation, and no server running the model. Main areas:
+        A static website. No account. No install. The model runs on your device. Main areas:
       </p>
 
       <div className="landing-cards tour">
@@ -21,8 +21,8 @@ export function LandingWhat() {
           <span className="landing-card-kicker">On this page</span>
           <h3>Educational tour</h3>
           <p>
-            Five interactive steps covering ultrasound, BUSI labels, segmentation, data pitfalls,
-            and in-browser inference.
+            Five short steps on ultrasound, BUSI labels, outlining, data pitfalls, and the browser
+            demo.
           </p>
           <button type="button" className="landing-jumplink" onClick={() => goToExplainerStep()}>
             Open the tour →
@@ -32,8 +32,8 @@ export function LandingWhat() {
           <span className="landing-card-kicker">Try it</span>
           <h3>Detector</h3>
           <p>
-            Segment a BUSI test sample or upload an image; see a mask overlay and a
-            benign-vs-malignant score.
+            Outline a BUSI test sample or your own image. See a mask overlay and a harmless vs
+            cancerous score.
           </p>
           <Link className="landing-jumplink" to="/demo">
             Go to Demo →
@@ -42,7 +42,10 @@ export function LandingWhat() {
         <article className="landing-card">
           <span className="landing-card-kicker">Evaluation</span>
           <h3>Results</h3>
-          <p>Dice, IoU, classification AUC, and the cleaning experiment from the training run.</p>
+          <p>
+            Outline-overlap scores (Dice), classification numbers, and cleaning experiments from
+            the training run.
+          </p>
           <Link className="landing-jumplink" to="/results">
             View Results →
           </Link>
@@ -50,7 +53,7 @@ export function LandingWhat() {
         <article className="landing-card">
           <span className="landing-card-kicker">Transparency</span>
           <h3>Model card</h3>
-          <p>Intended use, training data, and known limitations — educational, not clinical.</p>
+          <p>Intended use, training data, and known limits. Educational, not clinical.</p>
           <Link className="landing-jumplink" to="/model-card">
             Read the model card →
           </Link>
@@ -58,7 +61,7 @@ export function LandingWhat() {
         <article className="landing-card">
           <span className="landing-card-kicker">Context</span>
           <h3>BI-RADS</h3>
-          <p>What ultrasound BI-RADS categories mean — and why a model score is not one.</p>
+          <p>What ultrasound BI-RADS categories mean, and why a model score is not one.</p>
           <Link className="landing-jumplink" to="/bi-rads">
             BI-RADS context →
           </Link>
@@ -66,7 +69,7 @@ export function LandingWhat() {
         <article className="landing-card">
           <span className="landing-card-kicker">Context</span>
           <h3>Surgeon&apos;s view</h3>
-          <p>Size and margins in research framing — not operative planning.</p>
+          <p>Size and margins as research ideas, not operative planning.</p>
           <Link className="landing-jumplink" to="/surgeons-view">
             Surgeon&apos;s view →
           </Link>
@@ -94,11 +97,11 @@ export function LandingWhat() {
         <div className="landing-cards steps">
           {(
             [
-              ['ultrasound', '1', 'Ultrasound', 'Why breast ultrasound is used in research demos.'],
-              ['labels', '2', 'Labels', 'Benign, malignant, and normal in BUSI.'],
+              ['ultrasound', '1', 'Ultrasound', 'Why breast ultrasound shows up in research demos.'],
+              ['labels', '2', 'Labels', 'Harmless, cancerous, and normal in BUSI.'],
               ['segmentation', '3', 'Segmentation', 'Mask overlay vs a simple class score.'],
-              ['pitfalls', '4', 'Pitfalls', 'Calipers, near-duplicates, grouped splits.'],
-              ['browser', '5', 'Browser demo', 'ONNX in your browser on held-out samples.'],
+              ['pitfalls', '4', 'Pitfalls', 'Calipers, near-copies, careful splits.'],
+              ['browser', '5', 'Browser demo', 'The model runs on your device on test samples.'],
             ] as const
           ).map(([id, num, title, blurb]) => (
             <button

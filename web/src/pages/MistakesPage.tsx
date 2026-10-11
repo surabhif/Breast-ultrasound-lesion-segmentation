@@ -87,9 +87,9 @@ export default function MistakesPage() {
       <header className="page-intro">
         <h1>Model Errors explorer</h1>
         <p>
-          Browse the hardest cases from the held-out BUSI test set. BUSI ultrasound pixels are not
-          shown here (licence); cards use outline-only silhouettes. Full CC BY images appear only
-          when noted. See also <Link to="/results">Results</Link>.
+          Browse hard cases from the BUSI test set. BUSI ultrasound pixels are not shown here
+          (licence). Cards use outline-only silhouettes. Full CC BY images appear only when noted.
+          See also <Link to="/results">Results</Link>.
         </p>
         <p className="muted tiny">{data.disclaimer}</p>
       </header>

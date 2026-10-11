@@ -30,10 +30,10 @@ function VisualPanel({ stepId }: { stepId: ExplainerStepId }) {
     return (
       <div className="tour-visual labels" aria-hidden="true">
         <div className="tour-tile benign">
-          <span>Benign</span>
+          <span>Harmless</span>
         </div>
         <div className="tour-tile malignant">
-          <span>Malignant</span>
+          <span>Cancerous</span>
         </div>
         <div className="tour-tile normal">
           <span>Normal</span>
@@ -57,7 +57,7 @@ function VisualPanel({ stepId }: { stepId: ExplainerStepId }) {
     return (
       <div className="tour-visual pitfalls" aria-hidden="true">
         <div className="tour-chip">Calipers</div>
-        <div className="tour-chip">Near-duplicates</div>
+        <div className="tour-chip">Near-copies</div>
         <div className="tour-chip">No patient IDs</div>
         <div className="tour-chip accent">Grouped splits</div>
       </div>
@@ -68,7 +68,7 @@ function VisualPanel({ stepId }: { stepId: ExplainerStepId }) {
       <div className="tour-progress">
         <div className="tour-progress-fill" />
       </div>
-      <p className="tour-progress-caption">ONNX download · local inference</p>
+      <p className="tour-progress-caption">Model download · runs on your device</p>
       <div className="tour-frame mini">
         <div className="tour-mask" />
       </div>
@@ -198,7 +198,7 @@ export default function BusExplainer({ compactIntro = false }: BusExplainerProps
             </a>
           </span>
         ))}
-        . Educational summary only — not clinical guidance.
+        . Educational summary only. Not clinical guidance.
       </p>
     </section>
   )

@@ -41,8 +41,7 @@ export default function App() {
       <div className="site-top">
         <div className="site-notice" role="note">
           <p>
-            Research demo, not for clinical use. Educational baseline only — never for diagnosis or
-            care decisions.{' '}
+            Research demo. Not for clinical use. Never use it for diagnosis or care decisions.{' '}
             <NavLink to="/model-card#current-model" className="notice-learn-more">
               Learn more
             </NavLink>
@@ -104,8 +103,8 @@ export default function App() {
           <div>
             <p className="footer-brand">{SITE.title}</p>
             <p>
-              BUSI (Al-Dhabyani et al., 2020). External CC BY sets: BUS-BRA, BrEaST (see Results).
-              Inference runs locally via ONNX Runtime Web. Not for diagnosis or screening.
+              BUSI (Al-Dhabyani et al., 2020). Outside sets: BUS-BRA, BrEaST (see Results). The
+              model runs on your device. Not for diagnosis or screening.
             </p>
           </div>
           <div>

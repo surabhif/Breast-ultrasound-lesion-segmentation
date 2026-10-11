@@ -1,5 +1,5 @@
 {
-  "disclaimer": "Research only. PPV/NPV depend on prevalence; test set is not a screening population.",
+  "disclaimer": "Research only. Positive predictive value depends on how common cancer is in the group you look at. This test set is not a screening population.",
   "reported_threshold": 0.5,
   "source": "results/served_int8_per_image.json",
   "n_test_bm": 93,
