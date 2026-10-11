@@ -35,12 +35,12 @@ export const EXPLAINER_STEPS: ExplainerStep[] = [
     id: 'labels',
     kicker: 'Step 2 · Categories',
     shortTitle: 'Labels',
-    title: 'Harmless, cancerous, and normal',
-    body: 'BUSI labels each image as harmless (benign), cancerous (malignant), or normal. Harmless and cancerous cases include an expert outline of the lump. Normal images have no lump. This project trains a network to predict an outline and a second score for telling harmless from cancerous lumps when a lump is present.',
-    alt: 'Three labeled tiles: harmless, cancerous, and normal ultrasound categories used by the BUSI dataset.',
+    title: 'Harmless, cancerous, and normal (no lump)',
+    body: 'BUSI labels each image as harmless (benign), cancerous (malignant), or normal (no lump). Harmless and cancerous cases include an expert outline of the lump. Normal images have no lump at all. This project trains a network to predict an outline and a second score for telling harmless from cancerous lumps when a lump is present.',
+    alt: 'Three labeled tiles: harmless, cancerous, and normal (no lump) ultrasound categories used by the BUSI dataset.',
     callouts: [
       { label: 'Harmless / cancerous', detail: 'A lump is present; the mask outlines that region' },
-      { label: 'Normal', detail: 'Trained with empty outlines so the model can learn “no lump”' },
+      { label: 'Normal (no lump)', detail: 'Trained with empty outlines so the model can learn “no lump”' },
     ],
   },
   {

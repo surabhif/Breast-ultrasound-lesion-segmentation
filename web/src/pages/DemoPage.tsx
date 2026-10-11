@@ -20,7 +20,12 @@ import {
   downloadResultPdf,
 } from '../lib/resultPdf'
 import { overallUncertaintySummary, type TtaResult } from '../lib/tta'
-import { sampleHasExpert, sampleSourceLabel, sampleSpacingMm } from '../lib/sampleMeta'
+import {
+  classLabelDisplay,
+  sampleHasExpert,
+  sampleSourceLabel,
+  sampleSpacingMm,
+} from '../lib/sampleMeta'
 
 const PRIVACY_NOTE = 'Your image stays in this browser. Nothing is uploaded.'
 
@@ -415,7 +420,9 @@ export default function DemoPage() {
                   height={120}
                 />
                 <figcaption>
-                  <span className={`badge ${sample.label}`}>{sample.label}</span>
+                  <span className={`badge ${sample.label}`}>
+                    {classLabelDisplay(sample.label)}
+                  </span>
                   {sample.annotation_flag ? ' · flagged marks' : ''}
                 </figcaption>
               </button>
@@ -443,7 +450,10 @@ export default function DemoPage() {
                   height={120}
                 />
                 <figcaption>
-                  <span className={`badge ${sample.label}`}>{sample.label}</span> · CC BY
+                  <span className={`badge ${sample.label}`}>
+                    {classLabelDisplay(sample.label)}
+                  </span>{' '}
+                  · CC BY
                 </figcaption>
               </button>
             ))}
@@ -599,7 +609,7 @@ export default function DemoPage() {
                   <p className="tiny">
                     {result && result.maskMean < 0.01
                       ? 'Expert: no lump. Model: no lump (Dice is 1.0 when both are empty).'
-                      : 'Expert: no lump. Model drew a lump on a harmless image.'}
+                      : 'Expert: no lump. Model drew a lump on an image with no lump (normal scan).'}
                   </p>
                 )}
               </>
@@ -648,7 +658,9 @@ export default function DemoPage() {
               <div className="label">Ground truth</div>
               {selectedMeta ? (
                 <p>
-                  <span className={`badge ${selectedMeta.label}`}>{selectedMeta.label}</span>{' '}
+                  <span className={`badge ${selectedMeta.label}`}>
+                    {classLabelDisplay(selectedMeta.label)}
+                  </span>{' '}
                   {sampleSourceLabel(selectedMeta)}
                 </p>
               ) : (

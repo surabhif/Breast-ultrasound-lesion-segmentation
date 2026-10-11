@@ -98,7 +98,7 @@ export function LandingWhat() {
           {(
             [
               ['ultrasound', '1', 'Ultrasound', 'Why breast ultrasound shows up in research demos.'],
-              ['labels', '2', 'Labels', 'Harmless, cancerous, and normal in BUSI.'],
+              ['labels', '2', 'Labels', 'Harmless, cancerous, and normal (no lump) in BUSI.'],
               ['segmentation', '3', 'Segmentation', 'Mask overlay vs a simple class score.'],
               ['pitfalls', '4', 'Pitfalls', 'Calipers, near-copies, careful splits.'],
               ['browser', '5', 'Browser demo', 'The model runs on your device on test samples.'],

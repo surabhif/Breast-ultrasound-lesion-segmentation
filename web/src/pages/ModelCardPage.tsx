@@ -72,9 +72,10 @@ export default function ModelCardPage() {
 
       <h2>Training data</h2>
       <p>
-        BUSI (Al-Dhabyani et al., 2020): harmless / cancerous / normal breast ultrasound PNGs with
-        outlines. Multi-mask lumps are merged. Near-identical photos are grouped together. An
-        automated check flags likely caliper marks and burned-in text.
+        BUSI (Al-Dhabyani et al., 2020): harmless (benign), cancerous (malignant), and normal (no
+        lump) breast ultrasound PNGs with outlines. Multi-mask lumps are merged. Near-identical
+        photos are grouped together. An automated check flags likely caliper marks and burned-in
+        text.
       </p>
 
       <h2>Splits</h2>
@@ -123,17 +124,18 @@ export default function ModelCardPage() {
           Domain shift: on outside sets, outline scores stay nearer the home score (BUS-BRA ≈ 0.714,
           BrEaST ≈ 0.627, BUS-UCLM lump-only ≈ 0.679) while telling harmless from cancerous drops
           (ranking scores ≈ 0.638 / 0.721 / 0.780 vs ≈ 0.931 at home). BUS-UCLM overall Dice ≈ 0.386
-          is dragged down by 320/413 false outlines on normals.
+          is dragged down by 320/413 false outlines on normal (no lump) images.
         </li>
         <li>No patient IDs → residual risk from near-identical photos</li>
         <li>Caliper and on-screen text may still act as shortcuts</li>
         <li>160×160 resolution for CPU and browser speed; fine detail is lost</li>
-        <li>The class score is poorly defined for “normal” images</li>
+        <li>The class score is poorly defined for normal (no lump) images</li>
         <li>Small test set → wide confidence intervals</li>
         <li>
           <strong>Known weakness:</strong> on the test set, both the training checkpoint and the
-          browser model draw a non-empty outline on <strong>12 of 19</strong> normal images. Do not
-          treat a predicted outline on a “normal” frame as evidence of disease.
+          browser model draw a non-empty outline on <strong>12 of 19</strong> normal (no lump)
+          images. Do not treat a predicted outline on a normal (no lump) frame as evidence of
+          disease.
         </li>
       </ul>
 

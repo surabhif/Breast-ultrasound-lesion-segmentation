@@ -91,8 +91,8 @@ export default function AboutPage() {
       <h2>Dataset: BUSI</h2>
       <p>
         We use the Breast Ultrasound Images Dataset (BUSI) from Al-Dhabyani et al. (Data in Brief,
-        2020): about 780 PNG ultrasound images labeled harmless, cancerous, or normal, each with an
-        expert outline (some lumps have multiple mask files that we merge). BUSI does{' '}
+        2020): about 780 PNG ultrasound images labeled harmless, cancerous, or normal (no lump), each
+        with an expert outline (some lumps have multiple mask files that we merge). BUSI does{' '}
         <em>not</em> provide patient IDs, so true patient-level splits are impossible. We keep
         near-identical photo groups together across splits instead.
       </p>
@@ -124,7 +124,7 @@ export default function AboutPage() {
       <h2>Method (short)</h2>
       <ul>
         <li>Network that outlines the lump, plus a second score for harmless vs cancerous</li>
-        <li>Normal images trained with empty outlines (“no lump”)</li>
+        <li>Normal (no lump) images trained with empty outlines</li>
         <li>Careful splits that keep near-identical photos together, plus a held-aside test set</li>
         <li>Automated audit for calipers, burned-in text, and near-copies</li>
         <li>Shrunk model file so inference runs fully in the browser</li>

@@ -36,7 +36,7 @@ function VisualPanel({ stepId }: { stepId: ExplainerStepId }) {
           <span>Cancerous</span>
         </div>
         <div className="tour-tile normal">
-          <span>Normal</span>
+          <span>Normal (no lump)</span>
         </div>
       </div>
     )

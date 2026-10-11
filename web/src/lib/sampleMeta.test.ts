@@ -1,5 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import { sampleHasExpert, sampleSourceLabel, sampleSpacingMm } from './sampleMeta'
+import {
+  classLabelDisplay,
+  sampleHasExpert,
+  sampleSourceLabel,
+  sampleSpacingMm,
+} from './sampleMeta'
+
+describe('classLabelDisplay', () => {
+  it('maps BUSI labels without treating normal as harmless', () => {
+    expect(classLabelDisplay('benign')).toBe('harmless (benign)')
+    expect(classLabelDisplay('malignant')).toBe('cancerous (malignant)')
+    expect(classLabelDisplay('normal')).toBe('normal (no lump)')
+  })
+})
 
 describe('sampleSourceLabel / spacing', () => {
   it('labels BrEaST samples as CC BY, not BUSI', () => {

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { classLabelDisplay } from '../lib/sampleMeta'
 
 type MistakeRow = {
   case_id: string
@@ -112,9 +113,9 @@ export default function MistakesPage() {
             Label{' '}
             <select value={label} onChange={(e) => setLabel(e.target.value)}>
               <option value="all">all</option>
-              <option value="benign">benign</option>
-              <option value="malignant">malignant</option>
-              <option value="normal">normal</option>
+              <option value="benign">{classLabelDisplay('benign')}</option>
+              <option value="malignant">{classLabelDisplay('malignant')}</option>
+              <option value="normal">{classLabelDisplay('normal')}</option>
             </select>
           </label>
           <label>
@@ -169,7 +170,7 @@ export default function MistakesPage() {
                 <div className="viewer-empty">No silhouette</div>
               )}
               <div>
-                <span className={`badge ${row.label}`}>{row.label}</span>{' '}
+                <span className={`badge ${row.label}`}>{classLabelDisplay(row.label)}</span>{' '}
                 <span className="muted tiny">{row.error_type.replaceAll('_', ' ')}</span>
               </div>
               <p className="tiny">

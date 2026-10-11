@@ -173,9 +173,9 @@ export default function BiradsPage() {
           bins.
         </li>
         <li>
-          <strong>Training labels:</strong> BUSI uses folder labels (harmless / cancerous / normal),
-          not BI-RADS assessments. Outside sets may carry BI-RADS metadata for exploration, but this
-          served model was not trained to predict those codes.
+          <strong>Training labels:</strong> BUSI uses folder labels (harmless / cancerous / normal
+          (no lump)), not BI-RADS assessments. Outside sets may carry BI-RADS metadata for
+          exploration, but this served model was not trained to predict those codes.
         </li>
       </ul>
       <p>

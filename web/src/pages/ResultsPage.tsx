@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MODEL_VERSION } from '../lib/constants'
 import { PLAIN_ABSTRACT } from '../lib/plainAbstract'
+import { classLabelDisplay } from '../lib/sampleMeta'
 import ThresholdExplorer from '../components/ThresholdExplorer'
 
 type MetricsBlock = {
@@ -340,9 +341,8 @@ export default function ResultsPage() {
               than training ({fmt(m.test_dice)} → {fmt(served.test_dice)} out of 1). Harmless vs
               cancerous AUC moves {fmt(Math.abs(aucDelta ?? 0), 3)}{' '}
               {(aucDelta ?? 0) < 0 ? 'lower' : 'higher'} ({fmt(m.cls_roc_auc)} →{' '}
-              {fmt(served.cls_roc_auc)}). False lump outlines on harmless images:{' '}
-              {served.normal_false_positive_count}/{served.normal_n} (same rate as training,
-              12/19).
+              {fmt(served.cls_roc_auc)}). False lump outlines on normal (no lump) images:{' '}
+              {served.normal_false_positive_count}/{served.normal_n} (same rate as training).
             </p>
           )}
           <div className="table-wrap">
@@ -388,8 +388,10 @@ export default function ResultsPage() {
                   <td>{fmt(served.cls_roc_auc)}</td>
                 </tr>
                 <tr>
-                  <td>Normal false-positive masks</td>
-                  <td>12 / 19</td>
+                  <td>False outlines on normal (no lump)</td>
+                  <td>
+                    {served.normal_false_positive_count} / {served.normal_n}
+                  </td>
                   <td>
                     {served.normal_false_positive_count} / {served.normal_n}
                   </td>
@@ -501,14 +503,34 @@ export default function ResultsPage() {
             ))}
           </div>
           <p>
-            Overall outline-overlap score (Dice) on BUS-BRA stays close to internal BUSI (~0.68 out
-            of 1). Harmless vs cancerous AUC falls on new datasets (BUS-BRA ~0.64, BrEaST ~0.72 vs
-            internal ~0.93). On BUS-UCLM (n=640, 38 patients; 43 Doppler/combined frames excluded),
-            all-image Dice is ~0.386 because 320 of 413 harmless images get a non-empty outline. That
-            matches the BUSI pattern (12 of 19 harmless images). Lesion-only Dice (~0.679 [0.593,
-            0.755]) is a fairer cross-dataset read: a bit below BUS-BRA (~0.714) and above BrEaST
-            (~0.629). BUS-UCLM harmless vs cancerous AUC is ~0.780. Lump outlining holds up better
-            than the side score on new data.
+            {(() => {
+              const internal = data.external.internal_busi_int8
+              const busbra = data.external.datasets?.busbra
+              const breast = data.external.datasets?.breast
+              const busuclm = data.external.datasets?.busuclm
+              const busiFp = served?.normal_false_positive_count
+              const busiFn = served?.normal_n
+              return (
+                <>
+                  Overall outline-overlap score (Dice) on BUS-BRA ({fmt(busbra?.test_dice)} out of 1)
+                  stays close to internal BUSI ({fmt(internal?.test_dice)} out of 1). Harmless vs
+                  cancerous AUC falls on new datasets (BUS-BRA {fmt(busbra?.cls_roc_auc)}, BrEaST{' '}
+                  {fmt(breast?.cls_roc_auc)} vs internal {fmt(internal?.cls_roc_auc)}). On BUS-UCLM
+                  (n={busuclm?.n}
+                  {busuclm?.n_patients != null ? `, ${busuclm.n_patients} patients` : ''}
+                  ; 43 Doppler/combined frames excluded), all-image Dice is {fmt(busuclm?.test_dice)}{' '}
+                  because {busuclm?.normal_false_positive_count} of {busuclm?.normal_n} normal (no
+                  lump) images get a non-empty outline. That matches the BUSI pattern ({busiFp} of{' '}
+                  {busiFn} normal (no lump) images). Lesion-only Dice ({fmt(busuclm?.lesion_dice)} [
+                  {fmt(busuclm?.lesion_dice_bootstrap_95ci?.[0])},{' '}
+                  {fmt(busuclm?.lesion_dice_bootstrap_95ci?.[1])}]) is a fairer cross-dataset read: a
+                  bit below BUS-BRA ({fmt(busbra?.lesion_dice)}) and above BrEaST (
+                  {fmt(breast?.lesion_dice)}). BUS-UCLM harmless vs cancerous AUC is{' '}
+                  {fmt(busuclm?.cls_roc_auc)}. Lump outlining holds up better than the side score on
+                  new data.
+                </>
+              )
+            })()}
           </p>
           <details className="tech-details">
             <summary>Technical details</summary>
@@ -543,8 +565,9 @@ export default function ResultsPage() {
           </li>
           <li>
             Musah et al. 2025 report BUSI→BrEaST Dice ~0.49 for a different, larger model. Our frozen
-            v1 BrEaST Dice is ~0.63 (different recipe and resolution). That is still a real drop on
-            new data vs some same-set papers claiming 0.8+ under random splits.
+            v1 BrEaST Dice is {fmt(data.external?.datasets?.breast?.test_dice)} (different recipe and
+            resolution). That is still a real drop on new data vs some same-set papers claiming 0.8+
+            under random splits.
           </li>
           <li>
             Wang 2026 (classification) reports drops from home to outside sets. Our harmless vs
@@ -620,7 +643,7 @@ export default function ResultsPage() {
                 {Object.entries(served?.by_label ?? m.by_label ?? {}).map(([lab, row]) => (
                   <tr key={lab}>
                     <td>
-                      <span className={`badge ${lab}`}>{lab}</span>
+                      <span className={`badge ${lab}`}>{classLabelDisplay(lab)}</span>
                     </td>
                     <td>{row.n}</td>
                     <td>{fmt(row.dice_mean)}</td>
@@ -997,8 +1020,10 @@ export default function ResultsPage() {
               <figure key={mrow.src} className="gallery-item static">
                 <img src={`${import.meta.env.BASE_URL}${mrow.src}`} alt={`Failure ${mrow.case_id}`} />
                 <figcaption>
-                  <span className={`badge ${mrow.label}`}>{mrow.label}</span> Dice {fmt(mrow.dice)} ·
-                  Chance cancerous {fmt(mrow.cls_prob)}
+                  <span className={`badge ${mrow.label}`}>
+                    {classLabelDisplay(mrow.label)}
+                  </span>{' '}
+                  Dice {fmt(mrow.dice)} · Chance cancerous {fmt(mrow.cls_prob)}
                 </figcaption>
               </figure>
             ))}

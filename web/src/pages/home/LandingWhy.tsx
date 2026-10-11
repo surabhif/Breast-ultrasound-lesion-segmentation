@@ -38,7 +38,8 @@ export function LandingWhy() {
         <h2>What BUSI labels look like</h2>
         <p>
           The Breast Ultrasound Images Dataset (BUSI) labels frames as harmless, cancerous, or
-          normal. Lesion images include a pixel outline of the lump. Normal images have no lump.
+          normal (no lump). Lump images include a pixel outline of the lump. Normal images have no
+          lump at all.
         </p>
         <div className="landing-sizes">
           <div className="landing-size">
@@ -57,8 +58,8 @@ export function LandingWhy() {
           </div>
           <div className="landing-size">
             <span className="dot normal-dot" style={{ width: 14, height: 14 }} aria-hidden="true" />
-            <h3>Normal</h3>
-            <p>No lump. Training uses an empty outline.</p>
+            <h3>Normal (no lump)</h3>
+            <p>No lump is present. Training uses an empty outline.</p>
           </div>
         </div>
         <p>
