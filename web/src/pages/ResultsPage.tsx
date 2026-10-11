@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MODEL_VERSION } from '../lib/constants'
 import { PLAIN_ABSTRACT } from '../lib/plainAbstract'
+import { classLabelDisplay } from '../lib/sampleMeta'
 import ThresholdExplorer from '../components/ThresholdExplorer'
 
 type MetricsBlock = {
@@ -318,23 +319,30 @@ export default function ResultsPage() {
 
       {served && (
         <section className="panel" style={{ marginTop: 0 }}>
-          <h2 className="section-title">FP32 (training) vs INT8 (served)</h2>
+          <h2 className="section-title">Training checkpoint vs browser model</h2>
           <p>
-            Headline numbers below are for the <strong>served INT8 ONNX</strong> that runs in the
-            browser (v{data.model_version ?? MODEL_VERSION}). Training used an FP32 PyTorch
-            checkpoint with torchvision/PIL resize; the served path uses a shared half-pixel
-            bilinear resize identical to the browser. Both use the same grouped test split and
-            post-processing (threshold {served.seg_threshold ?? 0.4}, min-component area{' '}
-            {served.min_component_area ?? 40}).
+            The main scores below are for the <strong>browser model</strong> (v
+            {data.model_version ?? MODEL_VERSION}) on the careful test split. The full-precision
+            training run sits beside it for comparison.
           </p>
+          <details className="tech-details">
+            <summary>Technical details</summary>
+            <p>
+              Browser path: INT8 ONNX via onnxruntime-web (WASM). Training: FP32 PyTorch with
+              torchvision/PIL resize. The browser uses the same half-pixel bilinear resize as
+              evaluation. Both paths share post-processing (mask threshold{' '}
+              {served.seg_threshold ?? 0.4}, min-component area {served.min_component_area ?? 40}).
+            </p>
+          </details>
           {meaningfulDiff && (
             <p>
-              Under browser-matched preprocess, INT8 overall Dice is {fmt(Math.abs(diceDelta ?? 0), 3)}{' '}
-              {(diceDelta ?? 0) < 0 ? 'lower' : 'higher'} than the FP32 training figure (
-              {fmt(m.test_dice)} → {fmt(served.test_dice)}), while AUC is{' '}
-              {fmt(Math.abs(aucDelta ?? 0), 3)} {(aucDelta ?? 0) < 0 ? 'lower' : 'higher'} (
-              {fmt(m.cls_roc_auc)} → {fmt(served.cls_roc_auc)}). Normal-image false positives are{' '}
-              {served.normal_false_positive_count}/{served.normal_n} (same rate as FP32’s 12/19).
+              With matched preprocessing, overall outline-overlap score (Dice) on the browser model
+              is {fmt(Math.abs(diceDelta ?? 0), 3)} {(diceDelta ?? 0) < 0 ? 'lower' : 'higher'}{' '}
+              than training ({fmt(m.test_dice)} → {fmt(served.test_dice)} out of 1). Harmless vs
+              cancerous AUC moves {fmt(Math.abs(aucDelta ?? 0), 3)}{' '}
+              {(aucDelta ?? 0) < 0 ? 'lower' : 'higher'} ({fmt(m.cls_roc_auc)} →{' '}
+              {fmt(served.cls_roc_auc)}). False lump outlines on normal (no lump) images:{' '}
+              {served.normal_false_positive_count}/{served.normal_n} (same rate as training).
             </p>
           )}
           <div className="table-wrap">
@@ -342,8 +350,8 @@ export default function ResultsPage() {
               <thead>
                 <tr>
                   <th>Metric</th>
-                  <th>FP32 PyTorch</th>
-                  <th>INT8 ONNX (served)</th>
+                  <th>Full-precision training</th>
+                  <th>Browser model (compressed)</th>
                 </tr>
               </thead>
               <tbody>
@@ -375,13 +383,15 @@ export default function ResultsPage() {
                   <td>{fmt(served.test_iou)}</td>
                 </tr>
                 <tr>
-                  <td>Cls ROC-AUC</td>
+                  <td>Harmless vs cancerous (AUC)</td>
                   <td>{fmt(m.cls_roc_auc)}</td>
                   <td>{fmt(served.cls_roc_auc)}</td>
                 </tr>
                 <tr>
-                  <td>Normal false-positive masks</td>
-                  <td>12 / 19</td>
+                  <td>False outlines on normal (no lump)</td>
+                  <td>
+                    {served.normal_false_positive_count} / {served.normal_n}
+                  </td>
                   <td>
                     {served.normal_false_positive_count} / {served.normal_n}
                   </td>
@@ -398,13 +408,12 @@ export default function ResultsPage() {
 
       {data.external && (
         <section className="panel" style={{ marginTop: '1rem' }} id="external-validation">
-          <h2 className="section-title">External validation</h2>
+          <h2 className="section-title">Scores on other public datasets</h2>
           <p>
-            Frozen <strong>v1.0.0 INT8</strong> scored on independent public sets with the
-            pre-registered protocol (<code>docs/EXTERNAL_VALIDATION_PROTOCOL.md</code>) — no
-            threshold or architecture tuning on external data. Bootstrap CIs are{' '}
-            <em>patient-clustered</em> where patient IDs exist. Images resized to 160² (same as the
-            browser).
+            We scored a frozen <strong>v1.0.0 browser model</strong> on independent public datasets.
+            We did not tune thresholds or architecture on those sets. The protocol is documented in{' '}
+            <code>docs/EXTERNAL_VALIDATION_PROTOCOL.md</code>. Confidence intervals cluster by patient
+            when patient IDs exist. Images were resized to 160×160, same as the demo.
           </p>
           <div className="table-wrap">
             <table>
@@ -420,7 +429,7 @@ export default function ResultsPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td>BUSI internal (served INT8)</td>
+                  <td>BUSI internal (browser model)</td>
                   <td>{data.external.internal_busi_int8?.n ?? 112}</td>
                   <td>{fmt(data.external.internal_busi_int8?.test_dice)}</td>
                   <td>{fmt(data.external.internal_busi_int8?.lesion_dice)}</td>
@@ -459,10 +468,12 @@ export default function ResultsPage() {
             </table>
           </div>
           <div style={{ marginTop: '0.75rem' }}>
-            <p className="muted tiny">Dice forest (point = mean; bar scaled 0–1)</p>
+            <p className="muted tiny">
+              Outline-overlap score (Dice) by dataset (bar scaled 0 to 1)
+            </p>
             {[
               {
-                name: 'BUSI INT8',
+                name: 'BUSI (browser)',
                 dice: data.external.internal_busi_int8?.test_dice,
               },
               ...Object.entries(data.external.datasets ?? {})
@@ -492,16 +503,41 @@ export default function ResultsPage() {
             ))}
           </div>
           <p>
-            <strong>Honest reading:</strong> overall Dice on BUS-BRA stays close to internal Dice,
-            but <strong>AUC drops sharply</strong> under dataset shift (BUS-BRA ~0.64, BrEaST
-            ~0.72 vs internal ~0.93). On <strong>BUS-UCLM</strong> (n=640, 38 patients; 43
-            Doppler/combined frames excluded), all-image Dice is only ~0.386 because{' '}
-            <strong>320 / 413 normals</strong> get a non-empty mask — the same normal
-            false-positive weakness seen on BUSI (12/19). Lesion-only Dice (~0.679 [0.593, 0.755])
-            is the fairer cross-dataset comparison: a bit below BUS-BRA (~0.714) and above BrEaST
-            (~0.629). BUS-UCLM B/M AUC is ~0.780. Segmentation still transfers better than the
-            auxiliary classifier overall; ECE worsens externally.
+            {(() => {
+              const internal = data.external.internal_busi_int8
+              const busbra = data.external.datasets?.busbra
+              const breast = data.external.datasets?.breast
+              const busuclm = data.external.datasets?.busuclm
+              const busiFp = served?.normal_false_positive_count
+              const busiFn = served?.normal_n
+              return (
+                <>
+                  Overall outline-overlap score (Dice) on BUS-BRA ({fmt(busbra?.test_dice)} out of 1)
+                  stays close to internal BUSI ({fmt(internal?.test_dice)} out of 1). Harmless vs
+                  cancerous AUC falls on new datasets (BUS-BRA {fmt(busbra?.cls_roc_auc)}, BrEaST{' '}
+                  {fmt(breast?.cls_roc_auc)} vs internal {fmt(internal?.cls_roc_auc)}). On BUS-UCLM
+                  (n={busuclm?.n}
+                  {busuclm?.n_patients != null ? `, ${busuclm.n_patients} patients` : ''}
+                  ; 43 Doppler/combined frames excluded), all-image Dice is {fmt(busuclm?.test_dice)}{' '}
+                  because {busuclm?.normal_false_positive_count} of {busuclm?.normal_n} normal (no
+                  lump) images get a non-empty outline. That matches the BUSI pattern ({busiFp} of{' '}
+                  {busiFn} normal (no lump) images). Lesion-only Dice ({fmt(busuclm?.lesion_dice)} [
+                  {fmt(busuclm?.lesion_dice_bootstrap_95ci?.[0])},{' '}
+                  {fmt(busuclm?.lesion_dice_bootstrap_95ci?.[1])}]) is a fairer cross-dataset read: a
+                  bit below BUS-BRA ({fmt(busbra?.lesion_dice)}) and above BrEaST (
+                  {fmt(breast?.lesion_dice)}). BUS-UCLM harmless vs cancerous AUC is{' '}
+                  {fmt(busuclm?.cls_roc_auc)}. Lump outlining holds up better than the side score on
+                  new data.
+                </>
+              )
+            })()}
           </p>
+          <details className="tech-details">
+            <summary>Technical details</summary>
+            <p className="muted tiny">
+              Calibration error (ECE) is worse on external sets than on internal BUSI.
+            </p>
+          </details>
           {data.external.skipped && Object.keys(data.external.skipped).length > 0 && (
             <p className="muted">
               Not included: UDIAT (requires an institutional licence agreement) and BUSIS (no
@@ -511,7 +547,7 @@ export default function ResultsPage() {
           <p className="muted tiny">
             Attribution: Gómez-Flores et al. 2024 (BUS-BRA, Zenodo CC BY 4.0); Pawłowska et al. 2024
             (BrEaST / TCIA CC BY 4.0); Vallez et al. 2025 (BUS-UCLM, Mendeley CC BY 4.0). Images
-            resized for evaluation — not redistributed in the repo except small CC BY demo samples.
+            resized for evaluation. Not redistributed in the repo except small CC BY demo samples.
           </p>
         </section>
       )}
@@ -528,29 +564,31 @@ export default function ResultsPage() {
             ~235 duplicates (~19%). Our numbers use <strong>grouped</strong> near-dup splits.
           </li>
           <li>
-            Musah et al. 2025 report BUSI→BrEaST Dice ~0.49 for a different, larger model — our
-            frozen v1 BrEaST Dice is ~0.63 (different recipe/resolution; still a real OOD drop vs
-            some in-domain papers claiming 0.8+ under random splits).
+            Musah et al. 2025 report BUSI→BrEaST Dice ~0.49 for a different, larger model. Our frozen
+            v1 BrEaST Dice is {fmt(data.external?.datasets?.breast?.test_dice)} (different recipe and
+            resolution). That is still a real drop on new data vs some same-set papers claiming 0.8+
+            under random splits.
           </li>
           <li>
-            Wang 2026 (classification) reports internal→external AUROC drops; our B/M AUC drop is
-            in the same <em>direction</em>.
+            Wang 2026 (classification) reports drops from home to outside sets. Our harmless vs
+            cancerous AUC drop moves in the same <em>direction</em>.
           </li>
           <li>
-            Full-scale leakage ablation (6 ep × 3 seeds, same grouped test): random training did{' '}
-            <strong>not</strong> inflate val lesion-Dice vs grouped (Δ ≈ −0.018). See{' '}
+            Leakage check (same grouped test): random training did <strong>not</strong> inflate
+            validation lump-only Dice vs grouped splits (Δ ≈ −0.018). See{' '}
             <code>results/leakage_ablation.json</code>.
           </li>
         </ul>
         <p className="muted tiny">
           Unverified paper numbers are marked in the markdown doc and are not quoted as facts here.
-          Pawłowska’s 235-duplicate list was not machine-ingested for pHash precision/recall.
+          Pawłowska’s 235-duplicate list was not machine-ingested for near-duplicate matching stats
+          (see technical notes in the markdown doc).
         </p>
       </section>
 
       <section className="panel metrics-strip">
         <div>
-          <div className="metric-label">Test Dice (served INT8)</div>
+          <div className="metric-label">Test outline-overlap (Dice)</div>
           <div className="metric-value">{fmt(primary.test_dice)}</div>
           <div className="muted tiny">
             95% CI [{fmt(primary.test_dice_bootstrap_95ci?.[0])},{' '}
@@ -560,14 +598,14 @@ export default function ResultsPage() {
         <div>
           <div className="metric-label">Lesion Dice</div>
           <div className="metric-value">{fmt(primary.lesion_dice)}</div>
-          <div className="muted tiny">benign + malignant only</div>
+          <div className="muted tiny">harmless + cancerous lumps only</div>
         </div>
         <div>
           <div className="metric-label">Test IoU</div>
           <div className="metric-value">{fmt(primary.test_iou)}</div>
         </div>
         <div>
-          <div className="metric-label">Cls ROC-AUC</div>
+          <div className="metric-label">Harmless vs cancerous (AUC)</div>
           <div className="metric-value">{fmt(primary.cls_roc_auc)}</div>
           <div className="muted tiny">
             sens {fmt(primary.cls_sensitivity ?? m.cls_sensitivity)} · spec{' '}
@@ -576,9 +614,9 @@ export default function ResultsPage() {
           </div>
         </div>
         <div>
-          <div className="metric-label">ECE</div>
+          <div className="metric-label">Calibration error</div>
           <div className="metric-value">{fmt(primary.cls_ece ?? m.cls_ece)}</div>
-          <div className="muted tiny">calibration error</div>
+          <div className="muted tiny">lower is better on held-out test</div>
         </div>
       </section>
 
@@ -590,7 +628,7 @@ export default function ResultsPage() {
 
       {(served?.by_label ?? m.by_label) && (
         <section className="panel" style={{ marginTop: '1rem' }}>
-          <h2 className="section-title">Dice by label (served INT8)</h2>
+          <h2 className="section-title">Outline-overlap score (Dice) by label</h2>
           <div className="table-wrap">
             <table>
               <thead>
@@ -605,7 +643,7 @@ export default function ResultsPage() {
                 {Object.entries(served?.by_label ?? m.by_label ?? {}).map(([lab, row]) => (
                   <tr key={lab}>
                     <td>
-                      <span className={`badge ${lab}`}>{lab}</span>
+                      <span className={`badge ${lab}`}>{classLabelDisplay(lab)}</span>
                     </td>
                     <td>{row.n}</td>
                     <td>{fmt(row.dice_mean)}</td>
@@ -739,16 +777,22 @@ export default function ResultsPage() {
 
       {data.v2_experiment && (
         <section className="panel" style={{ marginTop: '1rem' }} id="v2-comparison">
-          <h2 className="section-title">Phase 4 model candidates vs v1</h2>
+          <h2 className="section-title">Phase 4: next-model candidates vs current v1</h2>
           <p>
             {data.v2_experiment.note ??
-              'Multi-dataset v2 candidates (BUSI train + patient-grouped BUS-BRA train) under a fair swap rule.'}{' '}
-            <strong>BUS-BRA held-out is same-source for v2</strong> (v2 trains on BUS-BRA train); the v1
-            baseline is INT8 scored on the <em>identical</em> held-out IDs — not v1&apos;s full-set 0.714.{' '}
-            <strong>BrEaST is the only truly external test.</strong> Promotion uses the seed-
-            <em>mean</em>; if the mean fails any rule, v1 stays. Among passing seeds we promote the{' '}
-            <em>median</em> by clean Dice, not the best. Source: <code>results/v2_experiment.json</code>.
+              'We trained multi-dataset v2 candidates (BUSI plus patient-grouped BUS-BRA) and compared them to v1 under a fixed swap rule.'}{' '}
+            BUS-BRA held-out overlaps v2 training data; v1 scores on the same held-out IDs for a fair
+            line (not v1&apos;s full-set 0.714). BrEaST is the only fully external test set. If the
+            average across seeds fails any rule, v1 stays. Among passing seeds we pick the median by
+            clean Dice, not the best single run. Source: <code>results/v2_experiment.json</code>.
           </p>
+          <details className="tech-details">
+            <summary>Technical details</summary>
+            <p className="muted tiny">
+              Candidates use the same INT8 export path as v1. Promotion uses seed means and median
+              clean Dice among passes.
+            </p>
+          </details>
           {data.v2_experiment.promotion_rule && (
             <p className="muted tiny">{data.v2_experiment.promotion_rule}</p>
           )}
@@ -814,7 +858,7 @@ export default function ResultsPage() {
                     <th>BUS-BRA (same-source held-out)</th>
                     <th>BrEaST (external)</th>
                     <th>AUC</th>
-                    <th>INT8 MB</th>
+                    <th>Model size (MB)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -942,13 +986,20 @@ export default function ResultsPage() {
 
       {data.uncertainty && (
         <section className="panel" style={{ marginTop: '1rem' }} id="uncertainty">
-          <h2 className="section-title">Uncertainty (TTA)</h2>
+          <h2 className="section-title">Uncertainty from image flips</h2>
           <p>
-            Offline flip-TTA: Spearman(uncertainty, 1−Dice) ρ ={' '}
-            {fmt(data.uncertainty.spearman_rho)} (p={fmt(data.uncertainty.spearman_p, 4)}). Risk–coverage
-            at 80% keep: mean Dice {fmt(data.uncertainty.dice_at_80_coverage)}. This is agreement under
-            small changes — not a diagnostic probability.
+            When we flip and brighten images offline, higher uncertainty tends to pair with lower
+            outline-overlap score (Dice). At 80% coverage (keep the least uncertain 80%), mean Dice is{' '}
+            {fmt(data.uncertainty.dice_at_80_coverage)} out of 1. This measures agreement under small
+            changes. It is not a diagnostic probability.
           </p>
+          <details className="tech-details">
+            <summary>Technical details</summary>
+            <p className="muted tiny">
+              8-fold test-time augmentation (TTA). Spearman(uncertainty, 1−Dice) ρ ={' '}
+              {fmt(data.uncertainty.spearman_rho)} (p={fmt(data.uncertainty.spearman_p, 4)}).
+            </p>
+          </details>
         </section>
       )}
 
@@ -969,8 +1020,10 @@ export default function ResultsPage() {
               <figure key={mrow.src} className="gallery-item static">
                 <img src={`${import.meta.env.BASE_URL}${mrow.src}`} alt={`Failure ${mrow.case_id}`} />
                 <figcaption>
-                  <span className={`badge ${mrow.label}`}>{mrow.label}</span> Dice {fmt(mrow.dice)} ·
-                  P(mal) {fmt(mrow.cls_prob)}
+                  <span className={`badge ${mrow.label}`}>
+                    {classLabelDisplay(mrow.label)}
+                  </span>{' '}
+                  Dice {fmt(mrow.dice)} · Chance cancerous {fmt(mrow.cls_prob)}
                 </figcaption>
               </figure>
             ))}
@@ -980,7 +1033,7 @@ export default function ResultsPage() {
 
       {data.surabhi_prompts?.length > 0 && (
         <section className="panel" style={{ marginTop: '1rem' }}>
-          <h2 className="section-title">Interview prompts</h2>
+          <h2 className="section-title">Discussion prompts</h2>
           <ul>
             {data.surabhi_prompts.map((q) => (
               <li key={q}>{q}</li>

@@ -107,9 +107,9 @@ export function overallUncertaintySummary(
   let warning: string | null = null
   if (outline === 'high' && score === 'spread') {
     warning =
-      'Outline stayed similar under small changes, but the benign/malignant score moved a lot — treat the score cautiously.'
+      'Outline stayed similar under small changes, but the harmless vs cancerous score moved a lot. Treat the score cautiously.'
   } else if (outline === 'low') {
-    warning = 'Outline changed under small flips/brightness — the mask is less stable here.'
+    warning = 'Outline changed under small flips and brightness. The lump outline is less stable here.'
   }
   return { outline, score, warning }
 }

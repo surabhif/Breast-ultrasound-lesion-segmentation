@@ -1,16 +1,16 @@
 # Breast Ultrasound Lesion Segmentation
 
-**Research demo, not for clinical use.**
+**Research demo. Not for clinical use.**
 
-End-to-end student research project on the [BUSI](https://doi.org/10.1016/j.dib.2019.104863) breast ultrasound dataset: a U-Net that segments lesions, an auxiliary benign-vs-malignant score, grouped splits that respect near-duplicates, an audit of caliper/annotation artifacts, and a React web app that runs the trained ONNX model **fully in the browser**.
+Student research project on the [BUSI](https://doi.org/10.1016/j.dib.2019.104863) breast ultrasound dataset. A network outlines lumps, estimates whether a lump looks harmless or cancerous, keeps near-identical photos together across splits, audits caliper marks, and ships a React web app that runs the trained model fully in the browser.
 
 **Live demo:** [https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/](https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/)  
-*(Requires GitHub Pages enabled for this repo — Settings → Pages → Source: GitHub Actions.)*
+*(Requires GitHub Pages enabled for this repo. Settings → Pages → Source: GitHub Actions.)*
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23286597.svg)](https://doi.org/10.5281/zenodo.23286597)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/surabhif/Breast-ultrasound-lesion-segmentation/blob/main/notebooks/01_train_busi.ipynb)
 
-**How to cite:** Fadnavis, S. (2026). Breast Ultrasound Lesion Segmentation (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.23286597 — also `CITATION.cff` / About → How to cite.
+**How to cite:** Fadnavis, S. (2026). Breast Ultrasound Lesion Segmentation (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.23286597. Also `CITATION.cff` / About → How to cite.
 
 ---
 
@@ -62,14 +62,14 @@ The demo runs the INT8 weights; Results and the model card show both columns. So
 
 Quick baseline (tiny U-Net, 64×64, ~1 min CPU): Dice ≈ 0.42, AUC ≈ 0.80 — see `results/baseline_quick_run.json`.
 
-### Cleaning experiment (honest)
+### Cleaning experiment
 
 - **~47%** of images flagged for likely calipers / burned-in text (heuristic audit CSV).
-- Dice(all) − Dice(clean) ≈ **+0.063** (flagged frames are easier; lesion Dice flagged ≈ 0.80 vs clean ≈ 0.70).
-- Classification AUC is similar on flagged vs clean (~0.94) for this stronger model — earlier weaker runs showed a larger gap.
-- Random (non-grouped) splits still put ~**39%** of val images in a near-dup group also seen in train; a short tiny-U-Net proxy on this run did **not** show val Dice inflation (≈ −0.005) — leakage risk remains, but the effect is run-dependent.
+- Outline-overlap (Dice) on all images minus clean images ≈ **+0.063** (flagged frames are easier; lump-only Dice flagged ≈ 0.80 vs clean ≈ 0.70).
+- Ranking score is similar on flagged vs clean (~0.94) for this model. Earlier weaker runs showed a larger gap.
+- Mixing near-identical photos across train and check still put ~**39%** of check images in a near-copy group also seen in train. A short proxy run did **not** show check-score inflation (≈ −0.005). Leakage risk remains; the effect is run-dependent.
 
-True **patient-level** splits are **not possible** — BUSI has no patient IDs. We keep perceptual-hash near-duplicate groups together.
+True **patient-level** splits are **not possible**. BUSI has no patient IDs. We keep near-identical photo groups together.
 
 ---
 

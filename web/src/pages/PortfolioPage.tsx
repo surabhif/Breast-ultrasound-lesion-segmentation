@@ -20,13 +20,13 @@ const PROJECTS: ProjectCard[] = [
   {
     title: 'Breast ultrasound lesion segmentation',
     blurb:
-      'In-browser U-Net on BUSI with external BUS-BRA / BrEaST / BUS-UCLM checks, caliper audits, and honest limitations.',
+      'Browser demo that outlines lumps on BUSI, with outside checks on BUS-BRA, BrEaST, and BUS-UCLM, plus caliper audits and clear limits.',
     repoUrl: 'https://github.com/surabhif/Breast-ultrasound-lesion-segmentation',
     liveUrl: 'https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/',
     doiUrl: SITE.doiUrl,
     metric: {
-      label: 'Served INT8 test Dice (BUSI)',
-      value: '0.697',
+      label: 'Browser-model test Dice (BUSI)',
+      value: '0.697 out of 1',
       source: 'results/served_int8_test.json',
     },
   },
@@ -37,18 +37,17 @@ const PROJECTS: ProjectCard[] = [
     repoUrl: 'https://github.com/surabhif/Lymph-node-metastasis-detector',
     liveUrl: 'https://surabhif.github.io/Lymph-node-metastasis-detector/',
     metric: {
-      label: 'Test ROC-AUC (published subset run)',
-      value: '0.910',
+      label: 'Test ranking score (published subset run)',
+      value: '0.910 out of 1',
       source: 'web/public/results/metrics.json (sibling repo)',
     },
   },
   {
     title: 'Pathology report explainer',
     blurb:
-      'Grounded plain-language explanations of de-identified TCGA pathology reports with quote-level citations.',
+      'Plain-language explanations of de-identified TCGA pathology reports with quote-level citations.',
     repoUrl: 'https://github.com/surabhif/Pathology-report-explainer',
     liveUrl: 'https://pathology-report-explainer.vercel.app',
-    // No static published metrics JSON verified → metric omitted on purpose.
   },
 ]
 
@@ -57,10 +56,10 @@ export default function PortfolioPage() {
     <article className="panel prose fade-in portfolio-page">
       <header className="page-intro">
         <p className="landing-eyebrow">Student portfolio</p>
-        <h1>Surabhi Fadnavis: student research in oncology AI</h1>
+        <h1>Surabhi Fadnavis · oncology AI research demos</h1>
         <p>
-          High-school senior, Georgia. Three related research demos — each educational, each
-          explicitly <strong>not for clinical use</strong>.
+          High-school senior, Georgia. Three related research demos. Each is educational. Each is{' '}
+          <strong>not for clinical use</strong>.
         </p>
       </header>
 
@@ -103,11 +102,10 @@ export default function PortfolioPage() {
 
       <h2>How I work</h2>
       <ul>
-        <li>Publish numbers from committed JSON — never invent headline metrics.</li>
-        <li>Lead with limitations: leakage, calipers, domain shift, and what the model cannot do.</li>
-        <li>Keep disclaimers visible; research demos stay research demos.</li>
-        <li>Prefer open licenses and clear dataset attribution (CC BY externals; BUSI citation).</li>
-        <li>No clinician involvement on this breast-ultrasound project (owner decision).</li>
+        <li>Publish numbers from committed JSON. Never invent headline metrics.</li>
+        <li>Lead with limits: near-copies, calipers, domain shift, and what the model cannot do.</li>
+        <li>Keep disclaimers visible. Research demos stay research demos.</li>
+        <li>Prefer open licenses and clear dataset attribution (CC BY outside sets; BUSI citation).</li>
       </ul>
 
       <HowBuilt id="how-built" className="how-built" />

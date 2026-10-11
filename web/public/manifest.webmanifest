@@ -1,7 +1,7 @@
 {
   "name": "Breast Ultrasound Lesion Segmentation",
   "short_name": "BUSI Lesion Seg",
-  "description": "In-browser research demo for breast ultrasound lesion segmentation. Not for clinical use.",
+  "description": "Browser research demo for outlining lumps on breast ultrasound. Not for clinical use.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

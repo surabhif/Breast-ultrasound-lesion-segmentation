@@ -48,8 +48,8 @@ export default function ThresholdExplorer({ data }: { data: ScoresPayload }) {
     <section className="panel" id="operating-point" style={{ marginTop: '1rem' }}>
       <h2 className="section-title">Choose an operating point</h2>
       <p>
-        Slide the classification threshold over held-out B/M scores (served INT8). The reported
-        point <strong>0.5</strong> was chosen on validation before looking at test.
+        Slide the harmless vs cancerous cutoff over held-out scores from the browser model. The
+        reported point <strong>0.5</strong> was chosen on validation before looking at test.
       </p>
       <div className="mistakes-filters">
         <label>

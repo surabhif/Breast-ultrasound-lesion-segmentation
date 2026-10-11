@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "label": "BUSI lesion segmentation \u2014 ResNet-18 U-Net",
-  "disclaimer": "Research demo, not for clinical use.",
+  "label": "BUSI lesion segmentation — ResNet-18 U-Net",
+  "disclaimer": "Research demo. Not for clinical use.",
   "surabhi_prompts": [
-    "Why do near-duplicate images inflate BUSI scores if they leak across splits?",
-    "How could caliper marks act as a shortcut for benign vs malignant?",
+    "Why do near-identical photos inflate BUSI scores if they leak across splits?",
+    "How could caliper marks act as a shortcut for harmless vs cancerous?",
     "What does a poorly calibrated probability mean for a careful reader?",
-    "Why isn't a high Dice on normals (empty masks) very informative?"
+    "Why isn't a high outline-overlap score (Dice) on normals (empty outlines) very informative?"
   ],
   "config": {
     "model_kind": "resnet18",
@@ -50,7 +50,7 @@
     "torch": "2.14.1+cpu"
   },
   "runtime_seconds": 1452.5345435142517,
-  "splits_note": "BUSI provides no patient IDs. Splits are grouped by perceptual-hash near-duplicate clusters so near-identical images never cross splits. This is NOT a true patient-level split.",
+  "splits_note": "BUSI provides no patient IDs. Splits keep near-identical photo groups together so the same near-copy never appears in both training and testing. This is not a true patient-level split.",
   "metrics": {
     "test_dice": 0.6860509370871287,
     "test_dice_bootstrap_95ci": [
@@ -536,7 +536,7 @@
   },
   "model_version": "1.0.0",
   "served_int8": {
-    "label": "Served INT8 ONNX (v1.0.0) on held-out BUSI test",
+    "label": "Browser model (v1.0.0) on BUSI test set",
     "sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
     "seg_threshold": 0.4,
     "min_component_area": 40,
@@ -747,8 +747,8 @@
             }
           }
         },
-        "attribution": "G\u00f3mez-Flores et al., Med Phys 2024; Zenodo 8231412; CC BY 4.0",
-        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160\u00b2 (shared bilinear)."
+        "attribution": "Gómez-Flores et al., Med Phys 2024; Zenodo 8231412; CC BY 4.0",
+        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160² (shared bilinear)."
       },
       "breast": {
         "dataset": "breast",
@@ -883,8 +883,8 @@
             }
           }
         },
-        "attribution": "Paw\u0142owska et al., Sci Data 2024; TCIA Breast-Lesions-USG; CC BY 4.0",
-        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160\u00b2 (shared bilinear)."
+        "attribution": "Pawłowska et al., Sci Data 2024; TCIA Breast-Lesions-USG; CC BY 4.0",
+        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160² (shared bilinear)."
       },
       "busuclm": {
         "dataset": "busuclm",
@@ -972,7 +972,7 @@
           }
         },
         "attribution": "Vallez et al., Sci Data 2025; Mendeley 7fvgj4jsp7; CC BY 4.0",
-        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160\u00b2 (shared bilinear). 43 Doppler/combined images excluded per INFO.csv flags. Evaluated off-CI on the owner's local copy; images not redistributed."
+        "note": "Frozen v1.0.0 INT8; no tuning on external data. Images resized to 160² (shared bilinear). 43 Doppler/combined images excluded per INFO.csv flags. Evaluated off-CI on the owner's local copy; images not redistributed."
       }
     },
     "skipped": {
@@ -981,9 +981,9 @@
     }
   },
   "measurement_agreement": {
-    "label": "Measurement agreement on BrEaST (model vs expert masks @ 160\u00b2)",
+    "label": "Measurement agreement on BrEaST (model vs expert masks @ 160²)",
     "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
-    "disclaimer": "Research only \u2014 imaging size is not pathological T-stage; not clinical measurements.",
+    "disclaimer": "Research only. Imaging size is not pathologic T-stage. Not clinical measurements.",
     "n": 252,
     "area_px": {
       "bland_altman": {
@@ -1015,9 +1015,9 @@
       },
       "pearson_proxy_for_icc": 0.6972069017939513,
       "t1_t2_20mm_discordance_rate": 0.17063492063492064,
-      "note": "Exploratory: fraction of cases where model and expert disagree on \u226520 mm longest diameter."
+      "note": "Exploratory: fraction of cases where model and expert disagree on ≥20 mm longest diameter."
     },
-    "spacing_note": "BrEaST Pixel_size is cm (Sci Data 2024); converted to mm and scaled by mean(orig)/160 for 160\u00b2 masks."
+    "spacing_note": "BrEaST Pixel_size is cm (Sci Data 2024); converted to mm and scaled by mean(orig)/160 for 160² masks."
   },
   "leakage_ablation": {
     "label": "Leakage ablation: random vs grouped splits (same grouped test)",
@@ -1085,7 +1085,7 @@
     "spearman_rho": 0.6128315616481295,
     "spearman_p": 6.895732078308738e-13,
     "dice_at_80_coverage": 0.7778000527127059,
-    "interpretation": "Positive rho means higher TTA disagreement tends to co-occur with lower Dice. This is agreement under flips \u2014 not a calibrated error probability.",
+    "interpretation": "Higher disagreement under flips tends to go with lower outline-overlap scores. This is agreement under flips, not a calibrated chance of being wrong.",
     "normal_fp": {
       "n_normal": 19,
       "n_fp_proxy": 12,
@@ -1099,28 +1099,28 @@
     "swap_criteria": [
       {
         "criterion": "Clean-subset Dice (BUSI)",
-        "rule": "v2 \u2265 v1",
+        "rule": "v2 ≥ v1",
         "v1": 0.623,
         "v2": 0.626,
         "passed": true
       },
       {
         "criterion": "External Dice (BUS-BRA)",
-        "rule": "v2 \u2265 v1",
+        "rule": "v2 ≥ v1",
         "v1": 0.714,
         "v2": 0.626,
         "passed": false
       },
       {
         "criterion": "External Dice (BrEaST)",
-        "rule": "v2 \u2265 v1",
+        "rule": "v2 ≥ v1",
         "v1": 0.627,
         "v2": 0.608,
         "passed": false
       },
       {
         "criterion": "BUSI test AUC",
-        "rule": "drop \u2264 0.02",
+        "rule": "drop ≤ 0.02",
         "v1": 0.931,
         "v2": 0.945,
         "passed": true
@@ -1161,8 +1161,8 @@
     "decision_sentence": "Seed-mean failed at least one fair swap criterion, so the site keeps serving v1.0.0.",
     "swap_criteria": [
       {
-        "criterion": "Clean-subset Dice (BUSI) \u2014 seed mean",
-        "rule": "mean \u2265 v1",
+        "criterion": "Clean-subset Dice (BUSI) — seed mean",
+        "rule": "mean ≥ v1",
         "v1": 0.623,
         "v2": 0.614,
         "v2_sd": 0.012,
@@ -1174,8 +1174,8 @@
         "passed": false
       },
       {
-        "criterion": "BUS-BRA same-source held-out Dice \u2014 seed mean",
-        "rule": "mean \u2265 v1 on same held-out split",
+        "criterion": "BUS-BRA same-source held-out Dice — seed mean",
+        "rule": "mean ≥ v1 on same held-out split",
         "v1": 0.713,
         "v2": 0.894,
         "v2_sd": 0.006,
@@ -1188,8 +1188,8 @@
         "note": "Not external for v2; v1 baseline is INT8 on the identical held-out IDs."
       },
       {
-        "criterion": "External Dice (BrEaST) \u2014 seed mean",
-        "rule": "mean \u2265 v1",
+        "criterion": "External Dice (BrEaST) — seed mean",
+        "rule": "mean ≥ v1",
         "v1": 0.627,
         "v2": 0.672,
         "v2_sd": 0.02,
@@ -1202,8 +1202,8 @@
         "note": "Only truly external test for v2."
       },
       {
-        "criterion": "BUSI test AUC \u2014 seed mean",
-        "rule": "mean drop \u2264 0.02",
+        "criterion": "BUSI test AUC — seed mean",
+        "rule": "mean drop ≤ 0.02",
         "v1": 0.931,
         "v2": 0.912,
         "v2_sd": 0.007,
@@ -1215,8 +1215,8 @@
         "passed": true
       },
       {
-        "criterion": "INT8 ONNX size \u2014 seed mean",
-        "rule": "\u2264 ~25 MB",
+        "criterion": "INT8 ONNX size — seed mean",
+        "rule": "≤ ~25 MB",
         "v1": 11.664,
         "v2": 21.346,
         "v2_sd": 0.0,
@@ -1226,7 +1226,7 @@
     "swap_note": "Seed-mean failed at least one fair swap criterion, so the site keeps serving v1.0.0. mean_checks={'clean_dice_ok': False, 'busbra_heldout_ok': True, 'breast_ok': True, 'auc_ok': True, 'size_ok': True}",
     "table": [
       {
-        "name": "v1.0.0 served INT8 (160\u00b2 ResNet-18)",
+        "name": "v1.0.0 served INT8 (160² ResNet-18)",
         "dice": 0.6972011494235116,
         "lesion_dice": 0.7643712765714284,
         "clean_dice": 0.6229383436474434,
@@ -1238,7 +1238,7 @@
         "busbra_fullset_ref_only": 0.7136202288207832
       },
       {
-        "name": "v2 seed 42 (resnet34 256\u00b2)",
+        "name": "v2 seed 42 (resnet34 256²)",
         "dice": 0.6564425680247006,
         "lesion_dice": 0.7905544904738318,
         "clean_dice": 0.6250754183023378,
@@ -1257,7 +1257,7 @@
         }
       },
       {
-        "name": "v2 seed 43 (resnet34 256\u00b2)",
+        "name": "v2 seed 43 (resnet34 256²)",
         "dice": 0.6345262333182934,
         "lesion_dice": 0.7641606250319971,
         "clean_dice": 0.6012256468751818,
@@ -1276,7 +1276,7 @@
         }
       },
       {
-        "name": "v2 seed 44 (resnet34 256\u00b2)",
+        "name": "v2 seed 44 (resnet34 256²)",
         "dice": 0.6385336120597077,
         "lesion_dice": 0.7689867155275587,
         "clean_dice": 0.6151055236242038,
@@ -1295,7 +1295,7 @@
         }
       },
       {
-        "name": "v2 seed mean \u00b1 SD (n=3)",
+        "name": "v2 seed mean ± SD (n=3)",
         "dice": 0.6431674711342339,
         "dice_sd": 0.011669872286479557,
         "lesion_dice": 0.7745672770111293,

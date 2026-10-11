@@ -31,7 +31,7 @@ export default function HomePage() {
           <span className="t" id="walkthrough-heading">
             Site walkthrough
           </span>
-          <span className="d">60–90s captioned tour · no voiceover</span>
+          <span className="d">About one minute, with captions. No voiceover.</span>
         </div>
         <figure className="walkthrough-embed panel">
           <video
@@ -51,7 +51,7 @@ export default function HomePage() {
             />
           </video>
           <figcaption className="muted tiny">
-            Research demo only — not for clinical use.{' '}
+            Research demo only. Not for clinical use.{' '}
             <a href={`${BASE}report.pdf`} target="_blank" rel="noreferrer">
               Research write-up (PDF)
             </a>
@@ -67,7 +67,7 @@ export default function HomePage() {
           fallback={
             <div className="panel landing-explainer-fallback">
               <p className="landing-eyebrow">Interactive explainer</p>
-              <h2>Loading the educational tour…</h2>
+              <h2>Loading the tour…</h2>
               <div className="landing-actions">
                 <Link className="btn" to="/demo">
                   Try the detector

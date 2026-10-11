@@ -26,7 +26,7 @@ test.describe('Demo upload + a11y', () => {
     await expect(page.getByRole('button', { name: 'Capture with camera' })).toBeVisible()
 
     await expect(
-      page.getByText(/Expert compare and Dice are hidden for uploads/),
+      page.getByText(/Expert compare and outline-overlap score \(Dice\) are hidden for uploads/),
     ).toBeVisible()
 
     const results = await new AxeBuilder({ page })

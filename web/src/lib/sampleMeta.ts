@@ -11,6 +11,23 @@ export type DemoSampleMeta = {
   orig_height?: number | null
 }
 
+/**
+ * Reader-facing BUSI class label.
+ * normal = no lump at all; harmless = a benign lump is present.
+ */
+export function classLabelDisplay(label: string): string {
+  switch (label) {
+    case 'benign':
+      return 'harmless (benign)'
+    case 'malignant':
+      return 'cancerous (malignant)'
+    case 'normal':
+      return 'normal (no lump)'
+    default:
+      return label
+  }
+}
+
 /** Plain-language source line for the ground-truth card. */
 export function sampleSourceLabel(meta: DemoSampleMeta | null | undefined): string {
   if (!meta) return 'Available for gallery samples only.'

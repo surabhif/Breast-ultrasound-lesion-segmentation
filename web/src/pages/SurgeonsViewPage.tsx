@@ -9,13 +9,13 @@ const BREAST_EXAMPLES = [
     id: 'breast_00',
     img: 'samples/external/breast_00_benign.png',
     mask: 'samples/external/breast_00_benign_mask.png',
-    label: 'BrEaST example · benign (CC BY)',
+    label: 'BrEaST example · harmless (CC BY)',
   },
   {
     id: 'breast_03',
     img: 'samples/external/breast_03_malignant.png',
     mask: 'samples/external/breast_03_malignant_mask.png',
-    label: 'BrEaST example · malignant (CC BY)',
+    label: 'BrEaST example · cancerous (CC BY)',
   },
 ] as const
 
@@ -41,10 +41,10 @@ export default function SurgeonsViewPage() {
     <article className="panel prose fade-in">
       <header className="page-intro">
         <p className="landing-eyebrow">Surgeon&apos;s-view · research framing</p>
-        <h1>Lesion size, margins, and what models can tell you</h1>
+        <h1>Lump size, margins, and what models can tell you</h1>
         <p>
-          Why surgeons care about size and margins — and why this demo&apos;s pixel measurements are
-          research toys, not operative planning.
+          Why surgeons care about size and margins, and why this demo&apos;s pixel measurements are
+          research illustrations, not operative planning.
         </p>
       </header>
 
@@ -56,10 +56,10 @@ export default function SurgeonsViewPage() {
 
       <h2>Why surgeons care about size</h2>
       <p>
-        In breast cancer care, tumor size helps place a case in the AJCC TNM framework and
-        influences discussions about breast-conserving surgery versus mastectomy, oncoplastic
-        options, and adjuvant therapy. Pathologic size on the excised specimen — not a single
-        ultrasound diameter — is what ultimately defines pathologic T category in standard staging.
+        In breast cancer care, tumor size helps place a case in the AJCC TNM framework. It also
+        shapes talks about breast-conserving surgery versus mastectomy, oncoplastic options, and
+        adjuvant therapy. Pathologic size on the excised specimen, not a single ultrasound
+        diameter, is what ultimately defines pathologic T category in standard staging.
       </p>
       <p className="muted tiny">
         Source (verified): AJCC Cancer Staging Manual principles for breast cancer T category
@@ -70,21 +70,21 @@ export default function SurgeonsViewPage() {
       <p>
         For invasive breast cancer treated with breast-conserving surgery, a widely cited consensus
         (SSO–ASTRO) supports &quot;no ink on tumor&quot; as an adequate margin in appropriately
-        selected patients receiving whole-breast irradiation — meaning the inked specimen edge
+        selected patients receiving whole-breast irradiation. That means the inked specimen edge
         should not touch invasive cancer. DCIS has related but distinct guidance. Those rules apply
         to <em>surgical specimens</em>, not to an AI overlay on a resized ultrasound PNG.
       </p>
       <p className="muted tiny">
         Source (verified): Moran MS, et al. Society of Surgical Oncology–American Society for
-        Radiation Oncology consensus guideline on margins for breast-conserving surgery… Ann Surg
-        Oncol / Int J Radiat Oncol Biol Phys, 2014 (and subsequent updates — check current society
-        guidance for practice).
+        Radiation Oncology consensus guideline on margins for breast-conserving surgery. Ann Surg
+        Oncol / Int J Radiat Oncol Biol Phys, 2014 (and later updates). Check current society
+        guidance for practice.
       </p>
 
       <h2>What this model measures</h2>
       <p>
-        On the <Link to="/demo">Demo</Link>, after a mask is predicted, the app computes research-only
-        geometry on the <strong>160×160</strong> mask:
+        On the <Link to="/demo">Demo</Link>, after an outline is predicted, the app computes
+        research-only geometry on the <strong>160×160</strong> mask:
       </p>
       <ul>
         <li>Area (pixels; mm² only when spacing is known)</li>
@@ -94,24 +94,24 @@ export default function SurgeonsViewPage() {
       <p>
         Physical spacing is available only for curated <strong>BrEaST</strong> samples (spacing
         metadata scaled to 160²). BUSI demo images stay in pixels. Offline, we also compared model
-        vs expert mask diameters on BrEaST ({nMeas} images): Pearson correlation for longest
-        diameter in mm ≈ <strong>{diamCorr}</strong>; model and expert disagreed on a ≥20 mm
-        threshold in about <strong>{t1t2}%</strong> of cases (exploratory — not a staging claim).
-        Numbers come from <code>results/measurement_agreement.json</code>.
+        vs expert outline diameters on BrEaST ({nMeas} images): Pearson correlation for longest
+        diameter in mm ≈ <strong>{diamCorr}</strong>. Model and expert disagreed on a ≥20 mm
+        threshold in about <strong>{t1t2}%</strong> of cases. That is exploratory, not a staging
+        claim. Numbers come from committed measurement results.
       </p>
 
       <h2>What it cannot tell you</h2>
       <ul>
         <li>Pathologic tumor size or AJCC T category</li>
         <li>Distance to a surgical margin or &quot;ink on tumor&quot;</li>
-        <li>Whether a lesion is resectable with cosmesis goals</li>
+        <li>Whether a lump is resectable with cosmesis goals</li>
         <li>Nodal status, biology, or treatment response</li>
         <li>A BI-RADS assessment (see <Link to="/bi-rads">BI-RADS context</Link>)</li>
       </ul>
 
       <h2>Examples (licensing-aware)</h2>
       <p>
-        Full ultrasound pixels on new pages use CC BY external imagery; BUSI rows use outline-only
+        Full ultrasound pixels on new pages use CC BY outside imagery. BUSI rows use outline-only
         silhouettes.
       </p>
 
@@ -133,12 +133,7 @@ export default function SurgeonsViewPage() {
         {BUSI_SILHOUETTES.map((ex) => (
           <figure className="example-card" role="listitem" key={ex.id}>
             <div className="example-pair example-pair-single">
-              <img
-                src={`${BASE}${ex.src}`}
-                alt={ex.label}
-                width={240}
-                height={240}
-              />
+              <img src={`${BASE}${ex.src}`} alt={ex.label} width={240} height={240} />
             </div>
             <figcaption className="muted tiny">{ex.label}</figcaption>
           </figure>
@@ -152,8 +147,8 @@ export default function SurgeonsViewPage() {
       <h2>Try it</h2>
       <p>
         Open the Demo, pick a BrEaST sample, run the model, and toggle measurement overlays. Treat
-        every millimeter as a research illustration — then read the{' '}
-        <Link to="/results">Results</Link> measurement-agreement notes and the{' '}
+        every millimeter as a research illustration. Then read the{' '}
+        <Link to="/results">Results</Link> measurement notes and the{' '}
         <a href={`${BASE}report.pdf`} target="_blank" rel="noreferrer">
           research write-up PDF
         </a>

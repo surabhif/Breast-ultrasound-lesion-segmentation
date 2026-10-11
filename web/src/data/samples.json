@@ -1,5 +1,5 @@
 {
-  "disclaimer": "Research samples from the BUSI held-out test split. Not for clinical use. Cite Al-Dhabyani et al., Data in Brief 2020.",
+  "disclaimer": "Research samples from the BUSI test set. Not for clinical use. Cite Al-Dhabyani et al., Data in Brief 2020.",
   "seed": 42,
   "source": "BUSI Dataset_BUSI_with_GT (Al-Dhabyani et al. 2020)",
   "samples": [
@@ -13,7 +13,7 @@
       "case_id": "benign/benign (343).png",
       "kind": "ultrasound",
       "annotation_flag": true,
-      "note": "Held-out BUSI test image (grouped split).",
+      "note": "BUSI test image (near-identical photo groups kept together).",
       "reported_dice_int8": 0.939481268026061,
       "reported_cls_prob_int8": 0.03593379259109497
     },
@@ -27,7 +27,7 @@
       "case_id": "benign/benign (208).png",
       "kind": "ultrasound",
       "annotation_flag": false,
-      "note": "Held-out BUSI test image (grouped split).",
+      "note": "BUSI test image (near-identical photo groups kept together).",
       "reported_dice_int8": 0.9401408451758084,
       "reported_cls_prob_int8": 0.00015100836753845215
     },
@@ -41,7 +41,7 @@
       "case_id": "malignant/malignant (142).png",
       "kind": "ultrasound",
       "annotation_flag": true,
-      "note": "Held-out BUSI test image (grouped split).",
+      "note": "BUSI test image (near-identical photo groups kept together).",
       "reported_dice_int8": 0.6767693316123223,
       "reported_cls_prob_int8": 0.9447245597839355
     },
@@ -55,7 +55,7 @@
       "case_id": "malignant/malignant (102).png",
       "kind": "ultrasound",
       "annotation_flag": false,
-      "note": "Held-out BUSI test image (grouped split).",
+      "note": "BUSI test image (near-identical photo groups kept together).",
       "reported_dice_int8": 0.9030283505310843,
       "reported_cls_prob_int8": 0.9994112849235535
     },
@@ -69,7 +69,7 @@
       "case_id": "normal/normal (126).png",
       "kind": "ultrasound",
       "annotation_flag": false,
-      "note": "Held-out BUSI test image (grouped split).",
+      "note": "BUSI test image (near-identical photo groups kept together).",
       "reported_dice_int8": 2.1528525291382446e-10,
       "reported_cls_prob_int8": 0.9842665195465088
     },
@@ -83,7 +83,7 @@
       "case_id": "normal/normal (96).png",
       "kind": "ultrasound",
       "annotation_flag": true,
-      "note": "Held-out BUSI test image (grouped split).",
+      "note": "BUSI test image (near-identical photo groups kept together).",
       "reported_dice_int8": 1.0,
       "reported_cls_prob_int8": 0.9716366529464722
     }
