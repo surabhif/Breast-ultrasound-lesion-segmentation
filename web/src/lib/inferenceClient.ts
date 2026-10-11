@@ -151,7 +151,7 @@ export async function preloadModel(onProgress?: ProgressCb): Promise<void> {
     status: 'creating-session',
     loadedBytes: buffer.byteLength,
     totalBytes: buffer.byteLength,
-    message: 'Initializing ONNX Runtime in worker…',
+    message: 'Starting model engine…',
   })
   const loadMsg: WorkerRequest = { type: 'load', buffer: buffer.slice(0) }
   await new Promise<void>((resolve, reject) => {
@@ -179,7 +179,7 @@ export async function preloadModel(onProgress?: ProgressCb): Promise<void> {
     status: 'ready',
     loadedBytes: buffer.byteLength,
     totalBytes: buffer.byteLength,
-    message: 'Model ready (Web Worker)',
+    message: 'Model ready',
   })
 }
 

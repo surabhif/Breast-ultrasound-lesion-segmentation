@@ -55,15 +55,15 @@ function formatPct(p: number) {
 
 function uncertaintyWording(clsProb: number, maskMean: number): string {
   if (maskMean < 0.02) {
-    return 'Little lesion evidence in the mask — the benign/malignant score is less meaningful when no lesion is detected.'
+    return 'Little lump evidence in the outline. The harmless vs cancerous score matters less when no lump is detected.'
   }
   if (clsProb >= 0.35 && clsProb <= 0.65) {
-    return 'Score near 0.5: uncertain. Treat as inconclusive, not a diagnosis.'
+    return 'Score near the middle: unclear. Treat as inconclusive, not a diagnosis.'
   }
   if (clsProb > 0.65) {
-    return 'Higher score leans malignant in this research model only — not clinical advice.'
+    return 'Higher score leans cancerous in this research model only. Not clinical advice.'
   }
-  return 'Lower score leans benign in this research model only — not clinical advice.'
+  return 'Lower score leans harmless in this research model only. Not clinical advice.'
 }
 
 const ALL_SAMPLES: Sample[] = [
@@ -262,7 +262,7 @@ export default function DemoPage() {
       let out: InferenceResult
       if (useTta) {
         const ttaOut = await runInferenceTta(src, setLoadProgress, (i, n) => {
-          if (gen === analyzeGen.current) setTtaStep(`TTA ${i}/${n}`)
+          if (gen === analyzeGen.current) setTtaStep(`Flip ${i} of ${n}`)
         })
         if (gen !== analyzeGen.current) return
         setTta(ttaOut.tta)
@@ -366,9 +366,8 @@ export default function DemoPage() {
       <header className="page-intro">
         <h1>Try the detector</h1>
         <p>
-          Choose a BUSI gallery sample or a CC BY BrEaST sample, or upload / capture your own
-          ultrasound. Inference runs entirely in your browser. Research demo — not for clinical
-          use.
+          Choose a BUSI gallery sample or a CC BY BrEaST sample, or upload or capture your own
+          ultrasound. The model runs in your browser. Research demo only. Not for clinical use.
         </p>
       </header>
 
@@ -586,40 +585,41 @@ export default function DemoPage() {
               <>
                 <p className="score-card-metrics">
                   <strong>
-                    Dice {browserDice.toFixed(2)} · IoU {browserIoU?.toFixed(2)}
+                    Outline-overlap score (Dice) {browserDice.toFixed(2)} · IoU{' '}
+                    {browserIoU?.toFixed(2)}
                   </strong>
                 </p>
                 <p className="muted tiny score-card-caption">
-                  Browser INT8 vs expert @ 160²
+                  Browser model vs expert outline (160×160)
                   {selectedMeta?.reported_dice_int8 != null &&
-                    ` · reported INT8 ${selectedMeta.reported_dice_int8.toFixed(2)}`}
+                    ` · reported score ${selectedMeta.reported_dice_int8.toFixed(2)} out of 1`}
                 </p>
                 {selectedMeta?.label === 'normal' && (
                   <p className="tiny">
                     {result && result.maskMean < 0.01
-                      ? 'Expert: no lesion. Model: no lesion ✓ (Dice defined as 1 when both empty).'
-                      : 'Expert: no lesion. Model drew a lesion on a normal image ✗'}
+                      ? 'Expert: no lump. Model: no lump (Dice is 1.0 when both are empty).'
+                      : 'Expert: no lump. Model drew a lump on a harmless image.'}
                   </p>
                 )}
               </>
             ) : (
               <p className="muted tiny">
                 {selectedMeta
-                  ? 'Per-image Dice appears for samples with expert masks.'
+                  ? 'Per-image outline-overlap score (Dice) appears when an expert outline exists.'
                   : sourceUrl
-                    ? 'Upload has no expert outline — Dice is not shown.'
-                    : 'Select a gallery sample with an expert mask to see Dice, or upload your own image.'}
+                    ? 'Upload has no expert outline. Dice is not shown.'
+                    : 'Pick a gallery sample with an expert outline to see Dice, or upload your own image.'}
               </p>
             )}
           </div>
 
           <div className="result-row">
-            <div className="gauge" aria-label="Predicted malignant probability">
+            <div className="gauge" aria-label="Estimated chance the lump is cancerous">
               <svg
                 viewBox="0 0 120 70"
                 className="gauge-svg"
                 role="img"
-                aria-label="Gauge showing predicted malignant probability"
+                aria-label="Gauge showing estimated chance the lump is cancerous"
               >
                 <path
                   d="M10 60 A50 50 0 0 1 110 60"
@@ -640,7 +640,7 @@ export default function DemoPage() {
                   {result ? formatPct(result.clsProb) : '—'}
                 </text>
               </svg>
-              <div className="gauge-label">P(malignant)</div>
+              <div className="gauge-label">Chance cancerous</div>
             </div>
 
             <div className="gt-card">
@@ -732,8 +732,8 @@ export default function DemoPage() {
 
           <label className="opacity-control">
             <span id="cls-thr-label">
-              Class threshold {clsThr.toFixed(2)} →{' '}
-              {result ? (result.clsProb >= clsThr ? 'malignant' : 'benign') : '—'}
+              Cancerous cutoff {clsThr.toFixed(2)} →{' '}
+              {result ? (result.clsProb >= clsThr ? 'cancerous' : 'harmless') : '—'}
             </span>
             <input
               type="range"
@@ -756,9 +756,9 @@ export default function DemoPage() {
                 type="checkbox"
                 checked={useTta}
                 onChange={(e) => setUseTta(e.target.checked)}
-                aria-label="Estimate uncertainty with eight-fold test-time augmentation"
+                aria-label="Estimate uncertainty with eight image flips"
               />
-              Estimate uncertainty (8× TTA — runs in Web Worker)
+              Estimate uncertainty (8 flips)
             </label>
             <label className="radio-inline">
               <input
@@ -780,18 +780,21 @@ export default function DemoPage() {
                   <>
                     <p className="score-card-metrics">
                       <strong>Outline agreement: {u.outline}</strong>
-                      <span className="muted tiny"> ({tta.agreement.toFixed(2)} pairwise Dice)</span>
+                      <span className="muted tiny">
+                        {' '}
+                        ({tta.agreement.toFixed(2)} mean outline-overlap across flips)
+                      </span>
                     </p>
                     <p className="score-card-metrics">
                       <strong>Score stability: {u.score}</strong>
                       <span className="muted tiny">
                         {' '}
-                        (class-score spread {tta.clsStd.toFixed(3)} across TTA passes)
+                        (cancerous-score spread {tta.clsStd.toFixed(3)} across flip runs)
                       </span>
                     </p>
                     <p className="muted tiny">
-                      These describe agreement under small flips/brightness changes — not a
-                      probability of being wrong.
+                      These describe agreement under small flips and brightness changes. They are not
+                      a probability of being wrong.
                     </p>
                     {u.warning && <p className="tiny">{u.warning}</p>}
                   </>
@@ -869,9 +872,10 @@ export default function DemoPage() {
           <details className="explainer heatmap-explainer">
             <summary>How to read this overlay</summary>
             <p>
-              Orange = model lesion map; blue = expert outline when shown. Difference mode: teal =
-              agreement, orange hatch = model-only, blue hatch = expert-only. Dice = 2×overlap ÷
-              (expert + model). Research demo — not for clinical use.
+              Orange = model lump outline. Blue = expert outline when shown. Difference mode: teal =
+              agreement, orange hatch = model only, blue hatch = expert only. Outline-overlap score
+              (Dice) compares how much the two outlines agree (0 to 1). Research demo only. Not for
+              clinical use.
             </p>
           </details>
         </section>

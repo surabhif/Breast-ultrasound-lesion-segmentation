@@ -69,11 +69,13 @@ export function buildResultPdf(input: ResultPdfInput): Blob {
     `Model version: ${input.modelVersion}`,
   ]
   if (input.sampleLabel) lines.push(`Sample: ${input.sampleLabel}`)
-  lines.push(`P(malignant): ${(input.clsProb * 100).toFixed(1)}%`)
+  lines.push(`Chance cancerous: ${(input.clsProb * 100).toFixed(1)}%`)
   if (input.dice != null) {
-    lines.push(`Dice: ${input.dice.toFixed(2)}${input.iou != null ? ` | IoU: ${input.iou.toFixed(2)}` : ''}`)
+    lines.push(
+      `Outline-overlap score (Dice): ${input.dice.toFixed(2)} out of 1${input.iou != null ? ` | IoU: ${input.iou.toFixed(2)}` : ''}`,
+    )
   } else {
-    lines.push('Dice: n/a (no expert mask for this image)')
+    lines.push('Outline-overlap score (Dice): n/a (no expert outline for this image)')
   }
   if (input.measurements) {
     const m = input.measurements
