@@ -1,4 +1,5 @@
 import HowBuilt from '../components/HowBuilt'
+import SurabhiNameLink from '../components/SurabhiNameLink'
 import { SITE } from '../lib/constants'
 
 type ProjectCard = {
@@ -56,7 +57,9 @@ export default function PortfolioPage() {
     <article className="panel prose fade-in portfolio-page">
       <header className="page-intro">
         <p className="landing-eyebrow">Student portfolio</p>
-        <h1>Surabhi Fadnavis · oncology AI research demos</h1>
+        <h1>
+          <SurabhiNameLink /> · oncology AI research demos
+        </h1>
         <p>
           High-school senior, Georgia. Three related research demos. Each is educational. Each is{' '}
           <strong>not for clinical use</strong>.

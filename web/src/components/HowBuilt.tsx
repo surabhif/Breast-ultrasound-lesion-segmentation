@@ -1,5 +1,7 @@
 /** Shared §8.5 honesty credit — keep wording consistent across the site. */
 
+import SurabhiNameLink from './SurabhiNameLink'
+
 export const HOW_BUILT_STATEMENT =
   'Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).'
 
@@ -13,7 +15,8 @@ export default function HowBuilt({ as = 'p', className = 'how-built', id }: Prop
   const Tag = as
   return (
     <Tag className={className} id={id}>
-      {HOW_BUILT_STATEMENT}
+      Project by <SurabhiNameLink />. The code, analysis, text, and video were produced with AI tools
+      (Cursor).
     </Tag>
   )
 }

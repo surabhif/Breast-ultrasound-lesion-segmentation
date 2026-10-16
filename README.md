@@ -153,7 +153,7 @@ ONNX I/O: `input` `[N,3,160,160]` → `seg_mask` `[N,1,160,160]`, `cls_prob` `[N
 |------|------|
 | `/bi-rads` | BI-RADS ultrasound context (score ≠ category) |
 | `/surgeons-view` | Size/margins research framing |
-| `/portfolio` | Surabhi Fadnavis · student research in oncology AI |
+| `/portfolio` | [Surabhi Fadnavis](https://www.linkedin.com/in/surabhi-fadnavis-804065329/) · student research in oncology AI |
 | `web/public/report.pdf` | Auto-filled research write-up (site-only venue) |
 | `web/public/video/walkthrough.mp4` | Captioned 60–90s site walkthrough |
 
@@ -161,10 +161,10 @@ Cite with `CITATION.cff` / About → How to cite ([DOI 10.5281/zenodo.23286597](
 
 ## How this was built
 
-Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (**Cursor**). High-school research project — not clinician-reviewed and **not for clinical use**.
+Project by [Surabhi Fadnavis](https://www.linkedin.com/in/surabhi-fadnavis-804065329/). The code, analysis, text, and video were produced with AI tools (**Cursor**). High-school research project — not clinician-reviewed and **not for clinical use**.
 
 ## Credits
 
-Project by **Surabhi Fadnavis** (high-school senior, Georgia). Structure mirrors her [PatchCamelyon lymph-node demo](https://github.com/surabhif/Lymph-node-metastasis-detector). See also the [pathology report explainer](https://github.com/surabhif/Pathology-report-explainer).
+Project by **[Surabhi Fadnavis](https://www.linkedin.com/in/surabhi-fadnavis-804065329/)** (high-school senior, Georgia). Structure mirrors her [PatchCamelyon lymph-node demo](https://github.com/surabhif/Lymph-node-metastasis-detector). See also the [pathology report explainer](https://github.com/surabhif/Pathology-report-explainer).
 
 MIT license for code. BUSI images remain under their original terms — only a minimal cited sample ships in `web/public/samples/`.

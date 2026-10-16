@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
+import SurabhiNameLink from '../components/SurabhiNameLink'
 import { SITE } from '../lib/constants'
 import { PLAIN_ABSTRACT } from '../lib/plainAbstract'
 
@@ -178,6 +179,19 @@ export default function AboutPage() {
 
       <h2>Credits</h2>
       <HowBuilt />
+      <p>
+        <a
+          href={SITE.linkedinUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Surabhi Fadnavis on LinkedIn"
+          className="linkedin-name"
+        >
+          LinkedIn
+        </a>
+        {' · '}
+        <SurabhiNameLink />
+      </p>
       <p className="muted tiny">
         Personal info on this site is limited to name and “high-school senior, Georgia.” No school
         name, photo, email, or personal contact is published.

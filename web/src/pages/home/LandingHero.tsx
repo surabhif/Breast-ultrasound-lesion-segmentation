@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import SurabhiNameLink from '../../components/SurabhiNameLink'
 import { goToExplainerStep } from './landingNav'
 import { SITE } from '../../lib/constants'
 
@@ -8,7 +9,10 @@ export function LandingHero() {
       <p className="landing-eyebrow">Educational research demo</p>
       <h1 className="landing-title">{SITE.title}</h1>
       <p className="landing-byline">
-        A research project by <strong>Surabhi Fadnavis</strong>
+        A research project by{' '}
+        <strong>
+          <SurabhiNameLink />
+        </strong>
       </p>
       <p className="landing-lede">
         This site asks a simple research question about public breast ultrasound. Can a small
