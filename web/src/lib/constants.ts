@@ -96,4 +96,5 @@ export const SITE = {
   /** Zenodo version DOI for the v1.0.0 GitHub Release (record 23286597). */
   doi: '10.5281/zenodo.23286597',
   doiUrl: 'https://doi.org/10.5281/zenodo.23286597',
+  linkedinUrl: 'https://www.linkedin.com/in/surabhi-fadnavis-804065329/',
 }

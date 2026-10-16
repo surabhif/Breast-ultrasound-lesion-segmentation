@@ -1913,6 +1913,19 @@ td {
   color: var(--ink-soft);
 }
 
+a.linkedin-name {
+  color: #297373;
+  text-decoration-color: rgba(41, 115, 115, 0.45);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a.linkedin-name:hover,
+a.linkedin-name:focus-visible {
+  color: var(--accent-ink);
+  text-decoration-color: var(--accent-ink);
+}
+
 .walkthrough-embed {
   margin: 1.25rem 0;
   max-width: 720px;
