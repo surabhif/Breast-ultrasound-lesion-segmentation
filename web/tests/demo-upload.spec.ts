@@ -25,9 +25,9 @@ test.describe('Demo upload + a11y', () => {
     await expect(page.getByRole('button', { name: 'Upload image' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Capture with camera' })).toBeVisible()
 
-    await expect(
-      page.getByText(/Expert compare and outline-overlap score \(Dice\) are hidden for uploads/),
-    ).toBeVisible()
+    // "Dice" may be wrapped in a glossary control; match the surrounding sentence.
+    await expect(page.getByText(/are hidden for uploads/i)).toBeVisible()
+    await expect(page.getByText(/no expert/i)).toBeVisible()
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
