@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
 import SurabhiNameLink from '../components/SurabhiNameLink'
 import { SITE } from '../lib/constants'
@@ -62,7 +63,8 @@ export default function PortfolioPage() {
         </h1>
         <p>
           High-school senior, Georgia. Three related research demos. Each is educational. Each is{' '}
-          <strong>not for clinical use</strong>.
+          <strong>not for clinical use</strong>. Draft personal note:{' '}
+          <Link to="/why">Why I built this</Link>.
         </p>
       </header>
 

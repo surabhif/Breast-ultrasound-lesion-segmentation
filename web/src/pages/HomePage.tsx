@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
+import { HomeResultsSummary } from './home/HomeResultsSummary'
 import { LandingHero } from './home/LandingHero'
 import { LandingWhy } from './home/LandingWhy'
 import { LandingWhat } from './home/LandingWhat'
@@ -21,6 +22,7 @@ export default function HomePage() {
   return (
     <div className="home fade-in landing-home">
       <LandingHero />
+      <HomeResultsSummary />
       <LandingWhy />
       <LandingWhat />
       <LandingHow />
