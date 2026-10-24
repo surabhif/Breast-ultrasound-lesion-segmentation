@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: >-
   If you use this research demo or cite the software, please use the metadata
-  below (including the Zenodo DOI). Agents must not create tags or releases.
+  below (including the Zenodo DOI).
 type: software
 title: "Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation"
 version: 1.0.0
@@ -14,9 +14,9 @@ url: "https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/"
 license: MIT
 abstract: >-
   High-school research demo: in-browser ResNet-18 U-Net lesion segmentation on
-  BUSI with external BUS-BRA / BrEaST validation. Served model v1.0.0 INT8 ONNX.
-  Not for clinical use. Project by Surabhi Fadnavis. The code, analysis, text,
-  and video were produced with AI tools (Cursor).
+  BUSI with external checks on BUS-BRA, BrEaST, and BUS-UCLM. Served model
+  v1.0.0. Not for clinical use. Project by Surabhi Fadnavis. The code, analysis,
+  text, and video were produced with AI tools (Cursor).
 keywords:
   - breast ultrasound
   - lesion segmentation

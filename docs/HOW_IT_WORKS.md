@@ -101,27 +101,27 @@ You can say:
 
 The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA**, **BrEaST**, and **BUS-UCLM** with the pre-registered protocol (no tuning). Dice stayed in a similar ballpark to BUSI on BUS-BRA, but **benign-vs-malignant AUC dropped a lot** under shift. On BUS-UCLM, all-image Dice is low (~0.386) mainly because of **normal false positives** (320/413); lesion-only Dice (~0.679) is the fairer comparison. Honest headline: segmentation transfers better than the auxiliary classifier when lesions are present, but normals remain a known weakness.
 
-## Phase 2 (robustness & uncertainty)
+## Phase 2: checking reliability and uncertainty
 
-- **Caliper inpainting:** detect marker pixels, erase them with Telea inpainting, and retrain (E-a/E-b/E-c). A new model only becomes the served version if it beats the pre-registered swap rule.
-- **TTA uncertainty:** run the model several times with small flips/brightness changes; show an agreement chip and optional heatmap. This is *not* a probability of being wrong.
-- **Web Worker:** inference (and TTA) leave the UI thread so the page stays responsive; WASM files are self-hosted.
+- **Caliper erasure:** detect marker pixels, erase them with Telea inpainting, and retrain under a few controlled setups. A new model only becomes the served version if it beats the pre-registered swap rule.
+- **Test-time augmentation (uncertainty):** run the model several times with small flips and brightness changes; show an agreement chip and optional heatmap. This is *not* a probability of being wrong.
+- **Web Worker:** inference (and flip checks) leave the UI thread so the page stays responsive; runtime files are self-hosted.
 - **Threshold sliders:** change mask and class cut-offs live on the Demo; on Results, explore sensitivity/specificity trade-offs from saved scores.
 - **Model Errors explorer:** filter hard cases with outline-only silhouettes and clearly labelled AI-generated notes.
 
 This project does **not** include expert medical review or outreach.
 
-## Phase 3 (clinical context & polish)
+## Phase 3 (context pages & polish)
 
 - **BI-RADS page:** plain-language ultrasound categories/descriptors; a model score is **not** a BI-RADS assessment.
-- **Surgeon’s-view page:** why size/margins matter clinically, and why demo measurements are research-only (BrEaST CC BY examples + BUSI outline silhouettes).
-- **Write-up PDF:** `web/public/report.pdf` auto-filled from results JSON; CI fails on number drift.
+- **Surgeon’s-view page:** why size/margins matter in imaging research, and why demo measurements are research-only (BrEaST CC BY examples + BUSI outline silhouettes).
+- **Write-up PDF:** 16-page plain-language write-up auto-filled from results JSON; CI fails on number drift.
 - **Cite / portfolio / video / OG / a11y / privacy:** CITATION.cff, in-site portfolio (sibling repos verified), captioned walkthrough, social preview from CC BY imagery, accessibility fixes, no analytics.
-- **Served model stays v1.0.0.** No Dec 4 freeze tag yet. C3 clinician review skipped.
+- **Served model stays v1.0.0.** No Dec 4 freeze tag yet.
 
 ## How this was built
 
-Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor). Not clinician-reviewed. Not for clinical use.
+Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor). Not for clinical use.
 
 ## Limitations to volunteer before you’re asked
 

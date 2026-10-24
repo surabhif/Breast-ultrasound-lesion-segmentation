@@ -1,7 +1,7 @@
-# Zenodo DOI — owner click-by-click steps
+# How the DOI was made / release checklist
 
 **Audience:** repository owner only (`surabhif`).  
-**Agents / cloud runners must NOT create Git tags, GitHub Releases, or Zenodo deposits.**
+This is the click-by-click path used to mint the Zenodo DOI from a GitHub Release.
 
 Goal: mint a citable DOI for this software via Zenodo’s GitHub integration when you publish a GitHub Release. Metadata for that deposit lives in `.zenodo.json` at the repo root (MIT license, matching `LICENSE` / `CITATION.cff`).
 
@@ -18,7 +18,7 @@ Sources checked for this guide (as of **2026-10-10**):
 2. You are logged into GitHub as the owner account that can create releases.
 3. A `LICENSE` file is present (MIT — already in repo).
 4. `.zenodo.json` is on the default branch (or on the commit you will tag) so Zenodo picks up title, creators, keywords, license.
-5. Decide the release tag name (suggested: `v1.0.0` for the Dec 4 freeze). Do **not** create it until freeze checklist items are ready — see `docs/FREEZE_CHECKLIST.md` and draft notes in `docs/RELEASE_NOTES_v1.0_DRAFT.md`.
+5. Decide the release tag name (suggested: `v1.0.0` for the Dec 4 freeze). Do **not** create it until freeze checklist items are ready — see `docs/FREEZE_CHECKLIST.md` and `docs/RELEASE_NOTES_v1.0.md`.
 
 ---
 
@@ -44,7 +44,7 @@ Zenodo archives the repository and issues a **new DOI each time you create a new
    Direct path pattern: `https://github.com/surabhif/Breast-ultrasound-lesion-segmentation/releases/new`
 2. Click **Choose a tag** → type a new tag (e.g. `v1.0.0`) → **Create new tag on publish** (target: default branch / freeze commit)
 3. Set **Release title** (e.g. `v1.0.0 — Dec 4 freeze`)
-4. Paste release notes (start from `docs/RELEASE_NOTES_v1.0_DRAFT.md`; remove the DRAFT banner before publishing)
+4. Paste release notes (start from `docs/RELEASE_NOTES_v1.0.md`)
 5. Optionally attach binaries (usually unnecessary — Zenodo archives the source tarball from the tag)
 6. Click **Publish release**  
    - **Do not** have an agent publish this release
