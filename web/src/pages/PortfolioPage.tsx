@@ -113,6 +113,15 @@ export default function PortfolioPage() {
         <li>Prefer open licenses and clear dataset attribution (CC BY outside sets; BUSI citation).</li>
       </ul>
 
+      <p>
+        Printable one-page summary for this project (results, credit, disclaimer, DOI, QR to the live
+        site):{' '}
+        <a href={`${import.meta.env.BASE_URL}summary.pdf`} target="_blank" rel="noreferrer">
+          summary.pdf
+        </a>
+        .
+      </p>
+
       <HowBuilt id="how-built" className="how-built" />
     </article>
   )
