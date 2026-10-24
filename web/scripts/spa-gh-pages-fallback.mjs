@@ -43,6 +43,7 @@ const routes = [
   'bi-rads',
   'surgeons-view',
   'portfolio',
+  'why',
 ]
 for (const route of routes) {
   const dir = join(dist, route)
