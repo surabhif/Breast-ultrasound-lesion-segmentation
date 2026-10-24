@@ -43,7 +43,7 @@ export default function App() {
           <p>
             Research demo. Not for clinical use. Never use it for diagnosis or care decisions.{' '}
             <NavLink to="/model-card#current-model" className="notice-learn-more">
-              Learn more
+              Read the model card
             </NavLink>
           </p>
         </div>
@@ -120,6 +120,11 @@ export default function App() {
               </li>
               <li>
                 <NavLink to="/portfolio">Portfolio</NavLink>
+              </li>
+              <li>
+                <a href={`${import.meta.env.BASE_URL}summary.pdf`} target="_blank" rel="noreferrer">
+                  One-page project summary (PDF)
+                </a>
               </li>
               <li>
                 <a href={`${import.meta.env.BASE_URL}report.pdf`} target="_blank" rel="noreferrer">

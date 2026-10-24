@@ -52,6 +52,10 @@ export default function HomePage() {
           </video>
           <figcaption className="muted tiny">
             Research demo only. Not for clinical use.{' '}
+            <a href={`${BASE}summary.pdf`} target="_blank" rel="noreferrer">
+              One-page summary (PDF)
+            </a>
+            {' · '}
             <a href={`${BASE}report.pdf`} target="_blank" rel="noreferrer">
               Research write-up (PDF)
             </a>
