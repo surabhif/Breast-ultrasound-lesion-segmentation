@@ -31,8 +31,8 @@ export function LandingHow() {
         <li>
           <strong>Try 3 guided cases.</strong>
           <p>
-            Walk through one harmless lump, one cancerous lump, and one normal (no lump) sample with
-            plain notes on what the model got right and wrong.{' '}
+            Walk through one benign (not cancer) lump, one cancerous lump, and one normal (no lump)
+            sample with plain notes on what the model got right and wrong.{' '}
             <Link to="/try">Open Try 3 cases</Link>
           </p>
         </li>

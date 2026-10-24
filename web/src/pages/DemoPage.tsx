@@ -3,7 +3,13 @@ import { Link, useSearchParams } from 'react-router-dom'
 import samplesManifest from '../data/samples.json'
 import externalSamples from '../data/external_samples.json'
 import GlossaryTerm from '../components/GlossaryTerm'
-import { MODEL_STATUS, MODEL_VERSION, SEG_THRESHOLD } from '../lib/constants'
+import {
+  MODEL_STATUS,
+  MODEL_VERSION,
+  NO_LUMP_GATE_DEFAULT_ON,
+  NO_LUMP_MASK_MAX_THR,
+  SEG_THRESHOLD,
+} from '../lib/constants'
 import {
   preloadModel,
   runInference,
@@ -97,6 +103,7 @@ export default function DemoPage() {
   const [useTta, setUseTta] = useState(false)
   const [tta, setTta] = useState<TtaResult | null>(null)
   const [showUncertainty, setShowUncertainty] = useState(false)
+  const [noLumpGate, setNoLumpGate] = useState(NO_LUMP_GATE_DEFAULT_ON)
   const [ttaStep, setTtaStep] = useState<string | null>(null)
   const [loadProgress, setLoadProgress] = useState<LoadProgress>({
     status: 'idle',
@@ -138,7 +145,12 @@ export default function DemoPage() {
 
       const mode = selectedMeta?.mask_src ? compareMode : 'model'
 
-      if (mode === 'model' || mode === 'both' || mode === 'difference') {
+      const softMax = result.softMask
+        ? result.softMask.reduce((m, v) => (v > m ? v : m), 0)
+        : 1
+      const hideNoLump = noLumpGate && softMax < NO_LUMP_MASK_MAX_THR
+
+      if (!hideNoLump && (mode === 'model' || mode === 'both' || mode === 'difference')) {
         if (mode !== 'difference') {
           const overlay = maskToOverlay(
             result.mask,
@@ -167,7 +179,18 @@ export default function DemoPage() {
       }
 
       if (mode === 'difference' && expertMask) {
-        drawDifference(ctx, result.mask, expertMask, result.maskH, result.maskW, result.displayWidth, result.displayHeight)
+        const modelMask = hideNoLump
+          ? new Float32Array(result.mask.length)
+          : result.mask
+        drawDifference(
+          ctx,
+          modelMask,
+          expertMask,
+          result.maskH,
+          result.maskW,
+          result.displayWidth,
+          result.displayHeight,
+        )
       }
 
       if (showUncertainty && tta) {
@@ -187,7 +210,7 @@ export default function DemoPage() {
         ctx.drawImage(heat, 0, 0, result.displayWidth, result.displayHeight)
       }
 
-      if (showMeasureOverlay && measurements?.diameterLine) {
+      if (!hideNoLump && showMeasureOverlay && measurements?.diameterLine) {
         const sx = result.displayWidth / result.maskW
         const sy = result.displayHeight / result.maskH
         const [[x0, y0], [x1, y1]] = measurements.diameterLine
@@ -220,6 +243,7 @@ export default function DemoPage() {
     showMeasureOverlay,
     showUncertainty,
     tta,
+    noLumpGate,
   ])
 
   async function loadExpert(meta: Sample | undefined, maskH: number, maskW: number) {
@@ -774,6 +798,15 @@ export default function DemoPage() {
             <label className="radio-inline">
               <input
                 type="checkbox"
+                checked={noLumpGate}
+                onChange={(e) => setNoLumpGate(e.target.checked)}
+                aria-label="Hide outline when the model looks like no lump"
+              />
+              Hide outline if likely no lump
+            </label>
+            <label className="radio-inline">
+              <input
+                type="checkbox"
                 checked={useTta}
                 onChange={(e) => setUseTta(e.target.checked)}
                 aria-label="Estimate uncertainty with eight image flips"
@@ -888,6 +921,12 @@ export default function DemoPage() {
               </p>
             </div>
           )}
+
+          <p className="muted tiny" style={{ marginTop: '0.5rem' }}>
+            {noLumpGate
+              ? `“Hide outline if likely no lump” is on. If the model’s strongest outline pixel is below ${NO_LUMP_MASK_MAX_THR.toFixed(2)}, the outline is hidden. Chosen on BUSI validation. Display only — the served model is unchanged.`
+              : '“Hide outline if likely no lump” is off. The raw model outline is shown.'}
+          </p>
 
           <details className="explainer heatmap-explainer">
             <summary>How to read this overlay</summary>

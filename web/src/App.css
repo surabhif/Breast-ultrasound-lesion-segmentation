@@ -1913,6 +1913,23 @@ td {
   color: var(--ink-soft);
 }
 
+.home-results-summary {
+  margin: 1.25rem 0 1.75rem;
+  max-width: var(--max);
+  margin-inline: auto;
+}
+
+.home-results-list {
+  margin: 0.5rem 0 0.75rem;
+  padding-left: 1.2rem;
+  color: var(--ink-soft);
+}
+
+.home-results-list li {
+  margin: 0.35rem 0;
+  line-height: 1.5;
+}
+
 a.linkedin-name {
   color: #297373;
   text-decoration-color: rgba(41, 115, 115, 0.45);

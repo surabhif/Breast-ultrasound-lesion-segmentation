@@ -1,20 +1,22 @@
-# Decision log
+# Project decisions log
 
-Dated owner decisions for this research demo.
+Dated owner decisions for this research demo. Older entries keep their labels so history stays searchable; new writing should prefer plain names over short codes.
 
 Research demo, not for clinical use.
 
 **Credit (site-facing wording):** Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).
 
+**DOI status:** Done. Version DOI **10.5281/zenodo.23286597** is live. Older prep notes that said “DOI placeholders” are historical.
+
 ---
 
-## 2026-10-10 — Phase 4 citation / preprint prep (D13–D15)
+## 2026-10-10 — Citation / preprint prep
 
 Prep only — **no tags, releases, or submissions** by agents.
 
-### D13 — Zenodo / CITATION freeze path
+### Zenodo / CITATION freeze path
 
-**Decided (prep):** Ship `.zenodo.json` (MIT, software, open) + enhanced `CITATION.cff` with preferred-citation and DOI placeholders. Owner follows `docs/ZENODO_STEPS.md` to connect Zenodo and mint a DOI from a GitHub Release at freeze. Agents must not create tags/releases.
+**Decided (prep):** Ship `.zenodo.json` (MIT, software, open) + enhanced `CITATION.cff` with preferred-citation. Owner follows `docs/ZENODO_STEPS.md` (how the DOI was made / release checklist) to connect Zenodo and mint a DOI from a GitHub Release at freeze. **Update:** DOI is minted (see top of this file).
 
 ### D14 — Preprint package
 
@@ -22,7 +24,7 @@ Prep only — **no tags, releases, or submissions** by agents.
 
 ### D15 — Dec 4 freeze checklist
 
-**Decided (prep):** Owner uses `docs/FREEZE_CHECKLIST.md` and draft `docs/RELEASE_NOTES_v1.0_DRAFT.md` for the freeze release. Served model remains **v1.0.0** unless MODEL_POLICY is newly satisfied. No clinician outreach.
+**Decided (prep):** Owner uses `docs/FREEZE_CHECKLIST.md` and `docs/RELEASE_NOTES_v1.0.md` for the freeze release. Served model remains **v1.0.0** unless the written swap rule is newly satisfied.
 
 ### D16 — Phase 4 v2 training attempt
 

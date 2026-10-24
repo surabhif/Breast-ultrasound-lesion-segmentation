@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
+import { HomeResultsSummary } from './home/HomeResultsSummary'
 import { LandingHero } from './home/LandingHero'
 import { LandingWhy } from './home/LandingWhy'
 import { LandingWhat } from './home/LandingWhat'
@@ -21,6 +22,7 @@ export default function HomePage() {
   return (
     <div className="home fade-in landing-home">
       <LandingHero />
+      <HomeResultsSummary />
       <LandingWhy />
       <LandingWhat />
       <LandingHow />
@@ -52,6 +54,10 @@ export default function HomePage() {
           </video>
           <figcaption className="muted tiny">
             Research demo only. Not for clinical use.{' '}
+            <a href={`${BASE}summary.pdf`} target="_blank" rel="noreferrer">
+              One-page summary (PDF)
+            </a>
+            {' · '}
             <a href={`${BASE}report.pdf`} target="_blank" rel="noreferrer">
               Research write-up (PDF)
             </a>

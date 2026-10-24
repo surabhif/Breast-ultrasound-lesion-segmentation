@@ -11,6 +11,14 @@ export const SEG_THRESHOLD = 0.4
 export const MIN_COMPONENT_AREA = 40
 export const CLS_THRESHOLD = 0.5
 
+/**
+ * Display-only no-lump gate (see results/no_lump_gate.json).
+ * Hide outline when peak soft-mask value is below this threshold.
+ * Chosen on BUSI validation fold 0; does not change served weights.
+ */
+export const NO_LUMP_MASK_MAX_THR = 0.96
+export const NO_LUMP_GATE_DEFAULT_ON = true
+
 /** Semantic model version for the currently shipped INT8 weights. */
 export const MODEL_VERSION = '1.0.0'
 

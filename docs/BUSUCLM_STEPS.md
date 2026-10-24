@@ -1,6 +1,6 @@
-# BUS-UCLM download steps (owner)
+# How to reproduce the BUS-UCLM test
 
-Secondary external set. The loader at `scripts/external/busuclm.py` reads `;`-separated `INFO.csv` (patient ID = file prefix; excludes Doppler/Combined), and **skips cleanly** when the archive is absent. Committed scores live in `results/external/busuclm.json` (owner local eval). Do **not** invent or commit raw images.
+Secondary outside set. The loader at `scripts/external/busuclm.py` reads `;`-separated `INFO.csv` (patient ID = file prefix; excludes Doppler/Combined), and **skips cleanly** when the archive is absent. Committed scores live in `results/external/busuclm.json` (owner local eval). Do **not** invent or commit raw images.
 
 Research evaluation only — not for clinical use.
 

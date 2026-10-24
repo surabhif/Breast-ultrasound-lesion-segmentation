@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
 import SurabhiNameLink from '../components/SurabhiNameLink'
 import { SITE } from '../lib/constants'
@@ -62,7 +63,8 @@ export default function PortfolioPage() {
         </h1>
         <p>
           High-school senior, Georgia. Three related research demos. Each is educational. Each is{' '}
-          <strong>not for clinical use</strong>.
+          <strong>not for clinical use</strong>. Draft personal note:{' '}
+          <Link to="/why">Why I built this</Link>.
         </p>
       </header>
 
@@ -110,6 +112,15 @@ export default function PortfolioPage() {
         <li>Keep disclaimers visible. Research demos stay research demos.</li>
         <li>Prefer open licenses and clear dataset attribution (CC BY outside sets; BUSI citation).</li>
       </ul>
+
+      <p>
+        Printable one-page summary for this project (results, credit, disclaimer, DOI, QR to the live
+        site):{' '}
+        <a href={`${import.meta.env.BASE_URL}summary.pdf`} target="_blank" rel="noreferrer">
+          summary.pdf
+        </a>
+        .
+      </p>
 
       <HowBuilt id="how-built" className="how-built" />
     </article>

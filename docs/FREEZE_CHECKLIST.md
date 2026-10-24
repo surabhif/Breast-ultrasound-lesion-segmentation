@@ -48,7 +48,7 @@ Research demo — not for clinical use. No clinician outreach (D4 revoked).
 ## Changelog & tags (owner-only)
 
 - [ ] `CHANGELOG.md` updated for freeze / Unreleased → v1.0.0 section
-- [ ] Draft release notes promoted from `docs/RELEASE_NOTES_v1.0_DRAFT.md` (remove DRAFT banner)
+- [ ] Release notes ready from `docs/RELEASE_NOTES_v1.0.md`
 - [ ] Owner creates tag + GitHub Release **only after** checklist items above are satisfied
 - [ ] Decision log entry noting freeze date, served model version, DOI ([10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597) minted)
 

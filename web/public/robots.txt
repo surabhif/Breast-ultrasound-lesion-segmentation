@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/sitemap.xml

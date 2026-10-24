@@ -14,16 +14,22 @@ type TourCase = {
   gotWrong: string
 }
 
+/** On /try, benign is labeled “benign (not cancer)” rather than “harmless”. */
+function tryLabelDisplay(label: string): string {
+  if (label === 'benign') return 'benign (not cancer)'
+  return classLabelDisplay(label)
+}
+
 const TOUR: TourCase[] = [
   {
     sampleId: 'busi-test-01',
-    stepLabel: 'Case 1 · Harmless lump',
+    stepLabel: 'Case 1 · Benign (not cancer) lump',
     whatHappened:
-      'A BUSI test image labeled harmless (benign). The expert drew a lump outline. The browser model is asked to outline the lump and give a harmless vs cancerous score.',
+      'A BUSI test image labeled benign (not cancer). The expert drew a lump outline. The browser model is asked to outline the lump and give a benign-vs-cancerous score.',
     gotRight:
-      'The predicted outline overlaps the expert outline a lot (Dice about 0.94 out of 1). The class score is very low, so the display leans harmless — matching the known label.',
+      'The predicted outline overlaps the expert outline a lot (Dice about 0.94 out of 1). The class score is very low, so the display leans benign (not cancer) — matching the known label.',
     gotWrong:
-      'Nothing major on this sample. Still research only: a good match on one image is not a diagnosis, and other harmless lumps can be harder.',
+      'Nothing major on this sample. Still research only: a good match on one image is not a diagnosis, and other benign lumps can be harder.',
   },
   {
     sampleId: 'busi-test-03',
@@ -43,7 +49,7 @@ const TOUR: TourCase[] = [
     gotRight:
       'The known label is clear: there is no lump to outline. Comparing against an empty expert mask makes mistakes easy to see.',
     gotWrong:
-      'The model still drew a non-empty outline (Dice near 0 when the expert is empty). The high “cancerous” score is not meaningful here — normal (no lump) is not the same as harmless. False outlines on normal scans are a known weak spot.',
+      'The model still drew a non-empty outline (Dice near 0 when the expert is empty). The high “cancerous” score is not meaningful here — normal (no lump) is not the same as benign (not cancer). False outlines on normal scans are a known weak spot.',
   },
 ]
 
@@ -60,7 +66,7 @@ export default function TryThreePage() {
         <p className="eyebrow">Guided tour</p>
         <h1>Try 3 cases</h1>
         <p>
-          Three public BUSI test samples — one harmless lump, one cancerous lump, and one{' '}
+          Three public BUSI test samples — one benign (not cancer) lump, one cancerous lump, and one{' '}
           <GlossaryTerm term="ultrasound">ultrasound</GlossaryTerm> with no lump. Each card says
           what the model got right and wrong using the saved browser-model scores. Research demo
           only. Not for clinical use.
@@ -87,13 +93,13 @@ export default function TryThreePage() {
                 <figure className="try-three-figure">
                   <img
                     src={`${base}${sample.src}`}
-                    alt={`BUSI sample ${sample.id}: ${classLabelDisplay(sample.label)} ultrasound`}
+                    alt={`BUSI sample ${sample.id}: ${tryLabelDisplay(sample.label)} ultrasound`}
                     width={320}
                     height={320}
                     loading={index === 0 ? 'eager' : 'lazy'}
                   />
                   <figcaption className="muted tiny">
-                    Known label: {classLabelDisplay(sample.label)}. Public BUSI test sample.
+                    Known label: {tryLabelDisplay(sample.label)}. Public BUSI test sample.
                   </figcaption>
                 </figure>
                 <div className="try-three-copy">
@@ -132,7 +138,7 @@ export default function TryThreePage() {
             <GlossaryTerm term="dice" /> — outline-overlap score
           </li>
           <li>
-            <GlossaryTerm term="auc" /> — ranking score for harmless vs cancerous
+            <GlossaryTerm term="auc" /> — ranking score for benign (not cancer) vs cancerous
           </li>
           <li>
             <GlossaryTerm term="birads" /> — radiology reporting scale (not model output)

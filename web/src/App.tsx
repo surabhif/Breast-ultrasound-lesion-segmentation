@@ -10,6 +10,7 @@ import BiradsPage from './pages/BiradsPage'
 import SurgeonsViewPage from './pages/SurgeonsViewPage'
 import PortfolioPage from './pages/PortfolioPage'
 import TryThreePage from './pages/TryThreePage'
+import WhyPage from './pages/WhyPage'
 import NavMenu from './components/NavMenu'
 import { MODEL_STATUS, SITE } from './lib/constants'
 import './App.css'
@@ -23,6 +24,7 @@ const TITLES: Record<string, string> = {
   '/bi-rads': `BI-RADS context · ${SITE.shortTitle}`,
   '/surgeons-view': `Surgeon's view · ${SITE.shortTitle}`,
   '/portfolio': `Portfolio · ${SITE.shortTitle}`,
+  '/why': `Why I built this · ${SITE.shortTitle}`,
   '/about': `About · ${SITE.shortTitle}`,
   '/model-card': `Model card · ${SITE.shortTitle}`,
 }
@@ -45,7 +47,7 @@ export default function App() {
           <p>
             Research demo. Not for clinical use. Never use it for diagnosis or care decisions.{' '}
             <NavLink to="/model-card#current-model" className="notice-learn-more">
-              Learn more
+              Read the model card
             </NavLink>
           </p>
         </div>
@@ -78,6 +80,7 @@ export default function App() {
                 label="About"
                 items={[
                   { to: '/about', label: 'About' },
+                  { to: '/why', label: 'Why I built this' },
                   { to: '/model-card', label: 'Model card' },
                   { to: '/portfolio', label: 'Portfolio' },
                 ]}
@@ -98,6 +101,7 @@ export default function App() {
           <Route path="/bi-rads" element={<BiradsPage />} />
           <Route path="/surgeons-view" element={<SurgeonsViewPage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
+          <Route path="/why" element={<WhyPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/model-card" element={<ModelCardPage />} />
         </Routes>
@@ -125,6 +129,11 @@ export default function App() {
               </li>
               <li>
                 <NavLink to="/portfolio">Portfolio</NavLink>
+              </li>
+              <li>
+                <a href={`${import.meta.env.BASE_URL}summary.pdf`} target="_blank" rel="noreferrer">
+                  One-page project summary (PDF)
+                </a>
               </li>
               <li>
                 <a href={`${import.meta.env.BASE_URL}report.pdf`} target="_blank" rel="noreferrer">

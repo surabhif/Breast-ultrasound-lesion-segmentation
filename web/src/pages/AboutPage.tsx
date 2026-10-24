@@ -35,7 +35,8 @@ export default function AboutPage() {
         This demo shows that gap in plain view.
       </p>
       <p>
-        For lexicon context see <Link to="/bi-rads">BI-RADS</Link>. For size and margin research
+        For a short first-person draft note see <Link to="/why">Why I built this</Link>. For
+        lexicon context see <Link to="/bi-rads">BI-RADS</Link>. For size and margin research
         framing see the <Link to="/surgeons-view">surgeon&apos;s-view</Link> page. More projects:{' '}
         <Link to="/portfolio">portfolio</Link>.
       </p>
