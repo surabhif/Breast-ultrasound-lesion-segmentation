@@ -5,10 +5,12 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 
 ## [Unreleased] — Phase 4 (2026-10-10)
 
+**In plain words:** Tried a larger multi-dataset model. Fair tests did not beat v1, so the site still serves **v1.0.0**. Also scored BUS-UCLM on a local copy and added demo upload / offline extras.
+
 ### Added
 
 - **v2 training pipeline** (`scripts/train_v2.py`, `scripts/apply_v2_swap.py`): BUSI train + patient-grouped BUS-BRA train; held-out BUS-BRA test; BrEaST external; ResNet-34 @ 256²; Dice+focal; stronger aug; optional Telea inpaint; ~3 seeds. Results comparison table on `/results` (`v2_experiment`). Swap only under MODEL_POLICY (D3) + INT8 ≤ ~25 MB.
-- Citation / freeze pack: `.zenodo.json`, enhanced `CITATION.cff`, `docs/ZENODO_STEPS.md`, `docs/RELEASE_NOTES_v1.0_DRAFT.md`, `docs/FREEZE_CHECKLIST.md` (no tags/releases by agents).
+- Citation / freeze pack: `.zenodo.json`, enhanced `CITATION.cff`, `docs/ZENODO_STEPS.md`, `docs/RELEASE_NOTES_v1.0.md`, `docs/FREEZE_CHECKLIST.md`.
 - Preprint pack: `paper/` LaTeX (6–8 pp) with auto-pulled numbers + drift check; `docs/SUBMISSION_GUIDE.md` (JEI vs arXiv). No submissions.
 - BUS-UCLM: hardened loader (`INFO.csv` `;` parse, patient prefix, Doppler/Combined exclude; RGB `load_mask_binary` keeps pure-red masks) + `docs/BUSUCLM_STEPS.md`; eval skips cleanly when archive absent.
 - **BUS-UCLM scored** (owner local copy → `results/external/busuclm.json`): n=640 / 38 pts; all-image Dice **0.386**, lesion Dice **0.679** [0.593, 0.755], AUC **0.780**; normal FPs **320/413**. Merged into Results external table.
@@ -19,6 +21,8 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 - Served weights remain **v1.0.0**. Fair Phase-4 swap (D17): seed-mean clean Dice **0.614 ± 0.012** vs v1 **0.623** (Δ −0.009, paired bootstrap 95% CI [−0.022, +0.002]) — **mean fails**, so no promotion. Only seed 42 individually passed; seeds 43/44 failed clean and/or AUC. BUS-BRA same-source held-out improved a lot (v2 mean **0.894** vs v1-on-same-split **0.713**); BrEaST external mean **0.672** vs v1 **0.627**. INT8 ~21.3 MB. See Results → Phase 4 comparison and `results/v2_experiment.json`.
 
 ## [Phase 3] — 2026-10-08
+
+**In plain words:** Added BI-RADS and surgeon’s-view pages, a research PDF, portfolio, walkthrough video, and citation/DOI surfaces. Served model stayed **v1.0.0**.
 
 ### Added
 
@@ -40,6 +44,8 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 - Model **v1.0.0** unchanged; Dec 4 freeze not tagged yet.
 
 ## [Phase 2] — 2026-10-08
+
+**In plain words:** Studied caliper erasure and flip-based uncertainty. Outside-set scores did not justify swapping the served model, so **v1.0.0** stayed.
 
 ### Removed
 
@@ -74,6 +80,8 @@ E-a: erasing markers did **not** drop flagged Dice toward clean (flagged Dice st
 
 ## [Phase 1] — 2026-10-08
 
+**In plain words:** Scored the frozen browser model on outside public datasets and published the honest drop in ranking scores. Served model stayed **v1.0.0**.
+
 ### Added
 
 - External validation of frozen **v1.0.0 INT8** on **BUS-BRA** and **BrEaST** (`results/external/*`); BUS-UCLM later scored on owner local copy (see Unreleased).
@@ -98,6 +106,8 @@ E-a: erasing markers did **not** drop flagged Dice toward clean (flagged Dice st
 | BrEaST | 0.627 | 0.629 | 0.721 |
 
 ## [model-v1.0.0] — 2026-10-08
+
+**In plain words:** First served browser model (v1.0.0), with matching test scores, CI, and a written plan for outside checks.
 
 ### Added
 
