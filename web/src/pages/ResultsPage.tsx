@@ -4,6 +4,7 @@ import { MODEL_VERSION } from '../lib/constants'
 import { PLAIN_ABSTRACT } from '../lib/plainAbstract'
 import { classLabelDisplay } from '../lib/sampleMeta'
 import ThresholdExplorer from '../components/ThresholdExplorer'
+import GlossaryTerm from '../components/GlossaryTerm'
 
 type MetricsBlock = {
   test_dice: number
@@ -336,10 +337,11 @@ export default function ResultsPage() {
           </details>
           {meaningfulDiff && (
             <p>
-              With matched preprocessing, overall outline-overlap score (Dice) on the browser model
-              is {fmt(Math.abs(diceDelta ?? 0), 3)} {(diceDelta ?? 0) < 0 ? 'lower' : 'higher'}{' '}
-              than training ({fmt(m.test_dice)} → {fmt(served.test_dice)} out of 1). Harmless vs
-              cancerous AUC moves {fmt(Math.abs(aucDelta ?? 0), 3)}{' '}
+              With matched preprocessing, overall outline-overlap score (
+              <GlossaryTerm term="dice">Dice</GlossaryTerm>) on the browser model is{' '}
+              {fmt(Math.abs(diceDelta ?? 0), 3)} {(diceDelta ?? 0) < 0 ? 'lower' : 'higher'} than
+              training ({fmt(m.test_dice)} → {fmt(served.test_dice)} out of 1). Harmless vs cancerous{' '}
+              <GlossaryTerm term="auc">AUC</GlossaryTerm> moves {fmt(Math.abs(aucDelta ?? 0), 3)}{' '}
               {(aucDelta ?? 0) < 0 ? 'lower' : 'higher'} ({fmt(m.cls_roc_auc)} →{' '}
               {fmt(served.cls_roc_auc)}). False lump outlines on normal (no lump) images:{' '}
               {served.normal_false_positive_count}/{served.normal_n} (same rate as training).
@@ -356,7 +358,9 @@ export default function ResultsPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td>Test Dice (all)</td>
+                  <td>
+                    Test <GlossaryTerm term="dice">Dice</GlossaryTerm> (all)
+                  </td>
                   <td>
                     {fmt(m.test_dice)} [{fmt(m.test_dice_bootstrap_95ci?.[0])},{' '}
                     {fmt(m.test_dice_bootstrap_95ci?.[1])}]
@@ -367,7 +371,10 @@ export default function ResultsPage() {
                   </td>
                 </tr>
                 <tr>
-                  <td>Lesion Dice</td>
+                  <td>
+                    <GlossaryTerm term="lesion">Lesion</GlossaryTerm>{' '}
+                    <GlossaryTerm term="dice">Dice</GlossaryTerm>
+                  </td>
                   <td>
                     {fmt(m.lesion_dice)} [{fmt(m.lesion_dice_bootstrap_95ci?.[0])},{' '}
                     {fmt(m.lesion_dice_bootstrap_95ci?.[1])}]
@@ -383,7 +390,9 @@ export default function ResultsPage() {
                   <td>{fmt(served.test_iou)}</td>
                 </tr>
                 <tr>
-                  <td>Harmless vs cancerous (AUC)</td>
+                  <td>
+                    Harmless vs cancerous (<GlossaryTerm term="auc">AUC</GlossaryTerm>)
+                  </td>
                   <td>{fmt(m.cls_roc_auc)}</td>
                   <td>{fmt(served.cls_roc_auc)}</td>
                 </tr>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
+import GlossaryTerm from '../components/GlossaryTerm'
 
 /**
  * Plain-language BI-RADS ultrasound context.
@@ -73,10 +74,14 @@ export default function BiradsPage() {
     <article className="panel prose fade-in">
       <header className="page-intro">
         <p className="landing-eyebrow">Clinical context · educational only</p>
-        <h1>BI-RADS and this model</h1>
+        <h1>
+          <GlossaryTerm term="birads">BI-RADS</GlossaryTerm> and this model
+        </h1>
         <p>
-          What ultrasound BI-RADS categories and descriptors mean in plain language, and why this
-          demo&apos;s score is <strong>not</strong> a BI-RADS assessment.
+          What <GlossaryTerm term="ultrasound">ultrasound</GlossaryTerm>{' '}
+          <GlossaryTerm term="birads">BI-RADS</GlossaryTerm> categories and descriptors mean in
+          plain language, and why this demo&apos;s score is <strong>not</strong> a BI-RADS
+          assessment.
         </p>
       </header>
 
@@ -147,7 +152,10 @@ export default function BiradsPage() {
       <ul>
         {DESCRIPTORS.map((d) => (
           <li key={d.group}>
-            <strong>{d.group}:</strong> {d.items}
+            <strong>
+              {d.group === 'Margin' ? <GlossaryTerm term="margin">Margin</GlossaryTerm> : d.group}:
+            </strong>{' '}
+            {d.items}
           </li>
         ))}
       </ul>

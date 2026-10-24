@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import samplesManifest from '../data/samples.json'
 import externalSamples from '../data/external_samples.json'
+import GlossaryTerm from '../components/GlossaryTerm'
 import { MODEL_STATUS, MODEL_VERSION, SEG_THRESHOLD } from '../lib/constants'
 import {
   preloadModel,
@@ -371,8 +372,11 @@ export default function DemoPage() {
       <header className="page-intro">
         <h1>Try the detector</h1>
         <p>
-          Choose a BUSI gallery sample or a CC BY BrEaST sample, or upload or capture your own
-          ultrasound. The model runs in your browser. Research demo only. Not for clinical use.
+          Choose a BUSI gallery sample or a CC BY BrEaST sample, or upload or capture your own{' '}
+          <GlossaryTerm term="ultrasound">ultrasound</GlossaryTerm>. The model runs in your browser
+          and draws a lump <GlossaryTerm term="outline">outline</GlossaryTerm>. Research demo only.
+          Not for clinical use. New here?{' '}
+          <Link to="/try">Try 3 guided cases</Link> first.
         </p>
       </header>
 
@@ -571,7 +575,8 @@ export default function DemoPage() {
             </div>
           ) : (
             <p className="muted tiny">
-              Expert compare and outline-overlap score (Dice) are hidden for uploads (no expert
+              Expert compare and outline-overlap score (
+              <GlossaryTerm term="dice">Dice</GlossaryTerm>) are hidden for uploads (no expert
               outline).
             </p>
           )}
@@ -698,7 +703,9 @@ export default function DemoPage() {
           </label>
 
           <label className="opacity-control">
-            <span id="seg-thr-label">Mask threshold {segThr.toFixed(2)}</span>
+            <span id="seg-thr-label">
+              Mask <GlossaryTerm term="threshold">threshold</GlossaryTerm> {segThr.toFixed(2)}
+            </span>
             <input
               type="range"
               min={0.1}
