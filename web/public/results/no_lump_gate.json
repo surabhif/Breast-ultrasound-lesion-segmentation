@@ -1,0 +1,54 @@
+{
+  "label": "Display-only no-lump outline gate (does not change served weights)",
+  "disclaimer": "Research demo. Not for clinical use. Display option only.",
+  "selection": {
+    "split": "BUSI validation fold 0",
+    "rule": "Hide outline when peak soft-mask value is below a threshold. Chosen to clear the most normal false outlines on validation without dropping lesion Dice by more than 0.01.",
+    "seg_threshold": 0.4,
+    "min_component_area": 40,
+    "mask_max_thr": 0.96,
+    "default_on": true,
+    "val_lesion_dice": 0.8234447836373194,
+    "val_lesion_dice_drop": 0.005883849955770848,
+    "val_normal_fp": 11,
+    "val_normal_n": 23,
+    "val_fp_cleared": 3
+  },
+  "busi_validation": {
+    "n": 134,
+    "lesion_dice_before": 0.8293286335930903,
+    "normal_fp_before": 14,
+    "normal_n": 23,
+    "lesion_dice_after": 0.8234447836373194,
+    "normal_fp_after": 11
+  },
+  "busi_test": {
+    "n": 112,
+    "dice_all_before": 0.6972011494235116,
+    "dice_all_after": 0.7095602759058472,
+    "lesion_dice_before": 0.7643712765714284,
+    "lesion_dice_after": 0.7577500095564371,
+    "lesion_dice_drop": 0.006621267014991328,
+    "normal_fp_before": 12,
+    "normal_fp_after": 10,
+    "normal_n": 19
+  },
+  "external": {
+    "busbra": {
+      "n": 1875,
+      "n_normal": 0,
+      "note": "Outside per-image files lack soft-mask max, so this confidence gate was not re-applied case-by-case without the image archive.",
+      "lesion_dice_before": 0.7136202288207832,
+      "normal_fp_before": 0
+    },
+    "breast": {
+      "n": 256,
+      "n_normal": 4,
+      "note": "Outside per-image files lack soft-mask max, so this confidence gate was not re-applied case-by-case without the image archive.",
+      "lesion_dice_before": 0.6285471207148108,
+      "normal_fp_before": 2
+    }
+  },
+  "busuclm_note": "BUS-UCLM per-image soft masks are not in the repo, so this display gate was not re-scored there. Aggregate false outlines on normal scans remain 320/413 without applying the gate.",
+  "plain_summary": "Hide the outline when the model\u2019s strongest outline pixel is below 0.960 (chosen on BUSI validation). Default on. Test lesion Dice drop within 0.01; toggle defaults on."
+}

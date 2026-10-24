@@ -227,9 +227,46 @@ type ScoresPayload = {
   }[]
 }
 
+type NoLumpGate = {
+  plain_summary?: string
+  busuclm_note?: string
+  selection?: {
+    mask_max_thr?: number
+    default_on?: boolean
+    val_fp_cleared?: number
+  }
+  busi_test?: {
+    lesion_dice_before?: number
+    lesion_dice_after?: number
+    lesion_dice_drop?: number
+    normal_fp_before?: number
+    normal_fp_after?: number
+    normal_n?: number
+    dice_all_before?: number
+    dice_all_after?: number
+  }
+  busi_validation?: {
+    normal_fp_before?: number
+    normal_fp_after?: number
+    normal_n?: number
+    lesion_dice_before?: number
+    lesion_dice_after?: number
+  }
+  external?: Record<
+    string,
+    {
+      note?: string
+      lesion_dice_before?: number
+      normal_fp_before?: number
+      n_normal?: number
+    }
+  >
+}
+
 export default function ResultsPage() {
   const [data, setData] = useState<Metrics | null>(null)
   const [scores, setScores] = useState<ScoresPayload | null>(null)
+  const [noLumpGate, setNoLumpGate] = useState<NoLumpGate | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -244,6 +281,10 @@ export default function ResultsPage() {
     fetch(`${import.meta.env.BASE_URL}results/scores.json`)
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => j && setScores(j))
+      .catch(() => {})
+    fetch(`${import.meta.env.BASE_URL}results/no_lump_gate.json`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => j && setNoLumpGate(j))
       .catch(() => {})
   }, [])
 
@@ -980,6 +1021,67 @@ export default function ResultsPage() {
           </div>
           {data.inpaint_experiment.before_after_note && (
             <p className="muted tiny">{data.inpaint_experiment.before_after_note}</p>
+          )}
+        </section>
+      )}
+
+      {noLumpGate?.busi_test && (
+        <section className="panel" style={{ marginTop: '1rem' }} id="no-lump-gate">
+          <h2 className="section-title">Hide outline if likely no lump</h2>
+          <p>
+            Display option only. The served model stays v1.0.0. When this switch is on (Demo), the
+            outline is hidden if the model&apos;s strongest outline pixel is below{' '}
+            {fmt(noLumpGate.selection?.mask_max_thr, 2)}. The cut-off was chosen on BUSI validation
+            (fold 0).
+          </p>
+          <p>{noLumpGate.plain_summary}</p>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Set</th>
+                  <th>Lump-only Dice before</th>
+                  <th>Lump-only Dice after</th>
+                  <th>False outlines on normal (no lump)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>BUSI validation (fold 0)</td>
+                  <td>{fmt(noLumpGate.busi_validation?.lesion_dice_before)}</td>
+                  <td>{fmt(noLumpGate.busi_validation?.lesion_dice_after)}</td>
+                  <td>
+                    {noLumpGate.busi_validation?.normal_fp_before}/
+                    {noLumpGate.busi_validation?.normal_n} →{' '}
+                    {noLumpGate.busi_validation?.normal_fp_after}/
+                    {noLumpGate.busi_validation?.normal_n}
+                  </td>
+                </tr>
+                <tr>
+                  <td>BUSI held-out test</td>
+                  <td>{fmt(noLumpGate.busi_test.lesion_dice_before)}</td>
+                  <td>{fmt(noLumpGate.busi_test.lesion_dice_after)}</td>
+                  <td>
+                    {noLumpGate.busi_test.normal_fp_before}/{noLumpGate.busi_test.normal_n} →{' '}
+                    {noLumpGate.busi_test.normal_fp_after}/{noLumpGate.busi_test.normal_n}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Held-out lump-only Dice drop:{' '}
+            {fmt(noLumpGate.busi_test.lesion_dice_drop)} (limit 0.01). Overall Dice{' '}
+            {fmt(noLumpGate.busi_test.dice_all_before)} → {fmt(noLumpGate.busi_test.dice_all_after)}{' '}
+            out of 1. Default:{' '}
+            {noLumpGate.selection?.default_on ? 'on' : 'off'}.
+          </p>
+          {noLumpGate.busuclm_note && <p className="muted tiny">{noLumpGate.busuclm_note}</p>}
+          {noLumpGate.external && (
+            <p className="muted tiny">
+              BUS-BRA / BrEaST: outside per-image files do not include soft-mask peaks, so this
+              confidence gate was not re-scored case-by-case without those image archives.
+            </p>
           )}
         </section>
       )}
