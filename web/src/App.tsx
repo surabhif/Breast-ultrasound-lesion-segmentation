@@ -9,6 +9,7 @@ import MistakesPage from './pages/MistakesPage'
 import BiradsPage from './pages/BiradsPage'
 import SurgeonsViewPage from './pages/SurgeonsViewPage'
 import PortfolioPage from './pages/PortfolioPage'
+import TryThreePage from './pages/TryThreePage'
 import WhyPage from './pages/WhyPage'
 import NavMenu from './components/NavMenu'
 import { MODEL_STATUS, SITE } from './lib/constants'
@@ -17,6 +18,7 @@ import './App.css'
 const TITLES: Record<string, string> = {
   '/': SITE.title,
   '/demo': `Try the detector · ${SITE.shortTitle}`,
+  '/try': `Try 3 cases · ${SITE.shortTitle}`,
   '/results': `Results · ${SITE.shortTitle}`,
   '/model-errors': `Model Errors explorer · ${SITE.shortTitle}`,
   '/bi-rads': `BI-RADS context · ${SITE.shortTitle}`,
@@ -63,11 +65,13 @@ export default function App() {
                 Home
               </NavLink>
               <NavLink to="/demo">Demo</NavLink>
+              <NavLink to="/try">Try 3</NavLink>
               <NavLink to="/results">Results</NavLink>
               <NavLink to="/model-errors">Model Errors</NavLink>
               <NavMenu
                 label="Learn"
                 items={[
+                  { to: '/try', label: 'Try 3 cases' },
                   { to: '/bi-rads', label: 'BI-RADS' },
                   { to: '/surgeons-view', label: "Surgeon's view" },
                 ]}
@@ -90,6 +94,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/demo" element={<DemoPage />} />
+          <Route path="/try" element={<TryThreePage />} />
           <Route path="/results" element={<ResultsPage />} />
           <Route path="/model-errors" element={<MistakesPage />} />
           <Route path="/mistakes" element={<Navigate to="/model-errors" replace />} />

@@ -37,6 +37,7 @@ const routes = [
   'results',
   'about',
   'demo',
+  'try',
   'model-card',
   'model-errors',
   'mistakes',

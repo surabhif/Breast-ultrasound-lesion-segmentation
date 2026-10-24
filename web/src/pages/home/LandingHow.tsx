@@ -29,6 +29,14 @@ export function LandingHow() {
           </p>
         </li>
         <li>
+          <strong>Try 3 guided cases.</strong>
+          <p>
+            Walk through one benign (not cancer) lump, one cancerous lump, and one normal (no lump)
+            sample with plain notes on what the model got right and wrong.{' '}
+            <Link to="/try">Open Try 3 cases</Link>
+          </p>
+        </li>
+        <li>
           <strong>Open “Try the detector.”</strong>
           <p>
             The model downloads once (~{MODEL_STATUS.sizeHintMb}&nbsp;MB) with a progress bar.
@@ -65,7 +73,10 @@ export function LandingHow() {
       </p>
 
       <div className="landing-actions">
-        <Link className="btn" to="/demo">
+        <Link className="btn" to="/try">
+          Try 3 cases
+        </Link>
+        <Link className="btn secondary" to="/demo">
           Try the detector
         </Link>
         <button type="button" className="btn secondary" onClick={() => goToExplainerStep()}>

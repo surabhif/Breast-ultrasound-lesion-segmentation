@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
+import GlossaryTerm from '../components/GlossaryTerm'
 import measurement from '../data/measurement_agreement.json'
 
 const BASE = import.meta.env.BASE_URL
@@ -41,7 +42,10 @@ export default function SurgeonsViewPage() {
     <article className="panel prose fade-in">
       <header className="page-intro">
         <p className="landing-eyebrow">Surgeon&apos;s-view · research framing</p>
-        <h1>Lump size, margins, and what models can tell you</h1>
+        <h1>
+          Lump size, <GlossaryTerm term="margin">margins</GlossaryTerm>, and what models can tell
+          you
+        </h1>
         <p>
           Why surgeons care about size and margins, and why this demo&apos;s pixel measurements are
           research illustrations, not operative planning.
@@ -66,7 +70,9 @@ export default function SurgeonsViewPage() {
         (pathologic tumor size). This page does not reproduce AJCC tables.
       </p>
 
-      <h2>Why margins matter</h2>
+      <h2>
+        Why <GlossaryTerm term="margin">margins</GlossaryTerm> matter
+      </h2>
       <p>
         For invasive breast cancer treated with breast-conserving surgery, a widely cited consensus
         (SSO–ASTRO) supports &quot;no ink on tumor&quot; as an adequate margin in appropriately
