@@ -8,8 +8,8 @@ import {
   SEG_THRESHOLD,
   ensureModelManifest,
 } from './lib/constants'
-import { runInference } from './lib/inference'
 import { postprocessMask, removeSmallComponents } from './lib/morphology'
+import { initTheme } from './lib/theme'
 import './index.css'
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || ''
@@ -22,19 +22,40 @@ declare global {
       SEG_THRESHOLD: number
       MIN_COMPONENT_AREA: number
       ensureModelManifest: typeof ensureModelManifest
-      runInference: typeof runInference
+      // Kept loose so main never statically imports the ONNX client module.
+      runInference: (
+        source: string | File,
+        onProgress?: (p: unknown) => void,
+        opts?: { segThreshold?: number },
+      ) => Promise<{
+        clsProb: number
+        maskMean: number
+        mask: Float32Array
+        maskH: number
+        maskW: number
+      }>
       postprocessMask: typeof postprocessMask
       removeSmallComponents: typeof removeSmallComponents
     }
   }
 }
 
+// Apply theme before first paint of React tree (respects system + saved choice).
+initTheme()
+
+/**
+ * Parity hooks stay available on every route, but the ONNX client is loaded
+ * only when runInference is first called (Demo / Try / parity tests).
+ */
 window.__BUSI_PARITY__ = {
   MODEL_VERSION,
   SEG_THRESHOLD,
   MIN_COMPONENT_AREA,
   ensureModelManifest,
-  runInference,
+  runInference: async (source, onProgress, opts) => {
+    const { runInference } = await import('./lib/inference')
+    return runInference(source, onProgress, opts)
+  },
   postprocessMask,
   removeSmallComponents,
 }

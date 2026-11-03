@@ -302,7 +302,7 @@ export default function ResultsPage() {
 
   if (!data) {
     return (
-      <article className="panel prose fade-in">
+      <article className="panel prose fade-in results-loading" aria-busy="true">
         <h1>Results</h1>
         <p className="muted">Loading metrics…</p>
       </article>
@@ -1017,6 +1017,10 @@ export default function ResultsPage() {
               <img
                 src={`${import.meta.env.BASE_URL}samples/external/breast_03_with_synthetic_calipers.png`}
                 alt="BrEaST sample with synthetic calipers"
+                width={480}
+                height={480}
+                loading="lazy"
+                decoding="async"
               />
               <figcaption className="muted tiny">Before (synthetic calipers · digitally altered)</figcaption>
             </figure>
@@ -1024,6 +1028,10 @@ export default function ResultsPage() {
               <img
                 src={`${import.meta.env.BASE_URL}samples/external/breast_03_calipers_inpainted.png`}
                 alt="Same sample after Telea inpainting"
+                width={480}
+                height={480}
+                loading="lazy"
+                decoding="async"
               />
               <figcaption className="muted tiny">After Telea inpaint · digitally altered · CC BY BrEaST</figcaption>
             </figure>
@@ -1129,7 +1137,14 @@ export default function ResultsPage() {
           <div className="gallery-grid">
             {data.mistakes.map((mrow) => (
               <figure key={mrow.src} className="gallery-item static">
-                <img src={`${import.meta.env.BASE_URL}${mrow.src}`} alt={`Failure ${mrow.case_id}`} />
+                <img
+                  src={`${import.meta.env.BASE_URL}${mrow.src}`}
+                  alt={`Failure ${mrow.case_id}`}
+                  width={160}
+                  height={160}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <figcaption>
                   <span className={`badge ${mrow.label}`}>
                     {classLabelDisplay(mrow.label)}
