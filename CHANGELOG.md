@@ -3,6 +3,27 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
+## [Unreleased] — Five site upgrades (2026-11-03)
+
+**In plain words:** Five small site upgrades on top of the Model Errors explorer and demo threshold controls. The served model stays **v1.0.0** — no weight, default threshold (including the 0.96 no-lump display gate), or reported-metric changes.
+
+### Added
+
+- **Where the model struggles** — short gallery of 6 real BUSI held-out hard cases (silhouettes from `mistakes.json`) on Model Errors, linked from Results.
+- **Loading tips** — about eight plain one-line facts rotate while the model downloads the first time.
+- **Print stylesheet** — Results, About, Why, and the demo result print without menus/buttons/sliders; black text on white; disclaimer and credit line kept.
+
+### Changed
+
+- Demo mask cutoff control is now a plain **Tight / Loose** outline slider (same default 0.4 cut-off; redraws from the soft mask). Looser = includes areas the model is less sure about.
+- Phone layout polish at ~360×740 and ~390×844: larger tap targets, wrapping, horizontally scrollable tables.
+
+### Reused (not rebuilt)
+
+- Model Errors explorer + `mistakes.json` / silhouettes
+- Demo `rethreshold` / `SEG_THRESHOLD` / no-lump gate constants
+- Existing credit line, disclaimer, LinkedIn name link, and dark-mode tokens
+
 ## [Unreleased] — Site UX upgrades (2026-11-03)
 
 **In plain words:** Six small site upgrades. The served model stays **v1.0.0** — no weight, threshold, or reported-metric changes.

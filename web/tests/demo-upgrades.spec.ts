@@ -32,10 +32,12 @@ test.describe('Demo UX upgrades', () => {
     expect(after === 'light' || after === 'dark').toBeTruthy()
 
     // Axe both themes so dark teal surfaces stay AA-readable.
+    // Wait after each switch so button color transitions finish (axe samples pixels).
     for (const mode of ['light', 'dark'] as const) {
       const current = await page.locator('html').getAttribute('data-theme')
       if (current !== mode) await theme.click()
       await expect(page.locator('html')).toHaveAttribute('data-theme', mode)
+      await page.waitForTimeout(250)
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
         .analyze()
