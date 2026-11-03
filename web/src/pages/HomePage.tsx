@@ -39,7 +39,9 @@ export default function HomePage() {
           <video
             controls
             playsInline
-            preload="metadata"
+            preload="none"
+            width={1280}
+            height={720}
             poster={`${BASE}video/walkthrough-poster.jpg`}
             aria-label="Captioned walkthrough of the research demo site"
           >

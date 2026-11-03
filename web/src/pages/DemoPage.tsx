@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import samplesManifest from '../data/samples.json'
 import externalSamples from '../data/external_samples.json'
+import ExampleImagePicker from '../components/ExampleImagePicker'
 import GlossaryTerm from '../components/GlossaryTerm'
 import {
   MODEL_STATUS,
@@ -26,6 +27,7 @@ import {
   canvasToJpegBytes,
   downloadResultPdf,
 } from '../lib/resultPdf'
+import { buildResultPng, downloadResultPng } from '../lib/resultPng'
 import { overallUncertaintySummary, type TtaResult } from '../lib/tta'
 import {
   classLabelDisplay,
@@ -60,6 +62,7 @@ type Sample = {
 }
 
 type CompareMode = 'model' | 'expert' | 'both' | 'difference'
+type LayoutMode = 'overlay' | 'side-by-side'
 
 function formatPct(p: number) {
   return `${(p * 100).toFixed(1)}%`
@@ -113,7 +116,10 @@ export default function DemoPage() {
   })
   const [dragOver, setDragOver] = useState(false)
   const [pdfBusy, setPdfBusy] = useState(false)
+  const [pngBusy, setPngBusy] = useState(false)
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay')
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const originalCanvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
   const objectUrlRef = useRef<string | null>(null)
@@ -142,6 +148,17 @@ export default function DemoPage() {
       canvas.height = result.displayHeight
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+      if (originalCanvasRef.current) {
+        const oCanvas = originalCanvasRef.current
+        const oCtx = oCanvas.getContext('2d')
+        if (oCtx) {
+          oCanvas.width = result.displayWidth
+          oCanvas.height = result.displayHeight
+          oCtx.clearRect(0, 0, oCanvas.width, oCanvas.height)
+          oCtx.drawImage(img, 0, 0, oCanvas.width, oCanvas.height)
+        }
+      }
 
       const mode = selectedMeta?.mask_src ? compareMode : 'model'
 
@@ -244,6 +261,7 @@ export default function DemoPage() {
     showUncertainty,
     tta,
     noLumpGate,
+    layoutMode,
   ])
 
   async function loadExpert(meta: Sample | undefined, maskH: number, maskW: number) {
@@ -391,6 +409,28 @@ export default function DemoPage() {
     }
   }
 
+  async function handleDownloadPng() {
+    if (!result || !canvasRef.current) return
+    setPngBusy(true)
+    setError(null)
+    try {
+      const lean =
+        result.clsProb >= clsThr ? 'leans cancerous' : 'leans benign'
+      const blob = await buildResultPng({
+        previewCanvas: canvasRef.current,
+        clsProb: result.clsProb,
+        leanLabel: lean,
+        modelVersion: MODEL_VERSION,
+      })
+      downloadResultPng(blob, `busi-result-${selectedId ?? 'upload'}.png`)
+    } catch (err) {
+      console.error(err)
+      setError(err instanceof Error ? err.message : 'PNG export failed')
+    } finally {
+      setPngBusy(false)
+    }
+  }
+
   return (
     <div className="fade-in demo-page">
       <header className="page-intro">
@@ -427,35 +467,13 @@ export default function DemoPage() {
 
       <div className="demo-layout">
         <section className="panel">
-          <h2 className="section-title">Sample gallery</h2>
-          <p className="muted" style={{ marginTop: 0 }}>
-            {samplesManifest.disclaimer}
-          </p>
-          <div className="gallery-grid">
-            {samplesManifest.samples.map((sample) => (
-              <button
-                key={sample.id}
-                type="button"
-                className={`gallery-item${selectedId === sample.id ? ' selected' : ''}`}
-                onClick={() => analyze(`${import.meta.env.BASE_URL}${sample.src}`, sample)}
-                disabled={busy || loadProgress.status === 'error'}
-                aria-pressed={selectedId === sample.id}
-              >
-                <img
-                  src={`${import.meta.env.BASE_URL}${sample.src}`}
-                  alt={`${sample.label} ultrasound sample`}
-                  width={120}
-                  height={120}
-                />
-                <figcaption>
-                  <span className={`badge ${sample.label}`}>
-                    {classLabelDisplay(sample.label)}
-                  </span>
-                  {sample.annotation_flag ? ' · flagged marks' : ''}
-                </figcaption>
-              </button>
-            ))}
-          </div>
+          <ExampleImagePicker
+            selectedId={selectedId}
+            disabled={busy || loadProgress.status === 'error'}
+            onPick={(sample) =>
+              void analyze(`${import.meta.env.BASE_URL}${sample.src}`, sample)
+            }
+          />
 
           <h3 className="section-title" style={{ marginTop: '1.25rem' }}>
             CC BY external (BrEaST)
@@ -605,11 +623,38 @@ export default function DemoPage() {
             </p>
           )}
 
-          <div className="viewer">
+          <div
+            className="compare-toggle layout-toggle"
+            role="group"
+            aria-label="Overlay or side-by-side view"
+          >
+            <button
+              type="button"
+              className={layoutMode === 'overlay' ? 'active' : ''}
+              aria-pressed={layoutMode === 'overlay'}
+              onClick={() => setLayoutMode('overlay')}
+              disabled={!result}
+            >
+              Overlay
+            </button>
+            <button
+              type="button"
+              className={layoutMode === 'side-by-side' ? 'active' : ''}
+              aria-pressed={layoutMode === 'side-by-side'}
+              onClick={() => setLayoutMode('side-by-side')}
+              disabled={!result}
+            >
+              Side by side
+            </button>
+          </div>
+
+          <div
+            className={`viewer${layoutMode === 'side-by-side' && result ? ' viewer-split' : ''}`}
+          >
             {!sourceUrl && !busy && (
               <div className="viewer-empty">
                 <p>No image selected yet.</p>
-                <p className="muted">Click a gallery sample, upload, or capture an image.</p>
+                <p className="muted">Click an example scan, upload, or capture an image.</p>
               </div>
             )}
             {busy && !result && (
@@ -617,7 +662,20 @@ export default function DemoPage() {
                 <p>Running model…</p>
               </div>
             )}
-            {sourceUrl && <canvas ref={canvasRef} aria-label="Ultrasound with lesion overlay" />}
+            {sourceUrl && layoutMode === 'side-by-side' && result && (
+              <figure className="viewer-pane">
+                <canvas ref={originalCanvasRef} aria-label="Original ultrasound scan" />
+                <figcaption className="viewer-caption">Original</figcaption>
+              </figure>
+            )}
+            {sourceUrl && (
+              <figure className={layoutMode === 'side-by-side' && result ? 'viewer-pane' : undefined}>
+                <canvas ref={canvasRef} aria-label="Ultrasound with lesion overlay" />
+                {layoutMode === 'side-by-side' && result && (
+                  <figcaption className="viewer-caption">With outline</figcaption>
+                )}
+              </figure>
+            )}
           </div>
 
           <div className="score-card" aria-live="polite">
@@ -911,13 +969,22 @@ export default function DemoPage() {
               <button
                 type="button"
                 className="btn secondary"
+                disabled={pngBusy || busy}
+                onClick={() => void handleDownloadPng()}
+              >
+                {pngBusy ? 'Preparing PNG…' : 'Download result image'}
+              </button>
+              <button
+                type="button"
+                className="btn secondary"
                 disabled={pdfBusy || busy}
                 onClick={() => void handleDownloadPdf()}
               >
                 {pdfBusy ? 'Preparing PDF…' : 'Download result PDF'}
               </button>
               <p className="muted tiny" style={{ margin: 0 }}>
-                One-page client-side PDF (preview + scores). {PRIVACY_NOTE}
+                PNG includes the outline, benign/malignant score, and a research-demo note. PDF adds
+                more detail. {PRIVACY_NOTE}
               </p>
             </div>
           )}

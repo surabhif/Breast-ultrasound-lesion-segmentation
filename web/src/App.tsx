@@ -1,19 +1,23 @@
+import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
-import HomePage from './pages/HomePage'
-import DemoPage from './pages/DemoPage'
-import AboutPage from './pages/AboutPage'
-import ResultsPage from './pages/ResultsPage'
-import ModelCardPage from './pages/ModelCardPage'
-import MistakesPage from './pages/MistakesPage'
-import BiradsPage from './pages/BiradsPage'
-import SurgeonsViewPage from './pages/SurgeonsViewPage'
-import PortfolioPage from './pages/PortfolioPage'
-import TryThreePage from './pages/TryThreePage'
-import WhyPage from './pages/WhyPage'
 import NavMenu from './components/NavMenu'
+import ThemeToggle from './components/ThemeToggle'
+import HomePage from './pages/HomePage'
 import { MODEL_STATUS, SITE } from './lib/constants'
 import './App.css'
+
+// Home stays eager so the first paint does not flash a Suspense fallback (CLS).
+// Heavy routes that pull big JSON / the ONNX client are code-split.
+const DemoPage = lazy(() => import('./pages/DemoPage'))
+const AboutPage = lazy(() => import('./pages/AboutPage'))
+const ResultsPage = lazy(() => import('./pages/ResultsPage'))
+const ModelCardPage = lazy(() => import('./pages/ModelCardPage'))
+const MistakesPage = lazy(() => import('./pages/MistakesPage'))
+const BiradsPage = lazy(() => import('./pages/BiradsPage'))
+const SurgeonsViewPage = lazy(() => import('./pages/SurgeonsViewPage'))
+const PortfolioPage = lazy(() => import('./pages/PortfolioPage'))
+const TryThreePage = lazy(() => import('./pages/TryThreePage'))
+const WhyPage = lazy(() => import('./pages/WhyPage'))
 
 const TITLES: Record<string, string> = {
   '/': SITE.title,
@@ -27,6 +31,18 @@ const TITLES: Record<string, string> = {
   '/why': `Why I built this · ${SITE.shortTitle}`,
   '/about': `About · ${SITE.shortTitle}`,
   '/model-card': `Model card · ${SITE.shortTitle}`,
+}
+
+const PROBLEM_ISSUE_URL = `${SITE.githubUrl}/issues/new?template=problem.yml`
+
+function RouteFallback() {
+  return (
+    <div className="panel fade-in" role="status">
+      <p className="muted" style={{ margin: 0 }}>
+        Loading page…
+      </p>
+    </div>
+  )
 }
 
 export default function App() {
@@ -85,26 +101,29 @@ export default function App() {
                   { to: '/portfolio', label: 'Portfolio' },
                 ]}
               />
+              <ThemeToggle />
             </nav>
           </div>
         </header>
       </div>
 
       <main id="main" className="site-main">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/demo" element={<DemoPage />} />
-          <Route path="/try" element={<TryThreePage />} />
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/model-errors" element={<MistakesPage />} />
-          <Route path="/mistakes" element={<Navigate to="/model-errors" replace />} />
-          <Route path="/bi-rads" element={<BiradsPage />} />
-          <Route path="/surgeons-view" element={<SurgeonsViewPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
-          <Route path="/why" element={<WhyPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/model-card" element={<ModelCardPage />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/demo" element={<DemoPage />} />
+            <Route path="/try" element={<TryThreePage />} />
+            <Route path="/results" element={<ResultsPage />} />
+            <Route path="/model-errors" element={<MistakesPage />} />
+            <Route path="/mistakes" element={<Navigate to="/model-errors" replace />} />
+            <Route path="/bi-rads" element={<BiradsPage />} />
+            <Route path="/surgeons-view" element={<SurgeonsViewPage />} />
+            <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/why" element={<WhyPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/model-card" element={<ModelCardPage />} />
+          </Routes>
+        </Suspense>
       </main>
 
       <footer className="site-footer">
@@ -122,6 +141,11 @@ export default function App() {
               <li>
                 <a href={SITE.githubUrl} target="_blank" rel="noreferrer">
                   GitHub repository
+                </a>
+              </li>
+              <li>
+                <a href={PROBLEM_ISSUE_URL} target="_blank" rel="noreferrer">
+                  Report a problem
                 </a>
               </li>
               <li>
@@ -147,7 +171,7 @@ export default function App() {
           </div>
         </div>
         <p className="footer-fine">
-          Model v{MODEL_STATUS.version} · MIT license · Research only
+          Model v{MODEL_STATUS.version} · Last updated {__BUILD_DATE__} · MIT license · Research only
         </p>
       </footer>
     </div>

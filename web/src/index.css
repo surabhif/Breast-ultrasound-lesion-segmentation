@@ -25,6 +25,8 @@
   --line: #dce6e6;
   --line-strong: #c5d4d4;
   --panel: #ffffff;
+  --panel-tint: #ffffff;
+  --grid-line: rgba(41, 115, 115, 0.07);
 
   /* Clinical disclaimer banner: solid brand + white text (AA 5.53) */
   --warn-bg: var(--accent);
@@ -52,14 +54,54 @@
   color: var(--ink);
   background-color: var(--bg);
   background-image:
-    linear-gradient(to right, rgba(41, 115, 115, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(41, 115, 115, 0.07) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: 48px 48px;
   background-attachment: fixed;
   font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Dark mode — same teal brand (#297373), tuned for WCAG AA text contrast.
+ * Body text on --bg / --panel ≥ 4.5:1; white on solid --accent ≥ 4.5:1.
+ */
+[data-theme='dark'] {
+  --brand: #297373;
+  --accent: #297373;
+  --accent-deep: #3d8585;
+  --accent-ink: #9fd0d0;
+  --accent-mid: #4a9a9a;
+  --accent-muted: #2a4545;
+  --accent-soft: #1a2e2e;
+  --accent-pale: #142222;
+  --accent-border: #4a7a7a;
+
+  --bg: #0f1a1a;
+  --bg-muted: #152424;
+  --bg-deep: #0b1414;
+  --ink: #f2f7f7;
+  --ink-soft: #d5e0e0;
+  --muted: #a8b8b8;
+  --line: #2a3f3f;
+  --line-strong: #3a5555;
+  --panel: #152424;
+  --panel-tint: #152424;
+  --grid-line: rgba(61, 133, 133, 0.12);
+
+  --warn-bg: var(--accent);
+  --warn: #ffffff;
+
+  --malignant: #ff8aa3;
+  --malignant-soft: #3a1822;
+  --malignant-border: #7a3044;
+  --benign: #f2f7f7;
+  --benign-soft: #1a2424;
+  --normal: #9fd0d0;
+  --normal-soft: #1a2e2e;
+  --lesion: #e08a55;
 }
 
 * {

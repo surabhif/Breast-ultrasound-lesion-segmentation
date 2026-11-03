@@ -1,0 +1,57 @@
+name: Report a problem
+description: Tell us something went wrong with the site or the browser demo
+title: "[Problem]: "
+labels: ["problem"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve this research demo. Please share what went wrong.
+        This project is educational only and not for clinical use.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did it happen?
+      options:
+        - Home
+        - Demo (Try the detector)
+        - Try 3 cases
+        - Results
+        - Model Errors
+        - Other page
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe what you saw and what you expected.
+      placeholder: Example — I tapped a sample scan and the page stayed on “Running model…” for a long time.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Optional. Short list of what you clicked.
+      placeholder: |
+        1. Open the Demo page
+        2. Tap the first normal sample
+        3. …
+    validations:
+      required: false
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      description: Optional. Example — Chrome 130 on a laptop, or Safari on iPhone.
+    validations:
+      required: false
+  - type: checkboxes
+    id: research-only
+    attributes:
+      label: Reminder
+      options:
+        - label: I understand this is a research demo and not for clinical use.
+          required: true

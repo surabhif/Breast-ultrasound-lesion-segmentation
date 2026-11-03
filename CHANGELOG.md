@@ -3,6 +3,33 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
+## [Unreleased] — Site UX upgrades (2026-11-03)
+
+**In plain words:** Six small site upgrades. The served model stays **v1.0.0** — no weight, threshold, or reported-metric changes.
+
+### Added
+
+- Demo **example scan strip**: six public BUSI samples (2 normal, 2 benign, 2 malignant); one tap runs the model.
+- **Side-by-side** result view (original next to outlined), in addition to the overlay view.
+- **Download result image** (PNG) with outline, benign/malignant score, and “research demo, not for clinical use”.
+- Footer **Report a problem** link → GitHub issue form (`.github/ISSUE_TEMPLATE/problem.yml`).
+- Footer **Model v1.0.0 · Last updated (build date)** injected at build time.
+- **Light / dark** switch (remembers choice; follows system until changed). Teal `#297373` palette with WCAG AA contrast.
+
+### Changed
+
+- Lazy-load ONNX / onnxruntime-web only when a page runs the model; code-split heavy routes for faster Home and Results.
+- Results large images use `loading="lazy"` and size hints to cut layout shift.
+
+### Lighthouse (local production preview, Performance)
+
+| Page | Before | After |
+|---|---|---|
+| Home | 95 | 96 |
+| Results | 63 | 73 |
+
+Accessibility / Best Practices / SEO stayed at 100 on both pages.
+
 ## [Unreleased] — Phase 4 (2026-10-10)
 
 **In plain words:** Tried a larger multi-dataset model. Fair tests did not beat v1, so the site still serves **v1.0.0**. Also scored BUS-UCLM on a local copy and added demo upload / offline extras.
