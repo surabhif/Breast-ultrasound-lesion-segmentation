@@ -682,11 +682,21 @@
   margin: 0.35rem 0 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--accent-ink);
+  /* Use ink (not accent-ink) so dark-mode contrast stays AA on the drop zone. */
+  color: var(--ink);
 }
 
 .drop-zone .muted {
+  color: var(--muted);
+}
+
+.btn:disabled,
+.btn.secondary:disabled {
+  opacity: 1;
+  background: var(--bg-deep);
   color: var(--ink-soft);
+  border-color: var(--line-strong);
+  cursor: not-allowed;
 }
 
 .viewer {
@@ -2327,4 +2337,309 @@ button:focus-visible,
 /* Reserve space while Results metrics JSON loads (cuts CLS on first paint). */
 .results-loading {
   min-height: 70vh;
+}
+
+/* —— Where the model struggles (curated Model Errors gallery) —— */
+.struggle-gallery {
+  scroll-margin-top: 1rem;
+}
+
+.struggle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.struggle-card {
+  border: 1px solid var(--line-strong);
+  background: var(--panel-tint);
+  padding: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.struggle-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: var(--bg-deep);
+}
+
+.struggle-reason {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.struggle-card .tiny {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* —— Outline Tight / Loose (same mask cutoff as before; clearer labels) —— */
+.outline-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: stretch;
+  max-width: 420px;
+  margin-top: 1rem;
+  margin-inline: auto;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.outline-slider-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+.outline-slider-row input[type='range'] {
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--accent-deep);
+}
+
+.outline-end {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.outline-slider-help {
+  margin: 0;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--font-sans);
+  line-height: 1.4;
+  max-width: 36rem;
+}
+
+.loading-tip {
+  margin: 0.55rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--ink);
+  min-height: 2.6em;
+}
+
+/* Phone layout: tap targets, wrap, horizontal tables */
+@media (max-width: 420px) {
+  .site-nav > a,
+  .nav-menu-trigger,
+  .nav-menu-item,
+  .theme-toggle,
+  .compare-toggle button,
+  .gallery-item,
+  .example-picker-item,
+  .btn,
+  .radio-inline {
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+
+  .site-nav > a,
+  .nav-menu-trigger {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .theme-toggle {
+    padding: 0.55rem 0.75rem;
+  }
+
+  .compare-toggle button {
+    padding: 0.55rem 0.85rem;
+  }
+
+  .brand-title {
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+  }
+
+  .page-intro h1,
+  .section-title {
+    overflow-wrap: anywhere;
+  }
+
+  .mistakes-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mistakes-filters label,
+  .mistakes-filters select {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .mistakes-filters select {
+    min-height: 44px;
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+
+  .mistakes-count-chip {
+    min-width: 0;
+    flex: 1 1 40%;
+  }
+
+  .struggle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .score-card,
+  .gt-card {
+    overflow-wrap: anywhere;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  .table-wrap table {
+    min-width: 32rem;
+  }
+
+  .cm-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .upload-row {
+    flex-wrap: wrap;
+  }
+
+  .upload-row .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+/* Print: Results, About, Why, demo result — hide chrome; keep charts + disclaimer + credit */
+@media print {
+  :root,
+  [data-theme='dark'] {
+    --bg: #ffffff;
+    --bg-muted: #ffffff;
+    --bg-deep: #f0f0f0;
+    --ink: #000000;
+    --ink-soft: #111111;
+    --muted: #333333;
+    --line: #cccccc;
+    --line-strong: #999999;
+    --panel: #ffffff;
+    --panel-tint: #ffffff;
+    --accent: #000000;
+    --accent-deep: #000000;
+    --accent-ink: #000000;
+    --accent-soft: #eeeeee;
+    --accent-pale: #ffffff;
+    --warn-bg: #ffffff;
+    --warn: #000000;
+    --grid-line: transparent;
+    background: #ffffff;
+    color: #000000;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .skip-link,
+  .site-header,
+  .site-nav,
+  .nav-menu,
+  .theme-toggle,
+  .site-footer .footer-links,
+  .no-print,
+  .btn,
+  .opacity-control,
+  .outline-slider,
+  .mistakes-filters,
+  .compare-toggle,
+  .layout-toggle,
+  .model-progress,
+  .drop-zone,
+  .upload-row,
+  .example-image-picker,
+  .gallery-grid button,
+  .gallery-item:not(.static),
+  input[type='range'],
+  input[type='checkbox'],
+  input[type='file'],
+  select,
+  button:not(.print-keep) {
+    display: none !important;
+  }
+
+  .site-top {
+    position: static !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .site-notice,
+  .site-notice p {
+    display: block !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #000000;
+    box-shadow: none;
+  }
+
+  .site-notice a,
+  .site-notice .notice-learn-more {
+    color: #000000 !important;
+    text-decoration: underline;
+  }
+
+  .how-built,
+  .how-built a,
+  .footer-fine,
+  .footer-brand,
+  .site-footer {
+    display: block !important;
+    color: #000000 !important;
+    background: #ffffff !important;
+    border-color: #000000;
+  }
+
+  .panel,
+  .score-card,
+  .gt-card,
+  .mistake-card,
+  .struggle-card {
+    box-shadow: none !important;
+    break-inside: avoid;
+    background: #ffffff !important;
+    border-color: #999999 !important;
+    color: #000000 !important;
+  }
+
+  .viewer canvas,
+  .charts-grid canvas,
+  .charts-grid svg,
+  img {
+    max-width: 100% !important;
+    break-inside: avoid;
+  }
+
+  a[href]::after {
+    content: none !important;
+  }
 }

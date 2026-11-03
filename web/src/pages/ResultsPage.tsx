@@ -1126,7 +1126,10 @@ export default function ResultsPage() {
         <h2 className="section-title">Model Errors explorer</h2>
         <p>
           Browse filterable error cases with AI-generated analysis notes (outline silhouettes only for
-          BUSI). <Link to="/model-errors">Open model errors explorer →</Link>
+          BUSI). Start with a short gallery of hard cases:{' '}
+          <Link to="/model-errors#where-model-struggles">Where the model struggles</Link>
+          {' · '}
+          <Link to="/model-errors">Full Model Errors explorer →</Link>
         </p>
       </section>
 

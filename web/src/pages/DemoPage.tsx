@@ -11,6 +11,15 @@ import {
   NO_LUMP_MASK_MAX_THR,
   SEG_THRESHOLD,
 } from '../lib/constants'
+import { LOADING_TIPS, tipAt } from '../lib/loadingTips'
+import {
+  OUTLINE_THR_MAX,
+  OUTLINE_THR_MIN,
+  OUTLINE_THR_STEP,
+  loosePositionToThr,
+  outlineSliderLabel,
+  thrToLoosePosition,
+} from '../lib/outlineSlider'
 import {
   preloadModel,
   runInference,
@@ -118,6 +127,7 @@ export default function DemoPage() {
   const [pdfBusy, setPdfBusy] = useState(false)
   const [pngBusy, setPngBusy] = useState(false)
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('overlay')
+  const [tipTick, setTipTick] = useState(0)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const originalCanvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -125,6 +135,11 @@ export default function DemoPage() {
   const objectUrlRef = useRef<string | null>(null)
   const preloadDone = useRef(false)
   const analyzeGen = useRef(0)
+
+  const modelLoading =
+    loadProgress.status === 'checking-cache' ||
+    loadProgress.status === 'downloading' ||
+    loadProgress.status === 'creating-session'
 
   useEffect(() => {
     void preloadModel(setLoadProgress).catch(() => {
@@ -134,6 +149,12 @@ export default function DemoPage() {
       if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current)
     }
   }, [])
+
+  useEffect(() => {
+    if (!modelLoading) return
+    const id = window.setInterval(() => setTipTick((t) => t + 1), 4500)
+    return () => window.clearInterval(id)
+  }, [modelLoading])
 
   useEffect(() => {
     if (!sourceUrl || !result || !canvasRef.current) return
@@ -444,7 +465,7 @@ export default function DemoPage() {
         </p>
       </header>
 
-      <div className="model-progress panel" aria-live="polite">
+      <div className="model-progress panel no-print" aria-live="polite">
         <div className="model-progress-row">
           <strong>Model status</strong>
           <span className="muted">{loadProgress.message}</span>
@@ -459,10 +480,17 @@ export default function DemoPage() {
         >
           <div className="progress-fill" style={{ width: `${progressPct}%` }} />
         </div>
-        <p className="muted tiny">
-          First visit downloads ~{MODEL_STATUS.sizeHintMb} MB ({MODEL_STATUS.label} v
-          {MODEL_STATUS.version}); later visits use the browser cache when available.
-        </p>
+        {modelLoading ? (
+          <p className="loading-tip" data-testid="loading-tip">
+            <span className="muted tiny">While you wait · </span>
+            {tipAt(tipTick, LOADING_TIPS)}
+          </p>
+        ) : (
+          <p className="muted tiny">
+            First visit downloads ~{MODEL_STATUS.sizeHintMb} MB ({MODEL_STATUS.label} v
+            {MODEL_STATUS.version}); later visits use the browser cache when available.
+          </p>
+        )}
       </div>
 
       <div className="demo-layout">
@@ -765,7 +793,7 @@ export default function DemoPage() {
             </p>
           )}
 
-          <label className="opacity-control">
+          <label className="opacity-control no-print">
             <span id="opacity-label">Overlay opacity</span>
             <input
               type="range"
@@ -784,55 +812,69 @@ export default function DemoPage() {
             <span className="muted">{Math.round(opacity * 100)}%</span>
           </label>
 
-          <label className="opacity-control">
+          <div className="outline-slider no-print">
             <span id="seg-thr-label">
-              Mask <GlossaryTerm term="threshold">threshold</GlossaryTerm> {segThr.toFixed(2)}
+              Outline: Tight / Loose ({outlineSliderLabel(segThr)})
             </span>
-            <input
-              type="range"
-              min={0.1}
-              max={0.9}
-              step={0.05}
-              value={segThr}
-              aria-labelledby="seg-thr-label"
-              aria-valuemin={0.1}
-              aria-valuemax={0.9}
-              aria-valuenow={segThr}
-              onChange={(e) => {
-                const t = Number(e.target.value)
-                setSegThr(t)
-                if (result?.softMask) {
-                  const next = rethreshold(
-                    result.softMask,
-                    result.maskH,
-                    result.maskW,
-                    result.displayWidth,
-                    result.displayHeight,
-                    t,
-                  )
-                  setResult({ ...result, mask: next.mask, overlay: next.overlay, maskMean: next.maskMean })
-                  if (expertMask) {
-                    const predBin = new Float32Array(next.mask.length)
-                    for (let i = 0; i < next.mask.length; i++) predBin[i] = next.mask[i]! > t ? 1 : 0
-                    setBrowserDice(diceScore(predBin, expertMask, 0.5))
-                    setBrowserIoU(iouScore(predBin, expertMask, 0.5))
-                  }
-                  setMeasurements(
-                    measureLesion(
-                      next.mask,
+            <div className="outline-slider-row">
+              <span className="outline-end muted" aria-hidden="true">
+                Tight
+              </span>
+              <input
+                type="range"
+                min={OUTLINE_THR_MIN}
+                max={OUTLINE_THR_MAX}
+                step={OUTLINE_THR_STEP}
+                value={thrToLoosePosition(segThr)}
+                data-testid="outline-tight-loose"
+                aria-labelledby="seg-thr-label"
+                aria-valuemin={OUTLINE_THR_MIN}
+                aria-valuemax={OUTLINE_THR_MAX}
+                aria-valuenow={thrToLoosePosition(segThr)}
+                aria-valuetext={`${outlineSliderLabel(segThr)} outline`}
+                onChange={(e) => {
+                  const t = loosePositionToThr(Number(e.target.value))
+                  setSegThr(t)
+                  if (result?.softMask) {
+                    const next = rethreshold(
+                      result.softMask,
                       result.maskH,
                       result.maskW,
-                      sampleSpacingMm(selectedMeta, result.maskW),
+                      result.displayWidth,
+                      result.displayHeight,
                       t,
-                    ),
-                  )
-                }
-              }}
-              disabled={!result}
-            />
-          </label>
+                    )
+                    setResult({ ...result, mask: next.mask, overlay: next.overlay, maskMean: next.maskMean })
+                    if (expertMask) {
+                      const predBin = new Float32Array(next.mask.length)
+                      for (let i = 0; i < next.mask.length; i++) predBin[i] = next.mask[i]! > t ? 1 : 0
+                      setBrowserDice(diceScore(predBin, expertMask, 0.5))
+                      setBrowserIoU(iouScore(predBin, expertMask, 0.5))
+                    }
+                    setMeasurements(
+                      measureLesion(
+                        next.mask,
+                        result.maskH,
+                        result.maskW,
+                        sampleSpacingMm(selectedMeta, result.maskW),
+                        t,
+                      ),
+                    )
+                  }
+                }}
+                disabled={!result}
+              />
+              <span className="outline-end muted" aria-hidden="true">
+                Loose
+              </span>
+            </div>
+            <p className="outline-slider-help muted tiny">
+              A looser outline includes areas the model is less sure about. Default stays the same
+              cut-off used in the reported scores.
+            </p>
+          </div>
 
-          <label className="opacity-control">
+          <label className="opacity-control no-print">
             <span id="cls-thr-label">
               Cancerous cutoff {clsThr.toFixed(2)} →{' '}
               {result ? (result.clsProb >= clsThr ? 'cancerous' : 'harmless') : '—'}
@@ -852,7 +894,7 @@ export default function DemoPage() {
             />
           </label>
 
-          <div className="mistakes-filters" style={{ marginTop: '0.75rem' }}>
+          <div className="mistakes-filters no-print" style={{ marginTop: '0.75rem' }}>
             <label className="radio-inline">
               <input
                 type="checkbox"

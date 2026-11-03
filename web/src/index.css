@@ -69,6 +69,7 @@
  * Body text on --bg / --panel ≥ 4.5:1; white on solid --accent ≥ 4.5:1.
  */
 [data-theme='dark'] {
+  color-scheme: dark;
   --brand: #297373;
   --accent: #297373;
   --accent-deep: #3d8585;

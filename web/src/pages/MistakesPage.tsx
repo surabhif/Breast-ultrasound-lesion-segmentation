@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import StruggleGallery from '../components/StruggleGallery'
 import { classLabelDisplay } from '../lib/sampleMeta'
 
 type MistakeRow = {
@@ -90,12 +91,16 @@ export default function MistakesPage() {
         <p>
           Browse hard cases from the BUSI test set. BUSI ultrasound pixels are not shown here
           (licence). Cards use outline-only silhouettes. Full CC BY images appear only when noted.
-          See also <Link to="/results">Results</Link>.
+          Start with{' '}
+          <a href="#where-model-struggles">Where the model struggles</a>, or see{' '}
+          <Link to="/results">Results</Link>.
         </p>
         <p className="muted tiny">{data.disclaimer}</p>
       </header>
 
-      <section className="panel">
+      <StruggleGallery rows={data.rows} />
+
+      <section className="panel" style={{ marginTop: '1rem' }}>
         <h2 className="section-title">Error-type counts</h2>
         <div className="mistakes-count-row">
           {Object.entries(counts).map(([k, v]) => (
