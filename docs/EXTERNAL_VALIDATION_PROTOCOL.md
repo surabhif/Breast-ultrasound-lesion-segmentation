@@ -85,6 +85,15 @@ From `results/postprocess.json` / training val lesion-Dice selection — **not**
 - Download: Mendeley Data [doi:10.17632/7fvgj4jsp7.3](https://doi.org/10.17632/7fvgj4jsp7.3) — dataset **CC BY 4.0**
 - Owner steps (manual download → `data/external/busuclm/`): **`docs/BUSUCLM_STEPS.md`**. Loader: `scripts/external/busuclm.py` (`;`-separated `INFO.csv`, patient ID from file prefix, excludes Doppler/Combined; skips with `FileNotFoundError` when absent).
 - **Scored (committed):** frozen v1.0.0 INT8, n=640 / 38 patients (43 Doppler/combined excluded). All-image Dice **0.386** [0.326, 0.449]; lesion Dice **0.679** [0.593, 0.755]; AUC **0.780**; normal FPs **320/413**. Prefer lesion Dice for cross-dataset comparison — all-image Dice is dominated by false positives on normals (same weakness as BUSI 12/19). Source: `results/external/busuclm.json` (owner local eval; images not redistributed).
+- **No-lump gate re-score:** not run for BUS-UCLM when the archive is missing on the evaluation VM (Mendeley download often returns HTTP 403 without interactive login). Do not invent gated numbers. See `results/no_lump_gate.json` → `busuclm_note`.
+
+### 5.4 Display-only no-lump gate (does not change weights)
+
+- Rule from PR #19 / `results/no_lump_gate.json`: hide outline when peak soft-mask value **&lt; 0.96** (chosen on BUSI validation fold 0 only).
+- Re-score script: `scripts/eval_external_no_lump_gate.py` (same model, preprocessing, seg threshold 0.4, min area 40 as §4).
+- **BUS-BRA (raw → gated):** Dice **0.714 → 0.653**; IoU **0.609 → 0.562**; AUC **0.638** unchanged; no normal class.
+- **BrEaST (raw → gated):** Dice **0.627 → 0.572**; lesion Dice **0.629 → 0.573**; IoU **0.543 → 0.502**; AUC **0.721** unchanged; normal FPs **2/4 → 2/4**.
+- Say plainly when gated scores are worse. BUSI held-out gate numbers stay as published in `no_lump_gate.json` and are not rewritten by the outside re-score.
 
 **Skipped:** UDIAT (institutional licence agreement); BUSIS (signed release / no redistribution). See `docs/DECISION_LOG.md` D1.
 
