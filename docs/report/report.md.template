@@ -12,7 +12,7 @@
 
 ## Abstract
 
-This high-school research project trains a ResNet-18 U-Net with an auxiliary benign-vs-malignant head on the BUSI breast ultrasound dataset, exports an INT8 ONNX model for fully in-browser inference, and reports honest internal and external metrics. On the held-out BUSI test set the **served INT8** model reaches Dice **{{INT8_DICE}}** (lesion-only **{{INT8_LESION_DICE}}**) and ROC-AUC **{{INT8_AUC}}**. External validation on BUS-BRA and BrEaST keeps segmentation closer to internal Dice (**{{BUSBRA_DICE}}** / **{{BREAST_DICE}}**) while classification AUC drops (**{{BUSBRA_AUC}}** / **{{BREAST_AUC}}**). Cleaning, leakage, caliper-inpainting, and TTA uncertainty experiments are included. Venue for this write-up: **site-only**.
+This high-school research project trains a ResNet-18 U-Net with an auxiliary benign-vs-malignant head on the BUSI breast ultrasound dataset, exports an INT8 ONNX model for fully in-browser inference, and reports honest internal and external metrics. On the held-out BUSI test set the **served INT8** model reaches Dice **{{INT8_DICE}}** (lesion-only **{{INT8_LESION_DICE}}**) and ROC-AUC **{{INT8_AUC}}**. External validation on BUS-BRA and BrEaST keeps **raw** segmentation closer to internal Dice (**{{BUSBRA_DICE}}** / **{{BREAST_DICE}}**) while classification AUC drops (**{{BUSBRA_AUC}}** / **{{BREAST_AUC}}**). With the display-only no-lump gate (peak soft-mask below **{{NO_LUMP_GATE_THR}}**), outside Dice gets **worse** (**{{BUSBRA_DICE_GATED}}** / **{{BREAST_DICE_GATED}}**); AUC unchanged. Cleaning, leakage, caliper-inpainting, and TTA uncertainty experiments are included. Venue for this write-up: **site-only**.
 
 ## Introduction
 
@@ -63,8 +63,10 @@ Sources: `results/full_run.json`, `results/served_int8_test.json`.
 | Set | Dice | Lesion Dice | AUC |
 |-----|------|-------------|-----|
 | BUSI internal | {{INT8_DICE}} | {{INT8_LESION_DICE}} | {{INT8_AUC}} |
-| BUS-BRA | {{BUSBRA_DICE}} | {{BUSBRA_LESION_DICE}} | {{BUSBRA_AUC}} |
-| BrEaST | {{BREAST_DICE}} | {{BREAST_LESION_DICE}} | {{BREAST_AUC}} |
+| BUS-BRA (raw) | {{BUSBRA_DICE}} | {{BUSBRA_LESION_DICE}} | {{BUSBRA_AUC}} |
+| BUS-BRA (no-lump gate) | {{BUSBRA_DICE_GATED}} | {{BUSBRA_LESION_DICE_GATED}} | {{BUSBRA_AUC}} |
+| BrEaST (raw) | {{BREAST_DICE}} | {{BREAST_LESION_DICE}} | {{BREAST_AUC}} |
+| BrEaST (no-lump gate) | {{BREAST_DICE_GATED}} | {{BREAST_LESION_DICE_GATED}} | {{BREAST_AUC}} |
 | BUS-UCLM | {{BUSUCLM_DICE}} | {{BUSUCLM_LESION_DICE}} | {{BUSUCLM_AUC}} |
 
 Sources: `results/external/busbra.json`, `breast.json`, `busuclm.json`. BUS-UCLM normal FPs {{BUSUCLM_NFP}}.
