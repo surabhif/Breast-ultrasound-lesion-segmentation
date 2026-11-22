@@ -15,7 +15,7 @@ const CITE_BIBTEX = `@software{fadnavis_busi_lesion_seg_2026,
   version = {${PROJECT_VERSION}},
   url     = {${SITE.githubUrl}},
   doi     = {${SITE.doi}},
-  note    = {Research demo, not for clinical use. Served model remains v1.0.0. Concept DOI until the 1.0.1 version DOI is minted.}
+  note    = {Research demo, not for clinical use. Served model remains v1.0.0. Concept DOI (all versions). Version DOIs: v1.0.1 ${SITE.doiVersion101}; v1.0.0 ${SITE.doiVersion100}.}
 }`
 
 export default function AboutPage() {
@@ -146,11 +146,11 @@ export default function AboutPage() {
 
       <h2 id="cite">How to cite</h2>
       <p>
-        Suggested citation (DOI:{' '}
+        Suggested citation uses the Zenodo <strong>concept DOI</strong> (cite all versions):{' '}
         <a href={SITE.doiUrl} target="_blank" rel="noreferrer">
           {SITE.doi}
         </a>
-        ):
+        .
       </p>
       <pre className="cite-block" tabIndex={0}>
         {CITE_APA}
@@ -160,11 +160,18 @@ export default function AboutPage() {
         {CITE_BIBTEX}
       </pre>
       <p className="muted tiny">
-        Machine-readable: <code>CITATION.cff</code> in the repository root. Zenodo concept DOI (all
-        versions; also the v1.0.0 version DOI until a new one is minted for project {PROJECT_VERSION}
-        ):{' '}
+        Machine-readable: <code>CITATION.cff</code> in the repository root. Concept DOI (all
+        versions):{' '}
         <a href={SITE.doiUrl} target="_blank" rel="noreferrer">
           {SITE.doiUrl}
+        </a>
+        . Version DOI for project {PROJECT_VERSION}:{' '}
+        <a href={SITE.doiVersion101Url} target="_blank" rel="noreferrer">
+          {SITE.doiVersion101}
+        </a>
+        . Version DOI for v1.0.0:{' '}
+        <a href={SITE.doiVersion100Url} target="_blank" rel="noreferrer">
+          {SITE.doiVersion100}
         </a>
         . The live browser model stays <strong>v1.0.0</strong> (weights unchanged).
       </p>

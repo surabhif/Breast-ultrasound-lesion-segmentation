@@ -55,7 +55,7 @@ Zenodo archives the repository and issues a **new DOI each time you create a new
 1. Open **https://zenodo.org/** → your profile / deposits, **or** search Zenodo for the repo name
 2. Open the new deposit for this release
 3. Copy the DOI shown on the record page (also often emailed)
-4. Concept DOI (all versions) vs version DOI: Zenodo shows both; for `CITATION.cff` prefer the **version** DOI that matches this release unless you intentionally cite “all versions”
+4. Concept DOI (all versions) vs version DOI: Zenodo shows both. For this project the **main citation / badge** uses the **concept** DOI (`10.5281/zenodo.23286596`) to cite all versions; also list each release’s **version** DOI (v1.0.0 = `10.5281/zenodo.23286597`, v1.0.1 = `10.5281/zenodo.24433044`). Do not confuse the v1.0.0 version id with the concept id.
 
 ---
 

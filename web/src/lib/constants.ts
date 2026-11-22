@@ -107,11 +107,14 @@ export const SITE = {
   tagline: 'Browser research demo on the BUSI ultrasound dataset',
   githubUrl: 'https://github.com/surabhif/Breast-ultrasound-lesion-segmentation',
   pagesUrl: 'https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/',
-  /**
-   * Zenodo concept DOI (all versions; currently also the v1.0.0 version DOI).
-   * A new version DOI for project 1.0.1 will be added after Zenodo mints it.
-   */
-  doi: '10.5281/zenodo.23286597',
-  doiUrl: 'https://doi.org/10.5281/zenodo.23286597',
+  /** Zenodo concept DOI (all versions) — use this for the main citation / badge. */
+  doi: '10.5281/zenodo.23286596',
+  doiUrl: 'https://doi.org/10.5281/zenodo.23286596',
+  /** Version DOI for project software v1.0.1 (published 2026-11-22). */
+  doiVersion101: '10.5281/zenodo.24433044',
+  doiVersion101Url: 'https://doi.org/10.5281/zenodo.24433044',
+  /** Version DOI for software / model freeze v1.0.0. */
+  doiVersion100: '10.5281/zenodo.23286597',
+  doiVersion100Url: 'https://doi.org/10.5281/zenodo.23286597',
   linkedinUrl: 'https://www.linkedin.com/in/surabhi-fadnavis-804065329/',
 }

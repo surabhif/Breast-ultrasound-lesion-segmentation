@@ -206,7 +206,11 @@ def collect_numbers() -> dict[str, str]:
         "MODEL_VERSION": "1.0.0",
         "PAGES_URL": "https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/",
         "GITHUB_URL": "https://github.com/surabhif/Breast-ultrasound-lesion-segmentation",
-        "DOI_URL": "https://doi.org/10.5281/zenodo.23286597",
+        # Concept DOI (all versions) for the main cite; version DOIs listed separately.
+        "DOI_URL": "https://doi.org/10.5281/zenodo.23286596",
+        "DOI_CONCEPT": "10.5281/zenodo.23286596",
+        "DOI_V101": "10.5281/zenodo.24433044",
+        "DOI_V100": "10.5281/zenodo.23286597",
         "HOW_BUILT": HOW_BUILT,
         "SEG_THR": fmt(int8.get("seg_threshold", 0.4), 1, label="seg_threshold"),
         "MIN_AREA": str(int(int8.get("min_component_area", 40))),
@@ -885,7 +889,9 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(P(f"Repository: {nums['GITHUB_URL']}", "Meta"))
     story.append(
         P(
-            f"Software DOI (concept / until 1.0.1 version DOI is minted): {nums['DOI_URL']}",
+            f"Software concept DOI (cite all versions): {nums['DOI_URL']} · "
+            f"v{nums['PROJECT_VERSION']} version DOI: https://doi.org/{nums['DOI_V101']} · "
+            f"v{nums['MODEL_VERSION']} version DOI: https://doi.org/{nums['DOI_V100']}",
             "Meta",
         )
     )
@@ -1570,8 +1576,10 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(
         P(
             f"Project software version {nums['PROJECT_VERSION']} (served model still "
-            f"v{nums['MODEL_VERSION']}) is archived with concept DOI {nums['DOI_URL']} "
-            f"(a new version DOI is added after Zenodo mints it for this release). "
+            f"v{nums['MODEL_VERSION']}) is archived on Zenodo. Prefer the concept DOI "
+            f"{nums['DOI_URL']} to cite all versions. Version DOI for v{nums['PROJECT_VERSION']}: "
+            f"https://doi.org/{nums['DOI_V101']}. Version DOI for v{nums['MODEL_VERSION']}: "
+            f"https://doi.org/{nums['DOI_V100']}. "
             f"To regenerate this PDF: install Python dependencies (reportlab, pypdf, matplotlib), "
             f"run the report builder script from the repository root, then run the drift check so "
             f"every locked number still appears in the PDF text. Paper metrics are exported from the "
@@ -1675,7 +1683,7 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         "Musah et al. On de-duplication and out-of-distribution breast ultrasound segmentation. arXiv:2508.17768. 2025.",
         "Wang L. Classification performance under dataset shift in breast ultrasound. Diagnostics. 2026;16(10):1537.",
         "Moran MS, et al. Society of Surgical Oncology–American Society for Radiation Oncology consensus guideline on margins for breast-conserving surgery. 2014.",
-        f"Fadnavis S. Breast Ultrasound Lesion Segmentation (Version {nums['PROJECT_VERSION']}). Zenodo; 2026. {nums['DOI_URL']}",
+        f"Fadnavis S. Breast Ultrasound Lesion Segmentation (Version {nums['PROJECT_VERSION']}). Zenodo; 2026. Concept DOI {nums['DOI_URL']}. Version DOIs: v{nums['PROJECT_VERSION']} https://doi.org/{nums['DOI_V101']}; v{nums['MODEL_VERSION']} https://doi.org/{nums['DOI_V100']}.",
         f"Project repository: {nums['GITHUB_URL']}",
     ]
     for i, r in enumerate(refs, 1):

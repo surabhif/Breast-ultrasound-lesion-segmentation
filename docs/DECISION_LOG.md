@@ -6,7 +6,7 @@ Research demo, not for clinical use.
 
 **Credit (site-facing wording):** Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).
 
-**DOI status:** Done. Version DOI **10.5281/zenodo.23286597** is live. Older prep notes that said “DOI placeholders” are historical.
+**DOI status:** Done. Concept DOI (all versions) **10.5281/zenodo.23286596**. Version DOIs: v1.0.1 **10.5281/zenodo.24433044**; v1.0.0 **10.5281/zenodo.23286597**. Older prep notes that said “DOI placeholders” are historical.
 
 ---
 
@@ -70,7 +70,7 @@ Do not claim specific tasks Surabhi personally drafted or recorded.
 
 ### D8 — Zenodo DOI
 
-**Decided (updated):** **Minted.** Owner published a GitHub Release; Zenodo assigned version DOI **10.5281/zenodo.23286597** (`https://doi.org/10.5281/zenodo.23286597`). Citation files / About / README updated on a follow-up PR. Agents still must not create tags or releases.
+**Decided (updated):** **Minted.** Owner published a GitHub Release; Zenodo assigned v1.0.0 version DOI **10.5281/zenodo.23286597** and concept DOI **10.5281/zenodo.23286596**. Later v1.0.1 version DOI **10.5281/zenodo.24433044**. Main citation / badge should use the **concept** DOI. Agents still must not create tags or releases unless the owner asks.
 
 ### D9 — Walkthrough video
 

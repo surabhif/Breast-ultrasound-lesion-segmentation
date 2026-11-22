@@ -13,7 +13,7 @@ Agents must **not** create the git tag, GitHub Release, or Zenodo upload. See `d
 
 This is a **project and docs** release. The live browser model is still **v1.0.0** — same weight file, same download size, same default outline settings. Nothing about the served network was retrained or swapped for this tag.
 
-v1.0.1 locks in the site and documentation work merged after the v1.0.0 Zenodo record ([10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597)): LinkedIn name links, plain-language docs cleanup, the Why page, the display-only no-lump outline gate, SEO fixes and the one-page summary PDF, the guided “Try 3 cases” tour, demo/Results UX upgrades, and a fresh outside-set score for that gate. Two later experiments are documented honestly and **were not shipped**.
+v1.0.1 locks in the site and documentation work merged after the v1.0.0 Zenodo version record ([10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597)): LinkedIn name links, plain-language docs cleanup, the Why page, the display-only no-lump outline gate, SEO fixes and the one-page summary PDF, the guided “Try 3 cases” tour, demo/Results UX upgrades, and a fresh outside-set score for that gate. Two later experiments are documented honestly and **were not shipped**.
 
 **Credit:** Project by Surabhi Fadnavis. The code, analysis, text, and video were produced with AI tools (Cursor).
 
@@ -64,7 +64,7 @@ v1.0.1 locks in the site and documentation work merged after the v1.0.0 Zenodo r
 
 - **Project / software:** 1.0.1 (`CITATION.cff`, `.zenodo.json`, `web/package.json`)
 - **Served model:** 1.0.0
-- **DOI for now:** concept DOI https://doi.org/10.5281/zenodo.23286597 (also the v1.0.0 version DOI). After the owner publishes this release, Zenodo should mint a **new version DOI** — add that to `CITATION.cff` / About / README (see `docs/RELEASE_CHECKLIST.md`).
+- **DOIs:** concept (cite all versions) https://doi.org/10.5281/zenodo.23286596 · v1.0.1 version https://doi.org/10.5281/zenodo.24433044 · v1.0.0 version https://doi.org/10.5281/zenodo.23286597
 
 ---
 
