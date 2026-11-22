@@ -10,6 +10,12 @@ Research demo, not for clinical use.
 
 ---
 
+## 2026-11-21 — Test-time averaging (no ship)
+
+**Decided:** Do **not** enable soft-mask / class-score averaging in the demo (no Fast/Steadier toggle). On the published BUSI held-out split with the 0.96 no-lump gate, flip averaging did not improve lesion Dice; BUS-BRA and BrEaST outline Dice fell; browser time was ~2.0× for two views. Served weights stay **v1.0.0**. Write-up only: `docs/TTA_AVERAGING.md`, `results/tta_averaging.json`. Avoid editing the Results no-lump section (parallel gate re-score branch).
+
+---
+
 ## 2026-10-10 — Citation / preprint prep
 
 Prep only — **no tags, releases, or submissions** by agents.

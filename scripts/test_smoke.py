@@ -97,6 +97,34 @@ def test_external_results_or_skip_documented():
     assert "BUS-UCLM" not in (metrics["external"].get("skipped") or {})
 
 
+def test_tta_averaging_undo_and_no_ship():
+    """Geometry undo round-trip + committed experiment says do not ship."""
+    import numpy as np
+    from eval_tta_averaging import apply_view_resized, build_views, undo_view_soft
+
+    rng = np.random.default_rng(0)
+    rgb = rng.integers(0, 255, (160, 160, 3), dtype=np.uint8)
+    soft = rng.random((160, 160), dtype=np.float32)
+    for preset in ("hflip2", "hflip_shift", "hflip_scale"):
+        for spec in build_views(preset):
+            if spec["id"] == "id":
+                continue
+            view = apply_view_resized(rgb, spec)
+            assert view.shape == rgb.shape
+            # Soft-mask undo: flip alone must round-trip exactly
+            if spec["id"] == "h":
+                flipped = undo_view_soft(np.flip(soft, 1).astype(np.float32), spec)
+                assert np.allclose(flipped, soft, atol=1e-6)
+
+    path = REPO / "results" / "tta_averaging.json"
+    assert path.exists()
+    data = json.loads(path.read_text())
+    assert data["decision"]["recommend_ship"] is False
+    assert data.get("gate_applied") is True
+    assert (REPO / "docs" / "TTA_AVERAGING.md").exists()
+    assert "Do **not** turn averaging on" in (REPO / "docs" / "TTA_AVERAGING.md").read_text()
+
+
 if __name__ == "__main__":
     test_model_forward()
     test_metrics_json_schema()
@@ -104,6 +132,7 @@ if __name__ == "__main__":
     test_onnx_runs()
     test_external_protocol_preregistered()
     test_external_results_or_skip_documented()
+    test_tta_averaging_undo_and_no_ship()
     from test_external_loaders import (
         test_busbra_breast_loaders_skip_without_archive,
         test_busuclm_info_csv_parse_and_doppler_filter,

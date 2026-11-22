@@ -28,6 +28,7 @@ Student research project on the [BUSI](https://doi.org/10.1016/j.dib.2019.104863
 | `docs/FREEZE_CHECKLIST.md` | Owner freeze checklist |
 | `docs/SUBMISSION_GUIDE.md` | JEI vs arXiv (no auto-submit) |
 | `docs/BUSUCLM_STEPS.md` | How to reproduce the BUS-UCLM test |
+| `docs/TTA_AVERAGING.md` | Test-time averaging try (no ship; comparison table) |
 | `paper/` | Preprint LaTeX + `main.pdf` (numbers from metrics JSON) |
 | `CHANGELOG.md` | App + model version history |
 | `web/` | Vite + React + TypeScript demo (onnxruntime-web; PWA offline) |
