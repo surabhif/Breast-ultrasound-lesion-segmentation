@@ -1,8 +1,9 @@
 # v1.1 experiment note (plain language)
 
-**Status:** Candidate comparison only. Served model stays **v1.0.0**.  
+**Status:** Write-up only (owner decision). Served model stays **v1.0.0**.  
+**Not on the site UI** — no Results table, no candidate ONNX under `web/public/models/`.  
 **Research demo — not for clinical use.**  
-**Source JSON:** `results/v1_1_experiment.json` · Results page section `#v1-1-comparison`
+**Source JSON:** `results/v1_1_experiment.json`
 
 ---
 
@@ -39,7 +40,7 @@ All INT8 models stayed under the ~25 MB browser budget. Runs were on the Cursor 
 4. INT8 size ≤ ~25 MB  
 
 **Abbreviated check** (Dice ≥ v1 and AUC drop ≤ 0.02) is also reported for the PR table.  
-**This experiment never rewrote `current.json`.** Even a full pass would only be published as a labelled Results candidate here.
+**This experiment never rewrote `current.json`.** Owner decision: keep docs + `results/v1_1*.json` only — do not show a candidate on Results or ship ONNX under `web/public/`.
 
 ## Held-out BUSI results (INT8)
 
@@ -63,11 +64,11 @@ All INT8 models stayed under the ~25 MB browser budget. Runs were on the Cursor 
 
 ## What happened (including failures)
 
-1. **`r18_224`** — Best overall BUSI outline + AUC story. Dice 0.703 ≥ v1 0.697 and AUC 0.936 (improved, drop within 0.02). Clean Dice also ≥ v1. **Fails full D3** because BUS-BRA (0.696 &lt; 0.714) and BrEaST (0.589 &lt; 0.627) got worse. Passes the abbreviated Dice+AUC check only → published on Results as a labelled **candidate**, not served.
+1. **`r18_224`** — Best overall BUSI outline + AUC story. Dice 0.703 ≥ v1 0.697 and AUC 0.936 (improved, drop within 0.02). Clean Dice also ≥ v1. **Fails full D3** because BUS-BRA (0.696 &lt; 0.714) and BrEaST (0.589 &lt; 0.627) got worse. Passes the abbreviated Dice+AUC check only. **Owner decision: write-up only** — not shown on Results and not shipped as a site candidate.
 2. **`r18_256`** — Higher resolution did **not** help. Held-out Dice fell to 0.674; clean Dice 0.593. External scores also worse. **Fail.**
 3. **`r34_224`** — Stronger backbone improved clean Dice (0.646) and kept AUC, but overall held-out Dice fell to 0.679 (fails abbreviated Dice rule). External still below v1. INT8 21.3 MB (under 25). **Fail.**
 
-**Verdict:** No candidate may replace v1.0.0. Live model remains **v1.0.0**. The comparison table on `/results` shows all three attempts honestly.
+**Verdict:** No candidate may replace v1.0.0. Live model remains **v1.0.0**. Numbers live in `results/v1_1_experiment.json` and this note — not on the public Results page.
 
 ## How to reproduce
 

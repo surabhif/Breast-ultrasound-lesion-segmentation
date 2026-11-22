@@ -37,18 +37,114 @@
     "busbra": {
       "n": 1875,
       "n_normal": 0,
-      "note": "Outside per-image files lack soft-mask max, so this confidence gate was not re-applied case-by-case without the image archive.",
+      "mask_max_thr": 0.96,
+      "scored": true,
+      "raw": {
+        "test_dice": 0.7136202288207832,
+        "test_dice_bootstrap_95ci": [
+          0.6991090300120892,
+          0.7273477360554241
+        ],
+        "lesion_dice": 0.7136202288207832,
+        "lesion_dice_bootstrap_95ci": [
+          0.6991090300120892,
+          0.7273477360554241
+        ],
+        "test_iou": 0.6089462137607652,
+        "test_iou_bootstrap_95ci": [
+          0.59467916744832,
+          0.622259380642315
+        ],
+        "cls_roc_auc": 0.6380587416003618,
+        "normal_false_positive_count": null,
+        "normal_n": 0
+      },
+      "with_no_lump_gate": {
+        "test_dice": 0.6525358324785119,
+        "test_dice_bootstrap_95ci": [
+          0.6346435932898864,
+          0.6701588029703036
+        ],
+        "lesion_dice": 0.6525358324785119,
+        "lesion_dice_bootstrap_95ci": [
+          0.6346435932898864,
+          0.6701588029703036
+        ],
+        "test_iou": 0.5619431400469631,
+        "test_iou_bootstrap_95ci": [
+          0.5444964037495562,
+          0.5779779075739543
+        ],
+        "cls_roc_auc": 0.6380587416003618,
+        "normal_false_positive_count": null,
+        "normal_n": 0,
+        "lesion_dice_drop": 0.06108439634227136
+      },
       "lesion_dice_before": 0.7136202288207832,
-      "normal_fp_before": 0
+      "lesion_dice_after": 0.6525358324785119,
+      "normal_fp_before": null,
+      "normal_fp_after": null,
+      "plain_summary": "Lump-only Dice got worse (0.714 \u2192 0.653; drop 0.061). This set has no normal (no-lump) scans, so false-outline rate does not apply. AUC is unchanged (the display gate does not touch the class score)."
     },
     "breast": {
       "n": 256,
       "n_normal": 4,
-      "note": "Outside per-image files lack soft-mask max, so this confidence gate was not re-applied case-by-case without the image archive.",
+      "mask_max_thr": 0.96,
+      "scored": true,
+      "raw": {
+        "test_dice": 0.6265385719593876,
+        "test_dice_bootstrap_95ci": [
+          0.5808692692878173,
+          0.6696840634359242
+        ],
+        "lesion_dice": 0.6285471207148108,
+        "lesion_dice_bootstrap_95ci": [
+          0.5808381083638959,
+          0.6728557008031967
+        ],
+        "test_iou": 0.5429766589527398,
+        "test_iou_bootstrap_95ci": [
+          0.500271066347354,
+          0.5831589028743634
+        ],
+        "cls_roc_auc": 0.7206467002385369,
+        "normal_false_positive_count": 2,
+        "normal_n": 4
+      },
+      "with_no_lump_gate": {
+        "test_dice": 0.5717967055437138,
+        "test_dice_bootstrap_95ci": [
+          0.5245798744152547,
+          0.6196522043507648
+        ],
+        "lesion_dice": 0.5729363357846022,
+        "lesion_dice_bootstrap_95ci": [
+          0.522658864708464,
+          0.6224325988135084
+        ],
+        "test_iou": 0.5015664040007146,
+        "test_iou_bootstrap_95ci": [
+          0.4580681457960466,
+          0.5464858595589401
+        ],
+        "cls_roc_auc": 0.7206467002385369,
+        "normal_false_positive_count": 2,
+        "normal_n": 4,
+        "lesion_dice_drop": 0.055610784930208546
+      },
       "lesion_dice_before": 0.6285471207148108,
-      "normal_fp_before": 2
+      "lesion_dice_after": 0.5729363357846022,
+      "normal_fp_before": 2,
+      "normal_fp_after": 2,
+      "plain_summary": "Lump-only Dice got worse (0.629 \u2192 0.573; drop 0.056). False outlines on normal scans: 2/4 \u2192 2/4. AUC is unchanged (the display gate does not touch the class score)."
+    },
+    "busuclm": {
+      "scored": false,
+      "note": "BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) often returns HTTP 403 without interactive login. Download the zip locally, extract under data/external/busuclm/ (see docs/BUSUCLM_STEPS.md), then re-run.",
+      "unavailable_on_vm": true
     }
   },
-  "busuclm_note": "BUS-UCLM per-image soft masks are not in the repo, so this display gate was not re-scored there. Aggregate false outlines on normal scans remain 320/413 without applying the gate.",
-  "plain_summary": "Hide the outline when the model\u2019s strongest outline pixel is below 0.960 (chosen on BUSI validation). Default on. Test lesion Dice drop within 0.01; toggle defaults on."
+  "busuclm_note": "BUS-UCLM was not re-scored with the no-lump gate on this VM: the Mendeley archive is not available here (download returned HTTP 403 without interactive login; see docs/BUSUCLM_STEPS.md). Published raw numbers stay as-is in results/external/busuclm.json (overall Dice 0.386, lesion Dice 0.679, AUC 0.780, false outlines on normal 320/413). No gated before/after numbers are claimed for BUS-UCLM.",
+  "plain_summary": "Hide the outline when the model\u2019s strongest outline pixel is below 0.960 (chosen on BUSI validation). Default on. Test lesion Dice drop within 0.01; toggle defaults on.",
+  "plain_summary_external": "Outside sets re-scored with the same display-only gate (peak soft-mask < 0.96). Raw = without gate; with no-lump gate = outline hidden when peak is low. AUC unchanged. BUSI held-out numbers were not changed."
 }

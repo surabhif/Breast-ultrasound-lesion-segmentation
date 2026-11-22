@@ -803,14 +803,14 @@ def build_experiment_summary(reports: list[dict]) -> dict:
         decision = (
             f"Candidate {best['candidate_id']} passed the full D3 swap rule on this run, "
             "but the live served model stays v1.0.0 (no automatic swap). "
-            "It is published on Results as a labelled candidate only."
+            "Owner policy: write-up / results JSON only — do not publish a site candidate."
         )
         mean_pass = True
     elif best_abbrev:
         decision = (
             f"No candidate passed the full D3 swap rule (clean + external Dice + AUC). "
             f"{best_abbrev['candidate_id']} passed the abbreviated Dice+AUC check only; "
-            "v1.0.0 remains served. Comparison published as experiment."
+            "v1.0.0 remains served. Write-up only (not shown on Results)."
         )
         mean_pass = False
     else:
@@ -905,7 +905,8 @@ def build_experiment_summary(reports: list[dict]) -> dict:
         "best_abbreviated_candidate_id": None if not best_abbrev else best_abbrev["candidate_id"],
         "promotion_rule": (
             "Full D3: clean Dice ≥ v1, external Dice ≥ v1, AUC drop ≤ 0.02, INT8 ≤ ~25 MB. "
-            "Even on pass, this script never rewrites current.json — Results candidate only."
+            "Even on pass, this script never rewrites current.json. Default is write-up only "
+            "(no metrics.json merge / no web/public candidate ONNX)."
         ),
         "swap_criteria": swap_criteria,
         "table": table,
@@ -980,7 +981,16 @@ def main() -> None:
         default=None,
         help="Candidate ids to run (default: all). e.g. r18_224 r34_224",
     )
-    ap.add_argument("--skip-merge-metrics", action="store_true")
+    ap.add_argument(
+        "--merge-metrics",
+        action="store_true",
+        help="Also write a v1_1_experiment block into web/public/results/metrics.json (off by default; write-up only).",
+    )
+    ap.add_argument(
+        "--skip-merge-metrics",
+        action="store_true",
+        help=argparse.SUPPRESS,  # backwards-compatible alias; merge is already off by default
+    )
     args = ap.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1018,8 +1028,10 @@ def main() -> None:
     print("Wrote", out)
     print("Decision:", summary["decision_sentence"])
 
-    if not args.skip_merge_metrics:
+    if args.merge_metrics and not args.skip_merge_metrics:
         merge_into_metrics(summary)
+    else:
+        print("Skipping metrics.json merge (write-up only; pass --merge-metrics to opt in)")
 
     # Safety: never touch current.json
     current = json.loads((WEB_PUBLIC / "models" / "current.json").read_text())

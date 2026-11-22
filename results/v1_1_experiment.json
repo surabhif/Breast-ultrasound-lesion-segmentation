@@ -1,6 +1,6 @@
 {
   "label": "v1.1 BUSI-only candidates vs served v1.0.0 (MODEL_POLICY D3)",
-  "note": "Tried larger BUSI-only U-Nets (ResNet-18 @ 224/256, ResNet-34 @ 224) on the same cleaned data and leakage-safe splits as v1.0.0. Validation-only postprocess and no-lump gate tuning; held-out test scored once. Live weights not swapped.",
+  "note": "Tried larger BUSI-only U-Nets (ResNet-18 @ 224/256, ResNet-34 @ 224) on the same cleaned data and leakage-safe splits as v1.0.0. Validation-only postprocess and no-lump gate tuning; held-out test scored once. Live weights not swapped. Write-up only \u2014 not published on the Results page.",
   "hardware": {
     "device": "cpu",
     "platform": "Linux-6.12.113+-x86_64-with-glibc2.39",
@@ -65,11 +65,11 @@
     "no_lump_gate_0_96_fp": 10
   },
   "served_unchanged": true,
-  "decision_sentence": "No candidate passed the full D3 swap rule (clean + external Dice + AUC). r18_224 passed the abbreviated Dice+AUC check only; v1.0.0 remains served. Comparison published as experiment.",
+  "decision_sentence": "No candidate passed the full D3 swap rule (clean + external Dice + AUC). r18_224 passed the abbreviated Dice+AUC check only. Owner decision: write-up only (docs + results JSON); do not show a candidate on Results or ship candidate ONNX under web/public. v1.0.0 remains served.",
   "mean_pass": false,
   "best_candidate_id": null,
   "best_abbreviated_candidate_id": "r18_224",
-  "promotion_rule": "Full D3: clean Dice \u2265 v1, external Dice \u2265 v1, AUC drop \u2264 0.02, INT8 \u2264 ~25 MB. Even on pass, this script never rewrites current.json \u2014 Results candidate only.",
+  "promotion_rule": "Full D3: clean Dice \u2265 v1, external Dice \u2265 v1, AUC drop \u2264 0.02, INT8 \u2264 ~25 MB. Owner: keep docs/JSON only; never rewrite current.json; do not serve candidate ONNX.",
   "swap_criteria": [
     {
       "criterion": "Clean-subset Dice (BUSI test)",
@@ -310,5 +310,6 @@
       "auc": 0.933862433862434,
       "int8_mb": 21.346
     }
-  ]
+  ],
+  "site_ui": false
 }

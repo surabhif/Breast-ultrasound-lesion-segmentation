@@ -74,12 +74,18 @@ def plain_abstract(nums: dict[str, str]) -> str:
         f"The main quality measure is an outline-overlap score (Dice), which is high when the "
         f"computer outline matches the expert outline. On images saved for testing, the browser "
         f"version reaches {nums['INT8_DICE']} overall. On images that contain a lump, the outline "
-        f"match is {nums['INT8_LESION_DICE']}. On two outside collections, outline scores stay "
+        f"match is {nums['INT8_LESION_DICE']}. On two outside collections, raw outline scores stay "
         f"similar ({nums['BUSBRA_DICE']} and {nums['BREAST_DICE']}), while telling harmless from "
-        f"cancerous lumps gets harder after the hospital and scanner change. On a third outside "
-        f"collection, pictures without lumps remain difficult: false outlines pull the overall "
-        f"score down to {nums['BUSUCLM_DICE']}, even though on images that contain a lump the "
-        f"outline match is {nums['BUSUCLM_LESION_DICE']}. "
+        f"cancerous lumps gets harder after the hospital and scanner change. A display-only "
+        f"“no lump” outline gate (hide when the strongest outline pixel is below "
+        f"{nums['NO_LUMP_GATE_THR']}) makes those outside Dice scores worse "
+        f"(BUS-BRA {nums['BUSBRA_DICE']} → {nums['BUSBRA_DICE_GATED']}; "
+        f"BrEaST {nums['BREAST_DICE']} → {nums['BREAST_DICE_GATED']}); the harmless-versus-cancerous "
+        f"ranking score stays the same. "
+        f"On a third outside collection, pictures without lumps remain difficult: false outlines "
+        f"pull the overall score down to {nums['BUSUCLM_DICE']}, even though on images that contain "
+        f"a lump the outline match is {nums['BUSUCLM_LESION_DICE']} "
+        f"({nums['BUSUCLM_GATE_STATUS']}). "
         f"The write-up also studies near-identical photos, burned-in measurement marks, and whether "
         f"outlines stay stable when a picture is flipped. A retrained version did better on some "
         f"outside images but not consistently, so the original stays. This is an educational "
@@ -93,6 +99,7 @@ def collect_numbers() -> dict[str, str]:
     int8 = load(ROOT / "results" / "served_int8_test.json")
     busbra = load(ROOT / "results" / "external" / "busbra.json")
     breast = load(ROOT / "results" / "external" / "breast.json")
+    no_lump = load(ROOT / "results" / "no_lump_gate.json")
     clean = load(ROOT / "results" / "cleaning_experiment.json")
     leak = load(ROOT / "results" / "leakage_ablation.json")
     inp = load(ROOT / "results" / "inpaint_experiment.json")
@@ -239,6 +246,19 @@ def collect_numbers() -> dict[str, str]:
         "BUSBRA_MALIG_DICE": fmt(
             busbra["by_label"]["malignant"]["dice_mean"], label="BUS-BRA malignant"
         ),
+        "BUSBRA_IOU": fmt(busbra.get("test_iou"), label="BUS-BRA iou"),
+        "BUSBRA_DICE_GATED": fmt(
+            no_lump["external"]["busbra"]["with_no_lump_gate"]["test_dice"],
+            label="BUS-BRA gated dice",
+        ),
+        "BUSBRA_LESION_DICE_GATED": fmt(
+            no_lump["external"]["busbra"]["with_no_lump_gate"]["lesion_dice"],
+            label="BUS-BRA gated lesion dice",
+        ),
+        "BUSBRA_IOU_GATED": fmt(
+            no_lump["external"]["busbra"]["with_no_lump_gate"]["test_iou"],
+            label="BUS-BRA gated iou",
+        ),
         "BREAST_DICE": fmt(breast.get("test_dice"), label="BrEaST dice"),
         "BREAST_LESION_DICE": fmt(breast.get("lesion_dice"), label="BrEaST lesion dice"),
         "BREAST_AUC": fmt(breast.get("cls_roc_auc"), label="BrEaST auc"),
@@ -250,6 +270,31 @@ def collect_numbers() -> dict[str, str]:
         "BREAST_MALIG_DICE": fmt(
             breast["by_label"]["malignant"]["dice_mean"], label="BrEaST malignant"
         ),
+        "BREAST_IOU": fmt(breast.get("test_iou"), label="BrEaST iou"),
+        "BREAST_DICE_GATED": fmt(
+            no_lump["external"]["breast"]["with_no_lump_gate"]["test_dice"],
+            label="BrEaST gated dice",
+        ),
+        "BREAST_LESION_DICE_GATED": fmt(
+            no_lump["external"]["breast"]["with_no_lump_gate"]["lesion_dice"],
+            label="BrEaST gated lesion dice",
+        ),
+        "BREAST_IOU_GATED": fmt(
+            no_lump["external"]["breast"]["with_no_lump_gate"]["test_iou"],
+            label="BrEaST gated iou",
+        ),
+        "BREAST_NFP": (
+            f"{breast.get('normal_false_positive_count')}/{breast.get('normal_n')}"
+        ),
+        "BREAST_NFP_GATED": (
+            f"{no_lump['external']['breast']['with_no_lump_gate']['normal_false_positive_count']}/"
+            f"{no_lump['external']['breast']['with_no_lump_gate']['normal_n']}"
+        ),
+        "NO_LUMP_GATE_THR": fmt(
+            no_lump.get("selection", {}).get("mask_max_thr", 0.96),
+            2,
+            label="no-lump gate thr",
+        ),
         "BUSUCLM_SENTENCE": busuclm,
         "BUSUCLM_DICE": busuclm_dice,
         "BUSUCLM_LESION_DICE": busuclm_lesion,
@@ -259,6 +304,11 @@ def collect_numbers() -> dict[str, str]:
         "BUSUCLM_NFP": busuclm_nfp,
         "BUSUCLM_BENIGN_DICE": busuclm_benign,
         "BUSUCLM_MALIG_DICE": busuclm_malig,
+        "BUSUCLM_GATE_STATUS": (
+            "not re-scored with the gate when the archive was unavailable"
+            if not no_lump.get("external", {}).get("busuclm", {}).get("scored", False)
+            else "gated scores in results/no_lump_gate.json"
+        ),
         "ANNOTATION_RATE": pct(dc["annotation_rate"], label="annotation_rate"),
         "N_FLAGGED": str(dc["n_annotation_flagged"]),
         "N_TOTAL": str(dc["n_total"]),
@@ -1223,9 +1273,21 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
             ["Set", "Outline-overlap", "Images with a lump", "AUC"],
             [
                 ["BUSI (own test)", nums["INT8_DICE"], nums["INT8_LESION_DICE"], nums["INT8_AUC"]],
-                ["BUS-BRA", nums["BUSBRA_DICE"], nums["BUSBRA_LESION_DICE"], nums["BUSBRA_AUC"]],
-                ["BrEaST", nums["BREAST_DICE"], nums["BREAST_LESION_DICE"], nums["BREAST_AUC"]],
-                ["BUS-UCLM", nums["BUSUCLM_DICE"], nums["BUSUCLM_LESION_DICE"], nums["BUSUCLM_AUC"]],
+                ["BUS-BRA (raw)", nums["BUSBRA_DICE"], nums["BUSBRA_LESION_DICE"], nums["BUSBRA_AUC"]],
+                [
+                    "BUS-BRA (no-lump gate)",
+                    nums["BUSBRA_DICE_GATED"],
+                    nums["BUSBRA_LESION_DICE_GATED"],
+                    nums["BUSBRA_AUC"],
+                ],
+                ["BrEaST (raw)", nums["BREAST_DICE"], nums["BREAST_LESION_DICE"], nums["BREAST_AUC"]],
+                [
+                    "BrEaST (no-lump gate)",
+                    nums["BREAST_DICE_GATED"],
+                    nums["BREAST_LESION_DICE_GATED"],
+                    nums["BREAST_AUC"],
+                ],
+                ["BUS-UCLM (raw only)", nums["BUSUCLM_DICE"], nums["BUSUCLM_LESION_DICE"], nums["BUSUCLM_AUC"]],
             ],
         )
     )
@@ -1233,13 +1295,23 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         P(
             "Takeaway: outlines travel better than telling harmless from cancerous lumps; "
             f"BUS-UCLM’s overall figure is dragged down by false outlines on normals "
-            f"({nums['BUSUCLM_NFP']}).",
+            f"({nums['BUSUCLM_NFP']}). The display-only no-lump gate (threshold "
+            f"{nums['NO_LUMP_GATE_THR']}) makes outside Dice worse on BUS-BRA "
+            f"({nums['BUSBRA_DICE']} → {nums['BUSBRA_DICE_GATED']}; IoU "
+            f"{nums['BUSBRA_IOU']} → {nums['BUSBRA_IOU_GATED']}) and BrEaST "
+            f"({nums['BREAST_DICE']} → {nums['BREAST_DICE_GATED']}; lesion "
+            f"{nums['BREAST_LESION_DICE']} → {nums['BREAST_LESION_DICE_GATED']}; IoU "
+            f"{nums['BREAST_IOU']} → {nums['BREAST_IOU_GATED']}; normal false outlines "
+            f"{nums['BREAST_NFP']} → {nums['BREAST_NFP_GATED']}). The harmless-versus-cancerous "
+            f"ranking score is unchanged. "
+            f"BUS-UCLM was {nums['BUSUCLM_GATE_STATUS']}.",
             "Cap",
         )
     )
     story.append(
         P(
-            "Sources: results/external/busbra.json, breast.json, busuclm.json.",
+            "Sources: results/external/busbra.json, breast.json, busuclm.json; "
+            "results/no_lump_gate.json.",
             "Cap",
         )
     )
@@ -1616,7 +1688,7 @@ Author: Surabhi Fadnavis (high-school senior, Georgia)
 ## Data
 Annotation-flag rate {nums['ANNOTATION_RATE']} ({nums['N_FLAGGED']}/{nums['N_TOTAL']}).
 {nums['BUSUCLM_SENTENCE']}
-External: BUS-BRA n={nums['BUSBRA_N']}; BrEaST n={nums['BREAST_N']} (Pawłowska et al.).
+External: BUS-BRA n={nums['BUSBRA_N']} — raw Dice **{nums['BUSBRA_DICE']}** / with no-lump gate **{nums['BUSBRA_DICE_GATED']}** (worse); ranking score **{nums['BUSBRA_AUC']}** unchanged. BrEaST n={nums['BREAST_N']} (Pawłowska et al.) — raw Dice **{nums['BREAST_DICE']}** / with gate **{nums['BREAST_DICE_GATED']}** (worse); lesion **{nums['BREAST_LESION_DICE']} → {nums['BREAST_LESION_DICE_GATED']}**; IoU **{nums['BREAST_IOU']} → {nums['BREAST_IOU_GATED']}**; normal false outlines **{nums['BREAST_NFP']} → {nums['BREAST_NFP_GATED']}**; ranking score **{nums['BREAST_AUC']}** unchanged.
 
 ## Results highlights
 Leakage Δ {nums['LEAK_DELTA']}; E-a flagged/clean {nums['EA_FLAGGED']}/{nums['EA_CLEAN']}; E-c external {nums['EC_BUSBRA']}/{nums['EC_BREAST']}; TTA ρ {nums['UNCERT_RHO']}; cov80 {nums['UNCERT_COV80']}; meas diam r {nums['MEAS_DIAM_R']} (n={nums['MEAS_N']}), ≥20mm discordance {nums['MEAS_T1T2']}; v2 clean mean {nums['V2_CLEAN_MEAN']} (Δ {nums['V2_CLEAN_DELTA']}).

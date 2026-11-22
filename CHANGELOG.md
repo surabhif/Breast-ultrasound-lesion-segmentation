@@ -3,14 +3,14 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
-## [Unreleased] — v1.1 candidate comparison (2026-11-21)
+## [Unreleased] — v1.1 candidate comparison (write-up only, 2026-11-21)
 
-**In plain words:** Tried three larger BUSI-only U-Nets on the same cleaned data and frozen splits as v1.0.0. None passed the full swap rule (outside Dice fell). One candidate (`r18_224`) matched/beat v1 on held-out Dice and AUC, so it is shown on Results as a labelled **candidate** only. The served model stays **v1.0.0** — no live weight swap.
+**In plain words:** Tried three larger BUSI-only U-Nets on the same cleaned data and frozen splits as v1.0.0. None passed the full swap rule (outside Dice fell). One setting (`r18_224`) matched/beat v1 on held-out Dice and AUC but failed outside Dice. **Write-up only** — no Results UI table, no candidate ONNX on the site. Served model stays **v1.0.0**.
 
 ### Added
 
 - `scripts/run_v1_1_experiment.py` — train/eval/quantize ResNet-18@224, ResNet-18@256, ResNet-34@224; validation-only postprocess + no-lump gate; bootstrap CIs; external BUS-BRA/BrEaST when present.
-- Results section **New model comparison: v1.1 candidates** (`v1_1_experiment` in `metrics.json`).
+- Repo results under `results/v1_1/` + `results/v1_1_experiment.json`.
 - Plain-language note `docs/V1_1_EXPERIMENT.md` (what was tried, including failures).
 
 ### Results (held-out BUSI INT8 vs v1.0.0)
@@ -18,11 +18,61 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 | Setting | Dice | AUC | Clean Dice | BUS-BRA | BrEaST | INT8 MB | Full D3 | Dice+AUC |
 |---|---|---|---|---|---|---|---|---|
 | v1.0.0 | 0.697 | 0.931 | 0.623 | 0.714 | 0.627 | 11.7 | baseline | — |
-| candidate r18@224 | **0.703** | **0.936** | 0.629 | 0.696 | 0.589 | 11.7 | Fail (external) | Pass |
-| candidate r18@256 | 0.674 | 0.926 | 0.593 | 0.633 | 0.575 | 11.7 | Fail | Fail |
-| candidate r34@224 | 0.679 | 0.934 | 0.646 | 0.665 | 0.585 | 21.3 | Fail | Fail |
+| r18@224 | **0.703** | **0.936** | 0.629 | 0.696 | 0.589 | 11.7 | Fail (external) | Pass |
+| r18@256 | 0.674 | 0.926 | 0.593 | 0.633 | 0.575 | 11.7 | Fail | Fail |
+| r34@224 | 0.679 | 0.934 | 0.646 | 0.665 | 0.585 | 21.3 | Fail | Fail |
 
-BUS-UCLM was not available on the Cursor VM for this run (manual download).
+BUS-UCLM was not available on the Cursor VM for this run (manual download). Owner decision: keep the docs/JSON write-up; do **not** ship a candidate on Results or under `web/public/models/`.
+
+## [Unreleased] — Test-time averaging experiment (2026-11-21)
+
+**In plain words:** Tried averaging the outline and the harmless/cancerous score over a few flipped/shifted/zoomed views of each image (no retraining). It did **not** earn a place in the demo. Served model stays **v1.0.0**.
+
+### Added
+
+- Offline eval `scripts/eval_tta_averaging.py` → `results/tta_averaging.json` (BUSI held-out + BUS-BRA / BrEaST when present; 0.96 no-lump gate; bootstrap CIs).
+- In-browser timing helper `scripts/measure_tta_browser_time.mjs` (~2.0× for original + horizontal flip).
+- Plain write-up `docs/TTA_AVERAGING.md` with the comparison table and the no-ship decision.
+
+### Not changed
+
+- Demo UI (no Fast/Steadier toggle), Results no-lump section, model weights, credit line, disclaimer, dark mode.
+
+### BUSI held-out (gate on; headline)
+
+| Setting | Dice | Lesion Dice | AUC | Normal FP | Browser ms (≈) |
+|---|---|---|---|---|---|
+| Single | 0.710 | 0.758 | 0.929 | 10/19 | ~151 |
+| Flip average (2) | 0.718 | 0.757 | 0.933 | 9/19 | ~305 (~2.0×) |
+
+Outside outline Dice fell on BUS-BRA and BrEaST with averaging. Full table in `docs/TTA_AVERAGING.md`.
+
+## [Unreleased] — Outside-set no-lump gate re-score (2026-11-21)
+
+**In plain words:** Re-scored BUS-BRA and BrEaST for the display-only no-lump outline gate (hide when peak soft-mask &lt; **0.96**, from PR #19) with the same frozen **v1.0.0** model, splits, and preprocessing as the published outside results. The gate value and BUSI held-out numbers were **not** changed. On both available outside sets, overall and lump-only Dice got **worse**; AUC stayed the same. **BUS-UCLM** was not available on the evaluation VM (Mendeley HTTP 403), so no gated numbers are claimed for that set.
+
+### Added
+
+- `scripts/eval_external_no_lump_gate.py` — outside re-score with fixed 0.96 gate; patient-clustered 95% bootstrap CIs.
+- `results/external/no_lump_gate_external.json` (+ per-image mask_max rows under `results/external/no_lump_gate_per_image/`).
+- Results page table: outside **raw** vs **with no-lump gate** (Dice / lesion Dice / IoU / AUC / normal false outlines).
+
+### Changed
+
+- `results/no_lump_gate.json` (+ web copy): external block filled for BUS-BRA and BrEaST; BUS-UCLM marked unavailable.
+- README, report write-up / `numbers.json`, HOW_IT_WORKS, EXTERNAL_VALIDATION_PROTOCOL, LITERATURE_COMPARISON, Model card, plain abstract — show raw and gated outside numbers; say plainly when gated is worse.
+
+### Numbers (before → after gate)
+
+| Set | Overall Dice | Lump-only Dice | IoU | AUC | False outlines on normal |
+| --- | --- | --- | --- | --- | --- |
+| BUS-BRA | 0.714 → **0.653** (worse) | 0.714 → **0.653** | 0.609 → **0.562** | 0.638 (unchanged) | n/a (0 normals) |
+| BrEaST | 0.627 → **0.572** (worse) | 0.629 → **0.573** | 0.543 → **0.502** | 0.721 (unchanged) | 2/4 → **2/4** |
+| BUS-UCLM | raw only 0.386 / lesion 0.679 | — | — | 0.780 | 320/413 — **not re-scored** |
+
+### Model
+
+- Served weights remain **v1.0.0**. Gate threshold remains **0.96**. BUSI held-out gate table unchanged.
 
 ## [Unreleased] — Five site upgrades (2026-11-03)
 

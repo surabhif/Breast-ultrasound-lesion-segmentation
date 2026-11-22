@@ -28,6 +28,7 @@ Student research project on the [BUSI](https://doi.org/10.1016/j.dib.2019.104863
 | `docs/FREEZE_CHECKLIST.md` | Owner freeze checklist |
 | `docs/SUBMISSION_GUIDE.md` | JEI vs arXiv (no auto-submit) |
 | `docs/BUSUCLM_STEPS.md` | How to reproduce the BUS-UCLM test |
+| `docs/TTA_AVERAGING.md` | Test-time averaging try (no ship; comparison table) |
 | `paper/` | Preprint LaTeX + `main.pdf` (numbers from metrics JSON) |
 | `CHANGELOG.md` | App + model version history |
 | `web/` | Vite + React + TypeScript demo (onnxruntime-web; PWA offline) |
@@ -44,12 +45,14 @@ Numbers below are for the **served browser model (v1.0.0)**. Outline-overlap sco
 
 | Dataset | Outline-overlap (Dice) | Lump-only Dice | Harmless vs cancerous (AUC) | Notes |
 |---------|------------------------|----------------|-----------------------------|-------|
-| BUSI (held-out test) | **0.697** | **0.764** | **0.931** | n=112 |
-| BUS-BRA | **0.714** | 0.714 | **0.638** | Outside set |
-| BrEaST | **0.627** | 0.629 | **0.721** | Outside set |
-| BUS-UCLM | **0.386** | **0.679** | **0.780** | 640 images / 38 patients |
+| BUSI (held-out test) | **0.697** | **0.764** | **0.931** | n=112; raw browser scores |
+| BUS-BRA (raw) | **0.714** [0.699, 0.727] | **0.714** [0.699, 0.727] | **0.638** | Outside set; IoU 0.609 |
+| BUS-BRA (with no-lump gate) | **0.653** [0.635, 0.670] | **0.653** [0.635, 0.670] | **0.638** (unchanged) | Gate makes Dice **worse** here; no normal scans |
+| BrEaST (raw) | **0.627** [0.581, 0.670] | **0.629** [0.581, 0.673] | **0.721** | Outside set; IoU 0.543; false outlines 2/4 |
+| BrEaST (with no-lump gate) | **0.572** [0.525, 0.620] | **0.573** [0.523, 0.622] | **0.721** (unchanged) | Gate makes Dice **worse**; false outlines stay **2/4** |
+| BUS-UCLM (raw only) | **0.386** [0.326, 0.449] | **0.679** [0.593, 0.755] | **0.780** | 640 images / 38 patients; false outlines 320/413. **Not re-scored with the gate on this VM** (Mendeley archive unavailable / HTTP 403) |
 
-A bigger v2 model was tried; it was not better on fair tests, so v1 stays. BUSI-only v1.1 candidates (larger resolution / ResNet-34) also did not pass the full swap rule — see `docs/V1_1_EXPERIMENT.md`.
+A bigger v2 model was tried; it was not better on fair tests, so v1 stays. BUSI-only v1.1 candidates (larger resolution / ResNet-34) also did not pass the full swap rule — write-up only in `docs/V1_1_EXPERIMENT.md` (not shipped on the site).
 
 <details>
 <summary>Technical details</summary>
@@ -65,9 +68,9 @@ CPU-trained ResNet-18 U-Net, 160×160, grouped held-out test; val-tuned threshol
 | False outlines on normal (no lump) | 12/19 | **12/19** |
 | Artifact size | 46.3 MB | **~11.7 MB** |
 
-Later multi-dataset candidates were compared under a fixed swap rule (same-source held-out BUS-BRA vs BrEaST fully external; seed means). Seed-mean clean Dice failed (0.614 vs 0.623), so the site still serves v1.0.0. An earlier caliper-erase retrain also did not pass the outside-set rule. A later BUSI-only v1.1 try (ResNet-18 @ 224/256, ResNet-34 @ 224) had one candidate pass Dice+AUC on the held-out test but fail outside Dice — published as a labelled Results candidate only. See Results on the site, `docs/V1_1_EXPERIMENT.md`, and `CHANGELOG.md`.
+Later multi-dataset candidates were compared under a fixed swap rule (same-source held-out BUS-BRA vs BrEaST fully external; seed means). Seed-mean clean Dice failed (0.614 vs 0.623), so the site still serves v1.0.0. An earlier caliper-erase retrain also did not pass the outside-set rule. A later BUSI-only v1.1 try (ResNet-18 @ 224/256, ResNet-34 @ 224) had one setting pass Dice+AUC on the held-out test but fail outside Dice — kept as a repo write-up only (`docs/V1_1_EXPERIMENT.md`, `results/v1_1_experiment.json`), not as a site candidate. See Results on the site and `CHANGELOG.md`.
 
-Browser scores use the same half-pixel bilinear preprocess + min-area-40 postprocess as evaluation. Sources: `results/full_run.json`, `results/served_int8_test.json`, `results/v2_experiment.json`, `results/v1_1_experiment.json`.
+Browser scores use the same half-pixel bilinear preprocess + min-area-40 postprocess as evaluation. Sources: `results/full_run.json`, `results/served_int8_test.json`, `results/v2_experiment.json`.
 
 Quick baseline (tiny U-Net, 64×64, ~1 min CPU): Dice ≈ 0.42, AUC ≈ 0.80 — see `results/baseline_quick_run.json`.
 
@@ -149,7 +152,7 @@ ONNX I/O: `input` `[N,3,160,160]` → `seg_mask` `[N,1,160,160]`, `cls_prob` `[N
 
 ## Limitations
 
-- Outside checks (frozen v1.0.0): BUS-BRA Dice **0.714** / AUC **0.638**; BrEaST Dice **0.627** / AUC **0.721**; BUS-UCLM all-image Dice **0.386** / lesion Dice **0.679** / AUC **0.780** (320/413 false outlines on normal scans; internal Dice 0.697 / AUC 0.931). See Results on the site.
+- Outside checks (frozen v1.0.0): **raw** BUS-BRA Dice **0.714** / AUC **0.638**; BrEaST Dice **0.627** / AUC **0.721**; BUS-UCLM all-image Dice **0.386** / lesion Dice **0.679** / AUC **0.780** (320/413 false outlines on normal scans; internal Dice 0.697 / AUC 0.931). With the display-only no-lump gate (peak soft-mask below 0.96): BUS-BRA Dice **0.653**, BrEaST Dice **0.572** — both **worse** than raw; AUC unchanged; BrEaST normal false outlines stay 2/4. BUS-UCLM was **not** re-scored with the gate here (dataset not on the VM). See Results → “Hide outline if likely no lump” and `results/no_lump_gate.json`.
 - No patient IDs  
 - Caliper detector is a heuristic, not OCR  
 - 160² resolution for CPU/browser practicality  
