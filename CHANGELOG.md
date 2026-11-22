@@ -4,15 +4,19 @@ All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 Project / software versions (docs, cite, `package.json`) can move without a new served model.
 
+## [Unreleased] — Zenodo DOI labeling fix (2026-11-22)
+
+**In plain words:** Fixed a mix-up in the docs and cite surfaces. The **concept DOI** (cite all versions) is **10.5281/zenodo.23286596**. The **v1.0.0 version DOI** is **10.5281/zenodo.23286597**. The **v1.0.1 version DOI** is **10.5281/zenodo.24433044**. Main badge / citation now use the concept DOI; version DOIs are listed next to it. Served model still **v1.0.0**. Credit line, disclaimer, and LinkedIn links unchanged.
+
 ## [1.0.1] — Project / docs release (2026-11-22)
 
-**In plain words:** Project and docs release **1.0.1**. The live browser model stays **v1.0.0** — same weights, same default thresholds, same reported BUSI headline scores. This locks in everything merged since the v1.0.0 Zenodo record ([DOI 10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597)): LinkedIn name links, plain-language docs cleanup, Why page, display-only no-lump outline gate (PR #19), SEO + one-page summary PDF, guided tour, UX upgrades (PRs #22–#23), outside-set re-score with the gate (PR #24), averaging experiment (PR #25, **not shipped**), and v1.1 trial write-up (PR #26, **not adopted**).
+**In plain words:** Project and docs release **1.0.1**. The live browser model stays **v1.0.0** — same weights, same default thresholds, same reported BUSI headline scores. This locks in everything merged since the v1.0.0 Zenodo version record ([10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597)): LinkedIn name links, plain-language docs cleanup, Why page, display-only no-lump outline gate (PR #19), SEO + one-page summary PDF, guided tour, UX upgrades (PRs #22–#23), outside-set re-score with the gate (PR #24), averaging experiment (PR #25, **not shipped**), and v1.1 trial write-up (PR #26, **not adopted**).
 
 ### Version surfaces
 
-- `CITATION.cff` / `.zenodo.json` / `web/package.json` → **1.0.1** (planned `date-released: 2026-11-22`)
+- `CITATION.cff` / `.zenodo.json` / `web/package.json` → **1.0.1** (`date-released: 2026-11-22`)
 - Footer: **Project v1.0.1 · Model v1.0.0 (weights unchanged)**
-- Concept DOI kept; a new version DOI is added after the owner publishes the GitHub Release / Zenodo deposit
+- Zenodo DOIs: concept (all versions) [10.5281/zenodo.23286596](https://doi.org/10.5281/zenodo.23286596); v1.0.1 version [10.5281/zenodo.24433044](https://doi.org/10.5281/zenodo.24433044); v1.0.0 version [10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597)
 - Exact credit line and research-demo disclaimer unchanged
 
 ### Metric copy fixes (same results JSON)
@@ -172,7 +176,7 @@ Accessibility / Best Practices / SEO stayed at 100 on both pages.
 - `/bi-rads` — plain-language BI-RADS ultrasound context (score ≠ category); verified ACR / review citations.
 - `/surgeons-view` — size/margins research framing; BrEaST CC BY examples + BUSI outline silhouettes.
 - `web/public/report.pdf` — 6–10 page research write-up auto-filled from results JSON with figures; CI drift check.
-- `CITATION.cff` + About “How to cite” (Zenodo DOI **10.5281/zenodo.23286597**).
+- `CITATION.cff` + About “How to cite” (Zenodo v1.0.0 version DOI **10.5281/zenodo.23286597**; concept DOI **10.5281/zenodo.23286596**).
 - Captioned walkthrough `web/public/video/walkthrough.mp4` + poster + VTT; storyboard in `docs/VIDEO_SCRIPT.md`.
 - `/portfolio` — Surabhi Fadnavis: student research in oncology AI (verified sibling links; no invented metrics).
 - Social preview from CC BY BrEaST imagery; privacy note (no analytics/cookies).

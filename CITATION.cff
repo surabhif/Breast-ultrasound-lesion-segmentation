@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: >-
   If you use this research demo or cite the software, please use the metadata
-  below (including the Zenodo DOI).
+  below. Prefer the concept DOI to cite all versions.
 type: software
 title: "Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation"
 version: 1.0.1
@@ -27,10 +27,14 @@ keywords:
   - research demo
 identifiers:
   - type: doi
+    value: "10.5281/zenodo.23286596"
+    description: "Concept DOI (all versions) — prefer this to cite the project."
+  - type: doi
+    value: "10.5281/zenodo.24433044"
+    description: "Version DOI for software v1.0.1 (published 2026-11-22)."
+  - type: doi
     value: "10.5281/zenodo.23286597"
-    description: >-
-      Concept DOI (all versions; also the v1.0.0 version DOI). A new version DOI
-      for project 1.0.1 will be added after Zenodo mints it on the GitHub Release.
+    description: "Version DOI for software / model freeze v1.0.0."
 preferred-citation:
   type: software
   title: "Breast Ultrasound Lesion Segmentation: an in-browser research demo on BUSI with external validation"
@@ -40,7 +44,8 @@ preferred-citation:
   year: 2026
   version: "1.0.1"
   url: "https://github.com/surabhif/Breast-ultrasound-lesion-segmentation"
-  doi: "10.5281/zenodo.23286597"
+  doi: "10.5281/zenodo.23286596"
   notes: >-
     Research demo only — not for clinical use. Served model remains v1.0.0.
-    Concept DOI kept until the 1.0.1 version DOI is minted.
+    Preferred DOI is the Zenodo concept DOI (all versions). Version DOIs:
+    v1.0.1 = 10.5281/zenodo.24433044; v1.0.0 = 10.5281/zenodo.23286597.

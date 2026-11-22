@@ -16,7 +16,9 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'web' / 'public' / 'summary.pdf'
 SITE = 'https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/'
-DOI = 'https://doi.org/10.5281/zenodo.23286597'
+DOI_CONCEPT = 'https://doi.org/10.5281/zenodo.23286596'
+DOI_V101 = 'https://doi.org/10.5281/zenodo.24433044'
+DOI_V100 = 'https://doi.org/10.5281/zenodo.23286597'
 CREDIT = (
     'Project by Surabhi Fadnavis. The code, analysis, text, and video were '
     'produced with AI tools (Cursor).'
@@ -166,7 +168,8 @@ def main() -> None:
     y = draw_wrapped(
         c,
         f'Fadnavis, S. (2026). Breast ultrasound lesion segmentation research demo '
-        f'(Version 1.0.1; served model v1.0.0). Zenodo. {DOI}',
+        f'(Version 1.0.1; served model v1.0.0). Zenodo. Concept DOI {DOI_CONCEPT}. '
+        f'Version DOIs: v1.0.1 {DOI_V101}; v1.0.0 {DOI_V100}.',
         0.75 * inch,
         y,
         W - 1.5 * inch,
