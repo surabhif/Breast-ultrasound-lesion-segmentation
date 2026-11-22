@@ -113,9 +113,9 @@ export default function ModelCardPage() {
       <h2 id="phase-2">Later experiments</h2>
       <p>
         A later multi-dataset retrain and a caliper-erase retrain are compared on the Results page.
-        A retrained version did better on some outside images but not consistently, so the site
-        still serves v{MODEL_STATUS.version}. An offline flip-based uncertainty check is available
-        in the Demo.
+        A BUSI-only v1.1 size/backbone try is documented in the repo write-up only (not shown as a
+        site candidate). The site still serves v{MODEL_STATUS.version}. An offline flip-based
+        uncertainty check is available in the Demo.
       </p>
 
       <h2 id="limitations">Limitations</h2>

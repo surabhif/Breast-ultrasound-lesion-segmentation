@@ -111,6 +111,10 @@ The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA**, **BrEaST
 
 This project does **not** include expert medical review or outreach.
 
+## v1.1 candidates (write-up only; no live swap)
+
+We later tried three larger **BUSI-only** U-Nets (ResNet-18 @ 224/256, ResNet-34 @ 224) on the **same** cleaned data and frozen splits. Validation-only threshold/gate tuning; held-out test scored once. None beat v1 on outside Dice, so **v1.0.0 stays served**. One setting (`r18_224`) matched/beat v1 on held-out Dice and AUC but failed outside Dice — kept as a repo write-up only (not shown on Results; no candidate ONNX under `web/public/`). Plain write-up: `docs/V1_1_EXPERIMENT.md`.
+
 ## Phase 3 (context pages & polish)
 
 - **BI-RADS page:** plain-language ultrasound categories/descriptors; a model score is **not** a BI-RADS assessment.

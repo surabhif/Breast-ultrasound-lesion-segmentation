@@ -1,0 +1,315 @@
+{
+  "label": "v1.1 BUSI-only candidates vs served v1.0.0 (MODEL_POLICY D3)",
+  "note": "Tried larger BUSI-only U-Nets (ResNet-18 @ 224/256, ResNet-34 @ 224) on the same cleaned data and leakage-safe splits as v1.0.0. Validation-only postprocess and no-lump gate tuning; held-out test scored once. Live weights not swapped. Write-up only \u2014 not published on the Results page.",
+  "hardware": {
+    "device": "cpu",
+    "platform": "Linux-6.12.113+-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "torch": "2.15.0+cpu"
+  },
+  "config": {
+    "candidates": [
+      {
+        "id": "r18_224",
+        "model": "resnet18",
+        "img_size": 224,
+        "batch_size": 8,
+        "lr": 0.0008
+      },
+      {
+        "id": "r18_256",
+        "model": "resnet18",
+        "img_size": 256,
+        "batch_size": 4,
+        "lr": 0.0008
+      },
+      {
+        "id": "r34_224",
+        "model": "resnet34",
+        "img_size": 224,
+        "batch_size": 4,
+        "lr": 0.0006
+      }
+    ],
+    "seed": 42,
+    "fold": 0,
+    "loss": "pos-weighted BCE + soft Dice (seg) + BCE (cls on B/M only)",
+    "selection_metric": "val_lesion_dice"
+  },
+  "v1_baselines": {
+    "test_dice": 0.6972011494235116,
+    "test_dice_ci95": [
+      0.6318544128007265,
+      0.7656603082162292
+    ],
+    "lesion_dice": 0.7643712765714284,
+    "lesion_dice_ci95": [
+      0.7049727284836597,
+      0.8211196389529184
+    ],
+    "iou": 0.6295263549739772,
+    "iou_ci95": [
+      0.567721238896154,
+      0.6939308107729822
+    ],
+    "auc": 0.9306878306878307,
+    "clean_dice": 0.6229383436474434,
+    "normal_fp": 12,
+    "normal_n": 19,
+    "int8_mb": 11.664,
+    "img_size": 160,
+    "busbra_dice": 0.7136202288207832,
+    "breast_dice": 0.6265385719593876,
+    "busuclm_dice": 0.386,
+    "busuclm_lesion_dice": 0.679,
+    "no_lump_gate_0_96_fp": 10
+  },
+  "served_unchanged": true,
+  "decision_sentence": "No candidate passed the full D3 swap rule (clean + external Dice + AUC). r18_224 passed the abbreviated Dice+AUC check only. Owner decision: write-up only (docs + results JSON); do not show a candidate on Results or ship candidate ONNX under web/public. v1.0.0 remains served.",
+  "mean_pass": false,
+  "best_candidate_id": null,
+  "best_abbreviated_candidate_id": "r18_224",
+  "promotion_rule": "Full D3: clean Dice \u2265 v1, external Dice \u2265 v1, AUC drop \u2264 0.02, INT8 \u2264 ~25 MB. Owner: keep docs/JSON only; never rewrite current.json; do not serve candidate ONNX.",
+  "swap_criteria": [
+    {
+      "criterion": "Clean-subset Dice (BUSI test)",
+      "rule": "candidate \u2265 v1",
+      "v1": 0.6229383436474434,
+      "v2": 0.6289853959213095,
+      "passed": true
+    },
+    {
+      "criterion": "Held-out Dice (BUSI test)",
+      "rule": "candidate \u2265 v1",
+      "v1": 0.6972011494235116,
+      "v2": 0.7034419382749195,
+      "passed": true
+    },
+    {
+      "criterion": "BUS-BRA Dice (external)",
+      "rule": "candidate \u2265 v1",
+      "v1": 0.7136202288207832,
+      "v2": 0.6961918056040448,
+      "passed": false,
+      "note": "BUSI-only training \u2192 full external set."
+    },
+    {
+      "criterion": "BrEaST Dice (external)",
+      "rule": "candidate \u2265 v1",
+      "v1": 0.6265385719593876,
+      "v2": 0.5892162467455958,
+      "passed": false,
+      "note": null
+    },
+    {
+      "criterion": "AUC (B vs M)",
+      "rule": "drop \u2264 0.02",
+      "v1": 0.9306878306878307,
+      "v2": 0.9359788359788359,
+      "delta": 0.005291005291005235,
+      "passed": true
+    },
+    {
+      "criterion": "INT8 size",
+      "rule": "\u2264 ~25 MB",
+      "v1": 11.664,
+      "v2": 11.664,
+      "passed": true
+    }
+  ],
+  "table": [
+    {
+      "name": "v1.0.0 INT8 (served)",
+      "role": "baseline",
+      "dice": 0.6972011494235116,
+      "lesion_dice": 0.7643712765714284,
+      "iou": 0.6295263549739772,
+      "clean_dice": 0.6229383436474434,
+      "auc": 0.9306878306878307,
+      "busbra_dice": 0.7136202288207832,
+      "breast_dice": 0.6265385719593876,
+      "busuclm_dice": 0.386,
+      "normal_fp": 12,
+      "int8_mb": 11.664,
+      "img_size": 160,
+      "swap_ok": null
+    },
+    {
+      "name": "candidate resnet18 @224\u00b2 (v1.1)",
+      "role": "candidate",
+      "candidate_id": "r18_224",
+      "dice": 0.7034419382749195,
+      "dice_ci95": [
+        0.6394741241843424,
+        0.7670991650575621
+      ],
+      "lesion_dice": 0.7718870653539949,
+      "lesion_dice_ci95": [
+        0.7141217215084756,
+        0.8246655987675773
+      ],
+      "iou": 0.635349526433682,
+      "iou_ci95": [
+        0.5727562751988722,
+        0.6994461995057764
+      ],
+      "clean_dice": 0.6289853959213095,
+      "auc": 0.9359788359788359,
+      "auc_ci95": [
+        0.8831935228554082,
+        0.9763758815811054
+      ],
+      "busbra_dice": 0.6961918056040448,
+      "breast_dice": 0.5892162467455958,
+      "busuclm_dice": null,
+      "busuclm_lesion_dice": null,
+      "normal_fp": 12,
+      "normal_fp_gate_0_96": 8,
+      "normal_fp_gate_retuned": 8,
+      "gate_retuned_thr": 0.97,
+      "int8_mb": 11.664,
+      "img_size": 224,
+      "latency_ms_p50": 32.07823449997704,
+      "swap_ok": false,
+      "abbreviated_pass": true,
+      "checks": {
+        "clean_dice_ok": true,
+        "dice_ok": true,
+        "auc_ok": true,
+        "busbra_ok": false,
+        "breast_ok": false,
+        "size_ok": true
+      }
+    },
+    {
+      "name": "candidate resnet18 @256\u00b2 (v1.1)",
+      "role": "candidate",
+      "candidate_id": "r18_256",
+      "dice": 0.6740109838446714,
+      "dice_ci95": [
+        0.6077483896300182,
+        0.7366067230702273
+      ],
+      "lesion_dice": 0.7579487117021712,
+      "lesion_dice_ci95": [
+        0.6960281270061136,
+        0.8119239467294638
+      ],
+      "iou": 0.6026980830661578,
+      "iou_ci95": [
+        0.5380197897320145,
+        0.662554284187242
+      ],
+      "clean_dice": 0.5927947123744328,
+      "auc": 0.9259259259259259,
+      "auc_ci95": [
+        0.873015873015873,
+        0.9762707328225018
+      ],
+      "busbra_dice": 0.6326168526948829,
+      "breast_dice": 0.5753117233304532,
+      "busuclm_dice": null,
+      "busuclm_lesion_dice": null,
+      "normal_fp": 14,
+      "normal_fp_gate_0_96": 9,
+      "normal_fp_gate_retuned": 12,
+      "gate_retuned_thr": 0.855,
+      "int8_mb": 11.664,
+      "img_size": 256,
+      "latency_ms_p50": 24.458408000100462,
+      "swap_ok": false,
+      "abbreviated_pass": false,
+      "checks": {
+        "clean_dice_ok": false,
+        "dice_ok": false,
+        "auc_ok": true,
+        "busbra_ok": false,
+        "breast_ok": false,
+        "size_ok": true
+      }
+    },
+    {
+      "name": "candidate resnet34 @224\u00b2 (v1.1)",
+      "role": "candidate",
+      "candidate_id": "r34_224",
+      "dice": 0.6788946205477624,
+      "dice_ci95": [
+        0.6163980508861413,
+        0.7489604016121371
+      ],
+      "lesion_dice": 0.7745827686876482,
+      "lesion_dice_ci95": [
+        0.7120898318669048,
+        0.8277038142679178
+      ],
+      "iou": 0.6133194818284016,
+      "iou_ci95": [
+        0.5540115970251708,
+        0.6803951556151597
+      ],
+      "clean_dice": 0.6463263438187414,
+      "auc": 0.933862433862434,
+      "auc_ci95": [
+        0.8814546930028252,
+        0.9773771091983925
+      ],
+      "busbra_dice": 0.6645655261307234,
+      "breast_dice": 0.5850726453385481,
+      "busuclm_dice": null,
+      "busuclm_lesion_dice": null,
+      "normal_fp": 15,
+      "normal_fp_gate_0_96": 8,
+      "normal_fp_gate_retuned": 9,
+      "gate_retuned_thr": 0.905,
+      "int8_mb": 21.346,
+      "img_size": 224,
+      "latency_ms_p50": 42.61520050022227,
+      "swap_ok": false,
+      "abbreviated_pass": false,
+      "checks": {
+        "clean_dice_ok": true,
+        "dice_ok": false,
+        "auc_ok": true,
+        "busbra_ok": false,
+        "breast_ok": false,
+        "size_ok": true
+      }
+    }
+  ],
+  "source": "results/v1_1_experiment.json",
+  "candidate_files": [
+    "results/v1_1/r18_224.json",
+    "results/v1_1/r18_256.json",
+    "results/v1_1/r34_224.json"
+  ],
+  "candidates_summary": [
+    {
+      "candidate_id": "r18_224",
+      "swap_ok": false,
+      "abbreviated_pass": true,
+      "dice": 0.7034419382749195,
+      "clean_dice": 0.6289853959213095,
+      "auc": 0.9359788359788359,
+      "int8_mb": 11.664
+    },
+    {
+      "candidate_id": "r18_256",
+      "swap_ok": false,
+      "abbreviated_pass": false,
+      "dice": 0.6740109838446714,
+      "clean_dice": 0.5927947123744328,
+      "auc": 0.9259259259259259,
+      "int8_mb": 11.664
+    },
+    {
+      "candidate_id": "r34_224",
+      "swap_ok": false,
+      "abbreviated_pass": false,
+      "dice": 0.6788946205477624,
+      "clean_dice": 0.6463263438187414,
+      "auc": 0.933862433862434,
+      "int8_mb": 21.346
+    }
+  ],
+  "site_ui": false
+}

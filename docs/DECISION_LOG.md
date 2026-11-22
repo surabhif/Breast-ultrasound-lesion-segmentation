@@ -10,6 +10,12 @@ Research demo, not for clinical use.
 
 ---
 
+## 2026-11-21 — v1.1 BUSI-only candidates (write-up only; no live swap)
+
+**Decided:** Train up to three larger BUSI-only candidates (ResNet-18 @ 224/256, ResNet-34 @ 224) on the same cleaned data and committed `results/splits.json` as v1.0.0. Tune postprocess and no-lump gate on validation only. Score frozen test + outside sets. Apply MODEL_POLICY D3 for any live swap; also report the abbreviated Dice+AUC check. **Do not** rewrite `current.json`.
+
+**Outcome:** No candidate passed full D3 (outside Dice dropped on BUS-BRA/BrEaST). `r18_224` passed abbreviated Dice+AUC (Dice 0.703 ≥ 0.697, AUC 0.936 ≥ 0.931−0.02). **Owner follow-up:** keep the write-up (`docs/V1_1_EXPERIMENT.md`, `results/v1_1*.json`, scripts, CHANGELOG) only — **do not** show a candidate on Results or ship candidate ONNX under `web/public/`. Served model remains **v1.0.0**.
+
 ## 2026-11-21 — Test-time averaging (no ship)
 
 **Decided:** Do **not** enable soft-mask / class-score averaging in the demo (no Fast/Steadier toggle). On the published BUSI held-out split with the 0.96 no-lump gate, flip averaging did not improve lesion Dice; BUS-BRA and BrEaST outline Dice fell; browser time was ~2.0× for two views. Served weights stay **v1.0.0**. Write-up only: `docs/TTA_AVERAGING.md`, `results/tta_averaging.json`. Avoid editing the Results no-lump section (parallel gate re-score branch).

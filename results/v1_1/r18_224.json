@@ -1,0 +1,731 @@
+{
+  "candidate_id": "r18_224",
+  "label": "candidate resnet18 @224\u00b2 (v1.1)",
+  "model_kind": "resnet18",
+  "img_size": 224,
+  "params_millions": 12.127474,
+  "epochs_ran": 39,
+  "best_val_lesion_dice": 0.819637534618288,
+  "postprocess": {
+    "seg_threshold": 0.35,
+    "min_component_area": 120,
+    "selected_on": "validation_lesion_dice",
+    "val_lesion_dice_at_selection": 0.8214434853810278
+  },
+  "quantization": {
+    "fp32_mb": 46.267,
+    "int8_mb": 11.664
+  },
+  "sha256_int8": "15712a2c963bbed14baefd82d3ab65b5ac8b6e53e9731af905d8496d53406f2f",
+  "onnx_int8": "export/v1_1/r18_224/int8.onnx",
+  "test": {
+    "n": 112,
+    "seg_threshold": 0.35,
+    "min_component_area": 120,
+    "dice_mean": 0.7034419382749195,
+    "dice_ci95": [
+      0.6394741241843424,
+      0.7670991650575621
+    ],
+    "iou_mean": 0.635349526433682,
+    "iou_ci95": [
+      0.5727562751988722,
+      0.6994461995057764
+    ],
+    "lesion_dice_mean": 0.7718870653539949,
+    "lesion_dice_ci95": [
+      0.7141217215084756,
+      0.8246655987675773
+    ],
+    "by_label": {
+      "benign": {
+        "n": 63,
+        "dice_mean": 0.7648372604835765,
+        "dice_ci95": [
+          0.6890923444898454,
+          0.8373718739881183
+        ],
+        "iou_mean": 0.6982650269085819
+      },
+      "malignant": {
+        "n": 30,
+        "dice_mean": 0.786691655581873,
+        "dice_ci95": [
+          0.7247849072069448,
+          0.840778326703332
+        ],
+        "iou_mean": 0.6722816752154087
+      },
+      "normal": {
+        "n": 19,
+        "dice_mean": 0.36842105309839257,
+        "dice_ci95": [
+          0.1578947374358853,
+          0.5789473687694597
+        ],
+        "iou_mean": 0.36842105309839257
+      }
+    },
+    "classification": {
+      "n": 93,
+      "decision_threshold": 0.5,
+      "roc_auc": 0.9359788359788359,
+      "accuracy": 0.8172043010752689,
+      "sensitivity": 0.8666666666666667,
+      "specificity": 0.7936507936507936,
+      "ece": 0.15349395557116438,
+      "confusion_matrix": {
+        "labels": [
+          "benign",
+          "malignant"
+        ],
+        "matrix": [
+          [
+            50,
+            13
+          ],
+          [
+            4,
+            26
+          ]
+        ],
+        "row_means_true": true
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0,
+          "threshold": null
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.03333333333333333,
+          "threshold": 0.9992327094078064
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.5,
+          "threshold": 0.9899600744247437
+        },
+        {
+          "fpr": 0.015873015873015872,
+          "tpr": 0.5,
+          "threshold": 0.9817438125610352
+        },
+        {
+          "fpr": 0.015873015873015872,
+          "tpr": 0.5666666666666667,
+          "threshold": 0.9781273603439331
+        },
+        {
+          "fpr": 0.031746031746031744,
+          "tpr": 0.5666666666666667,
+          "threshold": 0.9750185012817383
+        },
+        {
+          "fpr": 0.031746031746031744,
+          "tpr": 0.6333333333333333,
+          "threshold": 0.9659541249275208
+        },
+        {
+          "fpr": 0.047619047619047616,
+          "tpr": 0.6333333333333333,
+          "threshold": 0.9638092517852783
+        },
+        {
+          "fpr": 0.047619047619047616,
+          "tpr": 0.7333333333333333,
+          "threshold": 0.9420607089996338
+        },
+        {
+          "fpr": 0.06349206349206349,
+          "tpr": 0.7333333333333333,
+          "threshold": 0.9364995360374451
+        },
+        {
+          "fpr": 0.06349206349206349,
+          "tpr": 0.7666666666666667,
+          "threshold": 0.9317270517349243
+        },
+        {
+          "fpr": 0.1111111111111111,
+          "tpr": 0.7666666666666667,
+          "threshold": 0.91072678565979
+        },
+        {
+          "fpr": 0.1111111111111111,
+          "tpr": 0.8333333333333334,
+          "threshold": 0.8984518051147461
+        },
+        {
+          "fpr": 0.14285714285714285,
+          "tpr": 0.8333333333333334,
+          "threshold": 0.7042287588119507
+        },
+        {
+          "fpr": 0.14285714285714285,
+          "tpr": 0.8666666666666667,
+          "threshold": 0.6283751726150513
+        },
+        {
+          "fpr": 0.2222222222222222,
+          "tpr": 0.8666666666666667,
+          "threshold": 0.4181651473045349
+        },
+        {
+          "fpr": 0.2222222222222222,
+          "tpr": 0.9,
+          "threshold": 0.3423912823200226
+        },
+        {
+          "fpr": 0.23809523809523808,
+          "tpr": 0.9,
+          "threshold": 0.32729876041412354
+        },
+        {
+          "fpr": 0.23809523809523808,
+          "tpr": 0.9333333333333333,
+          "threshold": 0.3228464722633362
+        },
+        {
+          "fpr": 0.3492063492063492,
+          "tpr": 0.9333333333333333,
+          "threshold": 0.07804381847381592
+        },
+        {
+          "fpr": 0.3492063492063492,
+          "tpr": 0.9666666666666667,
+          "threshold": 0.05127793550491333
+        },
+        {
+          "fpr": 0.4444444444444444,
+          "tpr": 0.9666666666666667,
+          "threshold": 0.0237254798412323
+        },
+        {
+          "fpr": 0.4444444444444444,
+          "tpr": 1.0,
+          "threshold": 0.02300313115119934
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0,
+          "threshold": 5.930662155151367e-06
+        }
+      ],
+      "calibration": [
+        {
+          "bin_start": 0.0,
+          "bin_end": 0.1,
+          "center": 0.05,
+          "mean_predicted": 0.011207634752446955,
+          "fraction_positive": 0.045454545454545456,
+          "count": 44
+        },
+        {
+          "bin_start": 0.1,
+          "bin_end": 0.2,
+          "center": 0.15000000000000002,
+          "mean_predicted": 0.16104419827461242,
+          "fraction_positive": 0.0,
+          "count": 5
+        },
+        {
+          "bin_start": 0.2,
+          "bin_end": 0.30000000000000004,
+          "center": 0.25,
+          "mean_predicted": 0.27998101711273193,
+          "fraction_positive": 0.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.30000000000000004,
+          "bin_end": 0.4,
+          "center": 0.35000000000000003,
+          "mean_predicted": 0.33084550499916077,
+          "fraction_positive": 0.6666666666666666,
+          "count": 3
+        },
+        {
+          "bin_start": 0.4,
+          "bin_end": 0.5,
+          "center": 0.45,
+          "mean_predicted": 0.4181651473045349,
+          "fraction_positive": 0.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.5,
+          "bin_end": 0.6000000000000001,
+          "center": 0.55,
+          "mean_predicted": 0.5462577491998672,
+          "fraction_positive": 0.0,
+          "count": 4
+        },
+        {
+          "bin_start": 0.6000000000000001,
+          "bin_end": 0.7000000000000001,
+          "center": 0.6500000000000001,
+          "mean_predicted": 0.6283751726150513,
+          "fraction_positive": 1.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.7000000000000001,
+          "bin_end": 0.8,
+          "center": 0.75,
+          "mean_predicted": 0.75014528632164,
+          "fraction_positive": 0.0,
+          "count": 2
+        },
+        {
+          "bin_start": 0.8,
+          "bin_end": 0.9,
+          "center": 0.8500000000000001,
+          "mean_predicted": 0.8984518051147461,
+          "fraction_positive": 1.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.9,
+          "bin_end": 1.0,
+          "center": 0.95,
+          "mean_predicted": 0.9709273730554888,
+          "fraction_positive": 0.7741935483870968,
+          "count": 31
+        }
+      ]
+    },
+    "clean_dice": 0.6289853959213095,
+    "clean_dice_ci95": [
+      0.5242798860144521,
+      0.7330245094327211
+    ],
+    "clean_n": 55,
+    "cls_roc_auc": 0.9359788359788359,
+    "cls_roc_auc_ci95": [
+      0.8831935228554082,
+      0.9763758815811054
+    ],
+    "normal_false_positive_count": 12,
+    "normal_n": 19
+  },
+  "val_summary": {
+    "n": 134,
+    "seg_threshold": 0.35,
+    "min_component_area": 120,
+    "dice_mean": 0.727203868006044,
+    "dice_ci95": [
+      0.6637304359094683,
+      0.7840380134813628
+    ],
+    "iou_mean": 0.6589668181647319,
+    "iou_ci95": [
+      0.5970935379406375,
+      0.7150189989171715
+    ],
+    "lesion_dice_mean": 0.8148226873604059,
+    "lesion_dice_ci95": [
+      0.767770810223495,
+      0.8544869035565157
+    ],
+    "by_label": {
+      "benign": {
+        "n": 75,
+        "dice_mean": 0.8472699643890286,
+        "dice_ci95": [
+          0.7913935252977091,
+          0.8936110193069392
+        ],
+        "iou_mean": 0.7817146220288262
+      },
+      "malignant": {
+        "n": 36,
+        "dice_mean": 0.7472241935507744,
+        "dice_ci95": [
+          0.6808016272010923,
+          0.8127558234946228
+        ],
+        "iou_mean": 0.6298043601696457
+      },
+      "normal": {
+        "n": 23,
+        "dice_mean": 0.3043478267741239,
+        "dice_ci95": [
+          0.13043478312843088,
+          0.4782608704165307
+        ],
+        "iou_mean": 0.3043478267741239
+      }
+    },
+    "classification": {
+      "n": 111,
+      "decision_threshold": 0.5,
+      "roc_auc": 0.9448148148148148,
+      "accuracy": 0.8828828828828829,
+      "sensitivity": 0.8333333333333334,
+      "specificity": 0.9066666666666666,
+      "ece": 0.08923407100342412,
+      "confusion_matrix": {
+        "labels": [
+          "benign",
+          "malignant"
+        ],
+        "matrix": [
+          [
+            68,
+            7
+          ],
+          [
+            6,
+            30
+          ]
+        ],
+        "row_means_true": true
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0,
+          "threshold": null
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.027777777777777776,
+          "threshold": 0.9995771646499634
+        },
+        {
+          "fpr": 0.013333333333333334,
+          "tpr": 0.027777777777777776,
+          "threshold": 0.999438464641571
+        },
+        {
+          "fpr": 0.013333333333333334,
+          "tpr": 0.6111111111111112,
+          "threshold": 0.9715284109115601
+        },
+        {
+          "fpr": 0.02666666666666667,
+          "tpr": 0.6111111111111112,
+          "threshold": 0.9711915254592896
+        },
+        {
+          "fpr": 0.02666666666666667,
+          "tpr": 0.6944444444444444,
+          "threshold": 0.8931671380996704
+        },
+        {
+          "fpr": 0.04,
+          "tpr": 0.6944444444444444,
+          "threshold": 0.8558224439620972
+        },
+        {
+          "fpr": 0.04,
+          "tpr": 0.7222222222222222,
+          "threshold": 0.8280164003372192
+        },
+        {
+          "fpr": 0.08,
+          "tpr": 0.7222222222222222,
+          "threshold": 0.8017615079879761
+        },
+        {
+          "fpr": 0.08,
+          "tpr": 0.8333333333333334,
+          "threshold": 0.5205540060997009
+        },
+        {
+          "fpr": 0.09333333333333334,
+          "tpr": 0.8333333333333334,
+          "threshold": 0.515017032623291
+        },
+        {
+          "fpr": 0.09333333333333334,
+          "tpr": 0.9166666666666666,
+          "threshold": 0.2581371068954468
+        },
+        {
+          "fpr": 0.13333333333333333,
+          "tpr": 0.9166666666666666,
+          "threshold": 0.09225350618362427
+        },
+        {
+          "fpr": 0.13333333333333333,
+          "tpr": 0.9444444444444444,
+          "threshold": 0.09178546071052551
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.9444444444444444,
+          "threshold": 0.06672072410583496
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.9722222222222222,
+          "threshold": 0.058856964111328125
+        },
+        {
+          "fpr": 0.6933333333333334,
+          "tpr": 0.9722222222222222,
+          "threshold": 0.001496434211730957
+        },
+        {
+          "fpr": 0.6933333333333334,
+          "tpr": 1.0,
+          "threshold": 0.001112431287765503
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0,
+          "threshold": 3.069639205932617e-06
+        }
+      ],
+      "calibration": [
+        {
+          "bin_start": 0.0,
+          "bin_end": 0.1,
+          "center": 0.05,
+          "mean_predicted": 0.012917091881019482,
+          "fraction_positive": 0.043478260869565216,
+          "count": 69
+        },
+        {
+          "bin_start": 0.1,
+          "bin_end": 0.2,
+          "center": 0.15000000000000002,
+          "mean_predicted": 0.1452159434556961,
+          "fraction_positive": 0.0,
+          "count": 2
+        },
+        {
+          "bin_start": 0.2,
+          "bin_end": 0.30000000000000004,
+          "center": 0.25,
+          "mean_predicted": 0.2581371068954468,
+          "fraction_positive": 1.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.30000000000000004,
+          "bin_end": 0.4,
+          "center": 0.35000000000000003,
+          "mean_predicted": 0.3814969062805176,
+          "fraction_positive": 1.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.4,
+          "bin_end": 0.5,
+          "center": 0.45,
+          "mean_predicted": 0.4097409248352051,
+          "fraction_positive": 1.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.5,
+          "bin_end": 0.6000000000000001,
+          "center": 0.55,
+          "mean_predicted": 0.517785519361496,
+          "fraction_positive": 0.5,
+          "count": 2
+        },
+        {
+          "bin_start": 0.6000000000000001,
+          "bin_end": 0.7000000000000001,
+          "center": 0.6500000000000001,
+          "mean_predicted": 0.6795902848243713,
+          "fraction_positive": 1.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.7000000000000001,
+          "bin_end": 0.8,
+          "center": 0.75,
+          "mean_predicted": 0.7292962074279785,
+          "fraction_positive": 1.0,
+          "count": 2
+        },
+        {
+          "bin_start": 0.8,
+          "bin_end": 0.9,
+          "center": 0.8500000000000001,
+          "mean_predicted": 0.8386380076408386,
+          "fraction_positive": 0.3333333333333333,
+          "count": 6
+        },
+        {
+          "bin_start": 0.9,
+          "bin_end": 1.0,
+          "center": 0.95,
+          "mean_predicted": 0.985614918745481,
+          "fraction_positive": 0.9230769230769231,
+          "count": 26
+        }
+      ]
+    },
+    "clean_dice": 0.7184998762378598,
+    "clean_dice_ci95": [
+      0.6307973683876946,
+      0.801846255776297
+    ],
+    "clean_n": 73,
+    "cls_roc_auc": 0.9448148148148148,
+    "cls_roc_auc_ci95": [
+      0.8896711984457083,
+      0.9857559034468605
+    ],
+    "normal_false_positive_count": 16,
+    "normal_n": 23
+  },
+  "no_lump_gate": {
+    "val_tune": {
+      "baseline_val_lesion_dice": 0.8148226873604059,
+      "baseline_val_normal_fp": 16,
+      "retuned": {
+        "mask_max_thr": 0.97,
+        "val_lesion_dice": 0.8068823136270837,
+        "val_lesion_dice_drop": 0.007940373733322126,
+        "val_normal_fp": 8,
+        "val_normal_n": 23,
+        "val_fp_cleared": 8
+      },
+      "fixed_0_96": {
+        "mask_max_thr": 0.96,
+        "val_lesion_dice": 0.8068823136270837,
+        "val_normal_fp": 12
+      }
+    },
+    "test_fixed_0_96": {
+      "mask_max_thr": 0.96,
+      "lesion_dice_before": 0.7718870653539949,
+      "lesion_dice_after": 0.7481614391801725,
+      "lesion_dice_drop": 0.023725626173822345,
+      "normal_fp_before": 12,
+      "normal_fp_after": 8,
+      "normal_n": 19
+    },
+    "test_retuned": {
+      "mask_max_thr": 0.97,
+      "lesion_dice_before": 0.7718870653539949,
+      "lesion_dice_after": 0.7370688587289005,
+      "lesion_dice_drop": 0.03481820662509438,
+      "normal_fp_before": 12,
+      "normal_fp_after": 8,
+      "normal_n": 19
+    }
+  },
+  "latency": {
+    "backend": "onnxruntime_cpu",
+    "note": "CPU ORT latency proxy for in-browser WASM (browser typically slower).",
+    "img_size": 224,
+    "n_runs": 30,
+    "ms_mean": 32.512627633317,
+    "ms_std": 1.4382087423381524,
+    "ms_p50": 32.07823449997704,
+    "ms_p95": 35.87307069981306
+  },
+  "v1_latency_reference": {
+    "backend": "onnxruntime_cpu",
+    "note": "CPU ORT latency proxy for in-browser WASM (browser typically slower).",
+    "img_size": 160,
+    "n_runs": 30,
+    "ms_mean": 18.608807699941583,
+    "ms_std": 0.914567633097522,
+    "ms_p50": 18.24334799994176,
+    "ms_p95": 20.647501849862234
+  },
+  "external": {
+    "datasets": {
+      "busbra": {
+        "n": 1875,
+        "dice": 0.6961918056040448,
+        "dice_ci95": [
+          0.6801008278976582,
+          0.7112788755924457
+        ],
+        "lesion_dice": 0.6961918056040448,
+        "lesion_dice_ci95": [
+          0.6801008278976582,
+          0.7112788755924457
+        ],
+        "normal_fp": 0,
+        "normal_n": 0,
+        "auc": 0.644427655273128
+      },
+      "breast": {
+        "n": 256,
+        "dice": 0.5892162467455958,
+        "dice_ci95": [
+          0.5439136125167531,
+          0.6372711702234582
+        ],
+        "lesion_dice": 0.5906323776418213,
+        "lesion_dice_ci95": [
+          0.5454590656933809,
+          0.6358457372580631
+        ],
+        "normal_fp": 2,
+        "normal_n": 4,
+        "auc": 0.7676252319109462
+      }
+    },
+    "skipped": {
+      "busuclm": "FileNotFoundError: BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) often returns HTTP 403 without interactive login. Download the zip locally, extract under data/external/busuclm/ (see docs/BUSUCLM_STEPS.md), then re-run."
+    }
+  },
+  "swap": {
+    "rule": "D3 MODEL_POLICY: clean Dice \u2265 v1, external Dice \u2265 v1, AUC drop \u2264 0.02, INT8 \u2264 ~25 MB",
+    "abbreviated_user_rule": "Dice \u2265 v1 and AUC drop \u2264 0.02",
+    "v1": {
+      "test_dice": 0.6972011494235116,
+      "test_dice_ci95": [
+        0.6318544128007265,
+        0.7656603082162292
+      ],
+      "lesion_dice": 0.7643712765714284,
+      "lesion_dice_ci95": [
+        0.7049727284836597,
+        0.8211196389529184
+      ],
+      "iou": 0.6295263549739772,
+      "iou_ci95": [
+        0.567721238896154,
+        0.6939308107729822
+      ],
+      "auc": 0.9306878306878307,
+      "clean_dice": 0.6229383436474434,
+      "normal_fp": 12,
+      "normal_n": 19,
+      "int8_mb": 11.664,
+      "img_size": 160,
+      "busbra_dice": 0.7136202288207832,
+      "breast_dice": 0.6265385719593876,
+      "busuclm_dice": 0.386,
+      "busuclm_lesion_dice": 0.679,
+      "no_lump_gate_0_96_fp": 10
+    },
+    "candidate": {
+      "dice": 0.7034419382749195,
+      "clean_dice": 0.6289853959213095,
+      "auc": 0.9359788359788359,
+      "busbra_dice": 0.6961918056040448,
+      "breast_dice": 0.5892162467455958,
+      "int8_mb": 11.664
+    },
+    "checks": {
+      "clean_dice_ok": true,
+      "dice_ok": true,
+      "auc_ok": true,
+      "busbra_ok": false,
+      "breast_ok": false,
+      "size_ok": true
+    },
+    "swap_ok": false,
+    "abbreviated_pass": true,
+    "served_unchanged": true
+  },
+  "train_meta": {
+    "train_runtime_seconds": 1478.176344871521,
+    "best_val_lesion_dice": 0.819637534618288
+  }
+}
