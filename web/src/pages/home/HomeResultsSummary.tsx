@@ -9,8 +9,8 @@ export function HomeResultsSummary() {
       </h2>
       <ul className="home-results-list">
         <li>
-          On held-out BUSI images, the computer outline matches the expert outline about{' '}
-          <strong>0.70 out of 1</strong> by outline-overlap score (Dice).
+          On held-out BUSI images, the computer outline matches the expert outline{' '}
+          <strong>0.697 out of 1</strong> by outline-overlap score (Dice).
         </li>
         <li>The same frozen model was checked on three outside public datasets.</li>
         <li>It runs on your device. Images you open here are never uploaded.</li>

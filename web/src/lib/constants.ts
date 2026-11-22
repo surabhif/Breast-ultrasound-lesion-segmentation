@@ -19,6 +19,12 @@ export const CLS_THRESHOLD = 0.5
 export const NO_LUMP_MASK_MAX_THR = 0.96
 export const NO_LUMP_GATE_DEFAULT_ON = true
 
+/**
+ * Project / software version (docs, cite, package). Independent of the served
+ * ONNX weights — bump this for site/docs releases even when MODEL_VERSION stays.
+ */
+export const PROJECT_VERSION = '1.0.1'
+
 /** Semantic model version for the currently shipped INT8 weights. */
 export const MODEL_VERSION = '1.0.0'
 
@@ -101,7 +107,10 @@ export const SITE = {
   tagline: 'Browser research demo on the BUSI ultrasound dataset',
   githubUrl: 'https://github.com/surabhif/Breast-ultrasound-lesion-segmentation',
   pagesUrl: 'https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/',
-  /** Zenodo version DOI for the v1.0.0 GitHub Release (record 23286597). */
+  /**
+   * Zenodo concept DOI (all versions; currently also the v1.0.0 version DOI).
+   * A new version DOI for project 1.0.1 will be added after Zenodo mints it.
+   */
   doi: '10.5281/zenodo.23286597',
   doiUrl: 'https://doi.org/10.5281/zenodo.23286597',
   linkedinUrl: 'https://www.linkedin.com/in/surabhi-fadnavis-804065329/',

@@ -2,8 +2,32 @@
 
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
+Project / software versions (docs, cite, `package.json`) can move without a new served model.
 
-## [Unreleased] — v1.1 candidate comparison (write-up only, 2026-11-21)
+## [1.0.1] — Project / docs release (2026-11-22)
+
+**In plain words:** Project and docs release **1.0.1**. The live browser model stays **v1.0.0** — same weights, same default thresholds, same reported BUSI headline scores. This locks in everything merged since the v1.0.0 Zenodo record ([DOI 10.5281/zenodo.23286597](https://doi.org/10.5281/zenodo.23286597)): LinkedIn name links, plain-language docs cleanup, Why page, display-only no-lump outline gate (PR #19), SEO + one-page summary PDF, guided tour, UX upgrades (PRs #22–#23), outside-set re-score with the gate (PR #24), averaging experiment (PR #25, **not shipped**), and v1.1 trial write-up (PR #26, **not adopted**).
+
+### Version surfaces
+
+- `CITATION.cff` / `.zenodo.json` / `web/package.json` → **1.0.1** (planned `date-released: 2026-11-22`)
+- Footer: **Project v1.0.1 · Model v1.0.0 (weights unchanged)**
+- Concept DOI kept; a new version DOI is added after the owner publishes the GitHub Release / Zenodo deposit
+- Exact credit line and research-demo disclaimer unchanged
+
+### Metric copy fixes (same results JSON)
+
+- INT8 lesion Dice CI **[0.705–0.821]** (was mistyped 0.706–0.820 in some docs)
+- INT8 Test IoU **0.630** at 3 d.p. (was 0.629 in README table)
+- Home summary uses **0.697** (not rounded 0.70)
+
+### Included since Zenodo v1.0.0 (detail below)
+
+- LinkedIn credit links; plain-language docs/site copy; Why page; no-lump display gate; Lighthouse SEO + `summary.pdf`; Try-3 tour; UX upgrades; gated outside re-score; TTA averaging write-up (no ship); v1.1 candidates write-up (not adopted)
+
+---
+
+## [1.0.1 detail] — v1.1 candidate comparison (write-up only, 2026-11-21)
 
 **In plain words:** Tried three larger BUSI-only U-Nets on the same cleaned data and frozen splits as v1.0.0. None passed the full swap rule (outside Dice fell). One setting (`r18_224`) matched/beat v1 on held-out Dice and AUC but failed outside Dice. **Write-up only** — no Results UI table, no candidate ONNX on the site. Served model stays **v1.0.0**.
 
@@ -24,7 +48,7 @@ Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.
 
 BUS-UCLM was not available on the Cursor VM for this run (manual download). Owner decision: keep the docs/JSON write-up; do **not** ship a candidate on Results or under `web/public/models/`.
 
-## [Unreleased] — Test-time averaging experiment (2026-11-21)
+## [1.0.1 detail] — Test-time averaging experiment (2026-11-21)
 
 **In plain words:** Tried averaging the outline and the harmless/cancerous score over a few flipped/shifted/zoomed views of each image (no retraining). It did **not** earn a place in the demo. Served model stays **v1.0.0**.
 
@@ -47,7 +71,7 @@ BUS-UCLM was not available on the Cursor VM for this run (manual download). Owne
 
 Outside outline Dice fell on BUS-BRA and BrEaST with averaging. Full table in `docs/TTA_AVERAGING.md`.
 
-## [Unreleased] — Outside-set no-lump gate re-score (2026-11-21)
+## [1.0.1 detail] — Outside-set no-lump gate re-score (2026-11-21)
 
 **In plain words:** Re-scored BUS-BRA and BrEaST for the display-only no-lump outline gate (hide when peak soft-mask &lt; **0.96**, from PR #19) with the same frozen **v1.0.0** model, splits, and preprocessing as the published outside results. The gate value and BUSI held-out numbers were **not** changed. On both available outside sets, overall and lump-only Dice got **worse**; AUC stayed the same. **BUS-UCLM** was not available on the evaluation VM (Mendeley HTTP 403), so no gated numbers are claimed for that set.
 
@@ -74,7 +98,7 @@ Outside outline Dice fell on BUS-BRA and BrEaST with averaging. Full table in `d
 
 - Served weights remain **v1.0.0**. Gate threshold remains **0.96**. BUSI held-out gate table unchanged.
 
-## [Unreleased] — Five site upgrades (2026-11-03)
+## [1.0.1 detail] — Five site upgrades (2026-11-03)
 
 **In plain words:** Five small site upgrades on top of the Model Errors explorer and demo threshold controls. The served model stays **v1.0.0** — no weight, default threshold (including the 0.96 no-lump display gate), or reported-metric changes.
 
@@ -95,7 +119,7 @@ Outside outline Dice fell on BUS-BRA and BrEaST with averaging. Full table in `d
 - Demo `rethreshold` / `SEG_THRESHOLD` / no-lump gate constants
 - Existing credit line, disclaimer, LinkedIn name link, and dark-mode tokens
 
-## [Unreleased] — Site UX upgrades (2026-11-03)
+## [1.0.1 detail] — Site UX upgrades (2026-11-03)
 
 **In plain words:** Six small site upgrades. The served model stays **v1.0.0** — no weight, threshold, or reported-metric changes.
 
@@ -122,7 +146,7 @@ Outside outline Dice fell on BUS-BRA and BrEaST with averaging. Full table in `d
 
 Accessibility / Best Practices / SEO stayed at 100 on both pages.
 
-## [Unreleased] — Phase 4 (2026-10-10)
+## [Phase 4] — 2026-10-10 (included in Zenodo v1.0.0 freeze pack)
 
 **In plain words:** Tried a larger multi-dataset model. Fair tests did not beat v1, so the site still serves **v1.0.0**. Also scored BUS-UCLM on a local copy and added demo upload / offline extras.
 
@@ -249,7 +273,7 @@ E-a: erasing markers did **not** drop flagged Dice toward clean (flagged Dice st
 | | FP32 PyTorch (training preprocess) | INT8 ONNX (served preprocess) |
 |---|---|---|
 | Test Dice | 0.686 [0.619–0.750] | 0.697 [0.632–0.766] |
-| Lesion Dice | 0.751 [0.689–0.808] | 0.764 [0.706–0.820] |
+| Lesion Dice | 0.751 [0.689–0.808] | 0.764 [0.705–0.821] |
 | Cls AUC | 0.939 | 0.931 |
 | Normal FP masks | 12/19 | 12/19 |
 

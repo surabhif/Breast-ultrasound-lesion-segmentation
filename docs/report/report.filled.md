@@ -1,6 +1,6 @@
 # Breast Ultrasound Lesion Segmentation: Research Write-up
 
-Version 1.0.0 · Site-only research report  
+Project v1.0.1 · served model v1.0.0 · Site-only research report  
 Author: Surabhi Fadnavis (high-school senior, Georgia)
 
 > Research demo — not for clinical use.

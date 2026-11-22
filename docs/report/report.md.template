@@ -1,10 +1,10 @@
 # Breast Ultrasound Lesion Segmentation: Research Write-up
 
-**Version {{MODEL_VERSION}} · Site-only research report (not a journal submission)**  
+**Project v{{PROJECT_VERSION}} · served model v{{MODEL_VERSION}} · Site-only research report (not a journal submission)**  
 **Author:** Surabhi Fadnavis (high-school senior, Georgia)  
 **Live demo:** {{PAGES_URL}}  
 **Repository:** {{GITHUB_URL}}  
-**Software DOI:** {{DOI_URL}}
+**Software DOI (concept / until 1.0.1 version DOI is minted):** {{DOI_URL}}
 
 > Research demo — not for clinical use. Not clinician-reviewed. Not for diagnosis, screening, or care decisions.
 
@@ -111,7 +111,7 @@ Code is MIT. Full BUSI is not redistributed (license unclear); cite Al-Dhabyani 
 4. Pawłowska A, et al. BrEaST — Breast Cancer Dataset. TCIA; 2024. CC BY 4.0.
 5. Moran MS, et al. SSO–ASTRO consensus guideline on margins for breast-conserving surgery. 2014.
 6. Project repository: {{GITHUB_URL}}
-7. Fadnavis S. Breast Ultrasound Lesion Segmentation (Version 1.0.0). Zenodo; 2026. {{DOI_URL}}
+7. Fadnavis S. Breast Ultrasound Lesion Segmentation (Version {{PROJECT_VERSION}}). Zenodo; 2026. {{DOI_URL}}
 
 ---
 

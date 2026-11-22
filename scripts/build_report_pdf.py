@@ -201,6 +201,8 @@ def collect_numbers() -> dict[str, str]:
     dc = clean["dataset_counts"]
     subsets = full.get("subset_sizes") or {}
     nums = {
+        # Project / software version (cite + report header). Served weights stay MODEL_VERSION.
+        "PROJECT_VERSION": "1.0.1",
         "MODEL_VERSION": "1.0.0",
         "PAGES_URL": "https://surabhif.github.io/Breast-ultrasound-lesion-segmentation/",
         "GITHUB_URL": "https://github.com/surabhif/Breast-ultrasound-lesion-segmentation",
@@ -871,11 +873,22 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
 
     story = []
     story.append(P("Breast Ultrasound Lesion Segmentation: Research Write-up", "TitleTeal"))
-    story.append(P(f"Version {nums['MODEL_VERSION']} · Site-only research report (not a journal submission)", "Meta"))
+    story.append(
+        P(
+            f"Project v{nums['PROJECT_VERSION']} · served model v{nums['MODEL_VERSION']} · "
+            "Site-only research report (not a journal submission)",
+            "Meta",
+        )
+    )
     story.append(P("Author: Surabhi Fadnavis (high-school senior, Georgia)", "Meta"))
     story.append(P(f"Live demo: {nums['PAGES_URL']}", "Meta"))
     story.append(P(f"Repository: {nums['GITHUB_URL']}", "Meta"))
-    story.append(P(f"Software DOI: {nums['DOI_URL']}", "Meta"))
+    story.append(
+        P(
+            f"Software DOI (concept / until 1.0.1 version DOI is minted): {nums['DOI_URL']}",
+            "Meta",
+        )
+    )
     story.append(Spacer(1, 6))
     story.append(
         P(
@@ -1556,7 +1569,9 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
     story.append(P("12. Reproducibility", "H1R"))
     story.append(
         P(
-            f"Software version {nums['MODEL_VERSION']} is archived with DOI {nums['DOI_URL']}. "
+            f"Project software version {nums['PROJECT_VERSION']} (served model still "
+            f"v{nums['MODEL_VERSION']}) is archived with concept DOI {nums['DOI_URL']} "
+            f"(a new version DOI is added after Zenodo mints it for this release). "
             f"To regenerate this PDF: install Python dependencies (reportlab, pypdf, matplotlib), "
             f"run the report builder script from the repository root, then run the drift check so "
             f"every locked number still appears in the PDF text. Paper metrics are exported from the "
@@ -1660,7 +1675,7 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
         "Musah et al. On de-duplication and out-of-distribution breast ultrasound segmentation. arXiv:2508.17768. 2025.",
         "Wang L. Classification performance under dataset shift in breast ultrasound. Diagnostics. 2026;16(10):1537.",
         "Moran MS, et al. Society of Surgical Oncology–American Society for Radiation Oncology consensus guideline on margins for breast-conserving surgery. 2014.",
-        f"Fadnavis S. Breast Ultrasound Lesion Segmentation (Version {nums['MODEL_VERSION']}). Zenodo; 2026. {nums['DOI_URL']}",
+        f"Fadnavis S. Breast Ultrasound Lesion Segmentation (Version {nums['PROJECT_VERSION']}). Zenodo; 2026. {nums['DOI_URL']}",
         f"Project repository: {nums['GITHUB_URL']}",
     ]
     for i, r in enumerate(refs, 1):
@@ -1677,7 +1692,7 @@ def build_pdf(nums: dict[str, str], figs: dict[str, Path]) -> None:
 
     md = f"""# Breast Ultrasound Lesion Segmentation: Research Write-up
 
-Version {nums['MODEL_VERSION']} · Site-only research report  
+Project v{nums['PROJECT_VERSION']} · served model v{nums['MODEL_VERSION']} · Site-only research report  
 Author: Surabhi Fadnavis (high-school senior, Georgia)
 
 > Research demo — not for clinical use.

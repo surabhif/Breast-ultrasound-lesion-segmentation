@@ -3,7 +3,7 @@ import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import NavMenu from './components/NavMenu'
 import ThemeToggle from './components/ThemeToggle'
 import HomePage from './pages/HomePage'
-import { MODEL_STATUS, SITE } from './lib/constants'
+import { MODEL_STATUS, PROJECT_VERSION, SITE } from './lib/constants'
 import './App.css'
 
 // Home stays eager so the first paint does not flash a Suspense fallback (CLS).
@@ -171,7 +171,8 @@ export default function App() {
           </div>
         </div>
         <p className="footer-fine">
-          Model v{MODEL_STATUS.version} · Last updated {__BUILD_DATE__} · MIT license · Research only
+          Project v{PROJECT_VERSION} · Model v{MODEL_STATUS.version} (weights unchanged) · Last
+          updated {__BUILD_DATE__} · MIT license · Research only
         </p>
       </footer>
     </div>
