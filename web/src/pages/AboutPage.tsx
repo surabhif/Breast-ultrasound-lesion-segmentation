@@ -1,21 +1,21 @@
 import { Link } from 'react-router-dom'
 import HowBuilt from '../components/HowBuilt'
 import SurabhiNameLink from '../components/SurabhiNameLink'
-import { SITE } from '../lib/constants'
+import { PROJECT_VERSION, SITE } from '../lib/constants'
 import { PLAIN_ABSTRACT } from '../lib/plainAbstract'
 
 const BASE = import.meta.env.BASE_URL
 
-const CITE_APA = `Fadnavis, S. (2026). Breast ultrasound lesion segmentation research demo (Version 1.0.0) [Computer software]. Zenodo. ${SITE.doiUrl}`
+const CITE_APA = `Fadnavis, S. (2026). Breast ultrasound lesion segmentation research demo (Version ${PROJECT_VERSION}) [Computer software]. Zenodo. ${SITE.doiUrl}`
 
 const CITE_BIBTEX = `@software{fadnavis_busi_lesion_seg_2026,
   author  = {Fadnavis, Surabhi},
   title   = {Breast Ultrasound Lesion Segmentation Research Demo},
   year    = {2026},
-  version = {1.0.0},
+  version = {${PROJECT_VERSION}},
   url     = {${SITE.githubUrl}},
   doi     = {${SITE.doi}},
-  note    = {Research demo, not for clinical use}
+  note    = {Research demo, not for clinical use. Served model remains v1.0.0. Concept DOI until the 1.0.1 version DOI is minted.}
 }`
 
 export default function AboutPage() {
@@ -160,11 +160,13 @@ export default function AboutPage() {
         {CITE_BIBTEX}
       </pre>
       <p className="muted tiny">
-        Machine-readable: <code>CITATION.cff</code> in the repository root. Zenodo version DOI:{' '}
+        Machine-readable: <code>CITATION.cff</code> in the repository root. Zenodo concept DOI (all
+        versions; also the v1.0.0 version DOI until a new one is minted for project {PROJECT_VERSION}
+        ):{' '}
         <a href={SITE.doiUrl} target="_blank" rel="noreferrer">
           {SITE.doiUrl}
         </a>
-        .
+        . The live browser model stays <strong>v1.0.0</strong> (weights unchanged).
       </p>
       <p>
         Dataset: Al-Dhabyani W, Gomaa M, Khaled H, Fahmy A. Dataset of breast ultrasound images.

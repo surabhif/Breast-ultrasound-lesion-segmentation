@@ -75,7 +75,11 @@ def main() -> None:
     y -= 0.28 * inch
     c.setFont('Helvetica', 11)
     c.setFillColor(muted)
-    c.drawString(0.75 * inch, y, 'Surabhi Fadnavis · high-school research project · model v1.0.0')
+    c.drawString(
+        0.75 * inch,
+        y,
+        'Surabhi Fadnavis · high-school research project · project v1.0.1 · model v1.0.0',
+    )
 
     y -= 0.35 * inch
     c.setStrokeColor(line)
@@ -162,7 +166,7 @@ def main() -> None:
     y = draw_wrapped(
         c,
         f'Fadnavis, S. (2026). Breast ultrasound lesion segmentation research demo '
-        f'(Version 1.0.0). Zenodo. {DOI}',
+        f'(Version 1.0.1; served model v1.0.0). Zenodo. {DOI}',
         0.75 * inch,
         y,
         W - 1.5 * inch,

@@ -87,6 +87,7 @@
   "N_TOTAL": "780",
   "N_TRAIN": "534",
   "N_VAL": "134",
+  "PROJECT_VERSION": "1.0.1",
   "SEG_THR": "0.4",
   "SERVED_MB": "11.7",
   "UNCERT_COV80": "0.778",

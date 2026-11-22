@@ -21,7 +21,9 @@ test.describe('Demo UX upgrades', () => {
       'href',
       /issues\/new\?template=problem\.yml/,
     )
-    await expect(page.getByText(/Model v1\.0\.0 · Last updated/)).toBeVisible()
+    await expect(
+      page.getByText(/Project v1\.0\.1 · Model v1\.0\.0 \(weights unchanged\) · Last updated/),
+    ).toBeVisible()
 
     const theme = page.getByRole('button', { name: /Switch to (dark|light) mode/ })
     await expect(theme).toBeVisible()

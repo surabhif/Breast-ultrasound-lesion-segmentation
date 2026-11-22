@@ -28,7 +28,7 @@ First freeze-ready release of the breast ultrasound lesion segmentation research
 | Metric | Value |
 |--------|-------|
 | Test Dice (all) | 0.697 [0.632–0.766] |
-| Lesion-only Dice | 0.764 [0.706–0.820] |
+| Lesion-only Dice | 0.764 [0.705–0.821] |
 | Harmless vs cancerous AUC | 0.931 |
 | False outlines on normal (no lump) | 12/19 |
 

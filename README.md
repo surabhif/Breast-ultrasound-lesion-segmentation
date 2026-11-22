@@ -9,7 +9,7 @@ Student research project on the [BUSI](https://doi.org/10.1016/j.dib.2019.104863
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23286597.svg)](https://doi.org/10.5281/zenodo.23286597)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/surabhif/Breast-ultrasound-lesion-segmentation/blob/main/notebooks/01_train_busi.ipynb)
 
-**How to cite:** Fadnavis, S. (2026). Breast Ultrasound Lesion Segmentation (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.23286597. Also `CITATION.cff` / About → How to cite.
+**How to cite:** Fadnavis, S. (2026). Breast Ultrasound Lesion Segmentation (Version 1.0.1). Zenodo. https://doi.org/10.5281/zenodo.23286597 (concept DOI; a new version DOI for 1.0.1 will be added after Zenodo mints it). Served model remains **v1.0.0**. Also `CITATION.cff` / About → How to cite.
 
 ---
 
@@ -24,8 +24,10 @@ Student research project on the [BUSI](https://doi.org/10.1016/j.dib.2019.104863
 | `docs/EXTERNAL_VALIDATION_PROTOCOL.md` | How outside datasets were scored, and when a new model may replace the served one |
 | `docs/DECISION_LOG.md` | Project decisions log |
 | `docs/LITERATURE_COMPARISON.md` | Verified literature table + split/leakage notes |
-| `docs/ZENODO_STEPS.md` | How the DOI was made / release checklist |
-| `docs/FREEZE_CHECKLIST.md` | Owner freeze checklist |
+| `docs/ZENODO_STEPS.md` | How the DOI was made / Zenodo↔GitHub steps |
+| `docs/RELEASE_NOTES_v1.0.1.md` | Plain-language notes for project v1.0.1 (model stays v1.0.0) |
+| `docs/RELEASE_CHECKLIST.md` | Owner-only steps to publish v1.0.1 (tag / GitHub Release / Zenodo) |
+| `docs/FREEZE_CHECKLIST.md` | Owner freeze checklist (v1.0.0) |
 | `docs/SUBMISSION_GUIDE.md` | JEI vs arXiv (no auto-submit) |
 | `docs/BUSUCLM_STEPS.md` | How to reproduce the BUS-UCLM test |
 | `docs/TTA_AVERAGING.md` | Test-time averaging try (no ship; comparison table) |
@@ -62,8 +64,8 @@ CPU-trained ResNet-18 U-Net, 160×160, grouped held-out test; val-tuned threshol
 | Metric | Full-precision training | Browser model (compressed) |
 |--------|-------------------------|----------------------------|
 | Test Dice (all) | 0.686 [0.619–0.750] | **0.697** [0.632–0.766] |
-| Lesion-only Dice | 0.751 [0.689–0.808] | **0.764** [0.706–0.820] |
-| Test IoU | 0.618 | **0.629** |
+| Lesion-only Dice | 0.751 [0.689–0.808] | **0.764** [0.705–0.821] |
+| Test IoU | 0.618 | **0.630** |
 | Harmless vs cancerous AUC | 0.939 | **0.931** |
 | False outlines on normal (no lump) | 12/19 | **12/19** |
 | Artifact size | 46.3 MB | **~11.7 MB** |
