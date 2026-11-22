@@ -1,0 +1,541 @@
+{
+  "label": "Test-time averaging (soft mask + class score) for v1.0.0 \u2014 no retraining",
+  "disclaimer": "Research demo. Not for clinical use. Display / inference option only.",
+  "model_path": "web/public/models/v1.0.0/busi_unet.onnx",
+  "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "seg_threshold": 0.4,
+  "min_component_area": 40,
+  "no_lump_mask_max_thr": 0.96,
+  "gate_applied": true,
+  "presets": {
+    "single": [
+      "id"
+    ],
+    "hflip2": [
+      "id",
+      "h"
+    ],
+    "hflip_scale": [
+      "id",
+      "h",
+      "s095",
+      "s105"
+    ],
+    "hflip_shift": [
+      "id",
+      "h",
+      "u4",
+      "d4",
+      "l4",
+      "r4"
+    ]
+  },
+  "busi_test": {
+    "single": {
+      "n": 112,
+      "dice_mean": 0.7100985826433954,
+      "dice_ci95": [
+        0.6443932942158068,
+        0.7766898871732077
+      ],
+      "iou_mean": 0.6451626920764272,
+      "iou_ci95": [
+        0.5808619591897303,
+        0.7082753643336908
+      ],
+      "lesion_dice_mean": 0.7583982929398982,
+      "lesion_dice_ci95": [
+        0.6961425742603018,
+        0.8159782722777097
+      ],
+      "lesion_n": 93,
+      "cls_roc_auc": 0.9285714285714286,
+      "normal_n": 19,
+      "normal_false_positive_count": 10,
+      "normal_false_positive_rate": 0.5263157894736842,
+      "ms_mean": 12.179941812498944,
+      "ms_median": 11.897490499990226,
+      "gated_count": 18,
+      "n_views": 1,
+      "view_ids": [
+        "id"
+      ]
+    },
+    "hflip2": {
+      "n": 112,
+      "dice_mean": 0.7179061512435868,
+      "dice_ci95": [
+        0.6526174061647814,
+        0.7844136337256663
+      ],
+      "iou_mean": 0.6565719137157211,
+      "iou_ci95": [
+        0.5931590855151664,
+        0.7181304867215312
+      ],
+      "lesion_dice_mean": 0.7570482680381576,
+      "lesion_dice_ci95": [
+        0.6924575801321847,
+        0.8171357741732618
+      ],
+      "lesion_n": 93,
+      "cls_roc_auc": 0.9328042328042329,
+      "normal_n": 19,
+      "normal_false_positive_count": 9,
+      "normal_false_positive_rate": 0.47368421052631576,
+      "ms_mean": 23.818884874998755,
+      "ms_median": 23.6819765000007,
+      "gated_count": 21,
+      "n_views": 2,
+      "view_ids": [
+        "id",
+        "h"
+      ]
+    },
+    "hflip_scale": {
+      "n": 112,
+      "dice_mean": 0.7278230797281313,
+      "dice_ci95": [
+        0.6615998544013392,
+        0.7918951034049972
+      ],
+      "iou_mean": 0.6669878078164055,
+      "iou_ci95": [
+        0.6034245647557469,
+        0.7295035747827816
+      ],
+      "lesion_dice_mean": 0.7474858593456786,
+      "lesion_dice_ci95": [
+        0.6818755772206341,
+        0.8077581502080227
+      ],
+      "lesion_n": 93,
+      "cls_roc_auc": 0.9423280423280425,
+      "normal_n": 19,
+      "normal_false_positive_count": 7,
+      "normal_false_positive_rate": 0.3684210526315789,
+      "ms_mean": 47.49531447321559,
+      "ms_median": 47.27952000001778,
+      "gated_count": 24,
+      "n_views": 4,
+      "view_ids": [
+        "id",
+        "h",
+        "s095",
+        "s105"
+      ]
+    },
+    "hflip_shift": {
+      "n": 112,
+      "dice_mean": 0.7172735854180886,
+      "dice_ci95": [
+        0.6510391846614157,
+        0.7829392253283609
+      ],
+      "iou_mean": 0.6545809822205213,
+      "iou_ci95": [
+        0.5909415180082357,
+        0.7164918185788808
+      ],
+      "lesion_dice_mean": 0.7562864683411529,
+      "lesion_dice_ci95": [
+        0.6931271976628162,
+        0.8149536547941479
+      ],
+      "lesion_n": 93,
+      "cls_roc_auc": 0.9354497354497354,
+      "normal_n": 19,
+      "normal_false_positive_count": 9,
+      "normal_false_positive_rate": 0.47368421052631576,
+      "ms_mean": 70.90055286607034,
+      "ms_median": 70.57943899999941,
+      "gated_count": 20,
+      "n_views": 6,
+      "view_ids": [
+        "id",
+        "h",
+        "u4",
+        "d4",
+        "l4",
+        "r4"
+      ]
+    }
+  },
+  "external": {
+    "busbra": {
+      "available": true,
+      "summary": {
+        "single": {
+          "n": 1875,
+          "dice_mean": 0.6526593397047832,
+          "dice_ci95": [
+            0.6346528417582011,
+            0.6699066703483931
+          ],
+          "iou_mean": 0.5623192822084359,
+          "iou_ci95": [
+            0.5448989714958529,
+            0.5782149534971913
+          ],
+          "lesion_dice_mean": 0.6526593397047832,
+          "lesion_dice_ci95": [
+            0.6346528417582011,
+            0.6699066703483931
+          ],
+          "lesion_n": 1875,
+          "cls_roc_auc": 0.638920792645217,
+          "normal_n": 0,
+          "normal_false_positive_count": 0,
+          "normal_false_positive_rate": null,
+          "ms_mean": 11.92966717866693,
+          "ms_median": 11.874272999989444,
+          "gated_count": 324,
+          "n_views": 1,
+          "view_ids": [
+            "id"
+          ]
+        },
+        "hflip2": {
+          "n": 1875,
+          "dice_mean": 0.6362550555747927,
+          "dice_ci95": [
+            0.617090098250982,
+            0.6545695078431019
+          ],
+          "iou_mean": 0.5484229881803857,
+          "iou_ci95": [
+            0.5304106765833815,
+            0.56537949951357
+          ],
+          "lesion_dice_mean": 0.6362550555747927,
+          "lesion_dice_ci95": [
+            0.617090098250982,
+            0.6545695078431019
+          ],
+          "lesion_n": 1875,
+          "cls_roc_auc": 0.6390201851168544,
+          "normal_n": 0,
+          "normal_false_positive_count": 0,
+          "normal_false_positive_rate": null,
+          "ms_mean": 23.944675234666676,
+          "ms_median": 23.677273000032528,
+          "gated_count": 370,
+          "n_views": 2,
+          "view_ids": [
+            "id",
+            "h"
+          ]
+        },
+        "hflip_scale": {
+          "n": 1875,
+          "dice_mean": 0.6238943540060488,
+          "dice_ci95": [
+            0.6036025898647694,
+            0.644003964385173
+          ],
+          "iou_mean": 0.5425856066200685,
+          "iou_ci95": [
+            0.5239477916942715,
+            0.5611755052156687
+          ],
+          "lesion_dice_mean": 0.6238943540060488,
+          "lesion_dice_ci95": [
+            0.6036025898647694,
+            0.644003964385173
+          ],
+          "lesion_n": 1875,
+          "cls_roc_auc": 0.6948625135771416,
+          "normal_n": 0,
+          "normal_false_positive_count": 0,
+          "normal_false_positive_rate": null,
+          "ms_mean": 47.609106553065004,
+          "ms_median": 47.34720600004039,
+          "gated_count": 437,
+          "n_views": 4,
+          "view_ids": [
+            "id",
+            "h",
+            "s095",
+            "s105"
+          ]
+        },
+        "hflip_shift": {
+          "n": 1875,
+          "dice_mean": 0.6362317043282958,
+          "dice_ci95": [
+            0.6174836390725091,
+            0.654642631802185
+          ],
+          "iou_mean": 0.5490000384131285,
+          "iou_ci95": [
+            0.5310321635120049,
+            0.565619159571684
+          ],
+          "lesion_dice_mean": 0.6362317043282958,
+          "lesion_dice_ci95": [
+            0.6174836390725091,
+            0.654642631802185
+          ],
+          "lesion_n": 1875,
+          "cls_roc_auc": 0.6398666451857665,
+          "normal_n": 0,
+          "normal_false_positive_count": 0,
+          "normal_false_positive_rate": null,
+          "ms_mean": 71.57770611466198,
+          "ms_median": 70.99645599998894,
+          "gated_count": 374,
+          "n_views": 6,
+          "view_ids": [
+            "id",
+            "h",
+            "u4",
+            "d4",
+            "l4",
+            "r4"
+          ]
+        }
+      }
+    },
+    "breast": {
+      "available": true,
+      "summary": {
+        "single": {
+          "n": 256,
+          "dice_mean": 0.5776540899638611,
+          "dice_ci95": [
+            0.5308514170686566,
+            0.626630363458948
+          ],
+          "iou_mean": 0.5068741340338897,
+          "iou_ci95": [
+            0.4636728995302677,
+            0.5515784607429135
+          ],
+          "lesion_dice_mean": 0.5749184405953305,
+          "lesion_dice_ci95": [
+            0.5243458068741287,
+            0.6233299287425509
+          ],
+          "lesion_n": 252,
+          "cls_roc_auc": 0.7203816591571693,
+          "normal_n": 4,
+          "normal_false_positive_count": 1,
+          "normal_false_positive_rate": 0.25,
+          "ms_mean": 42.33882726171867,
+          "ms_median": 46.458163000011155,
+          "gated_count": 66,
+          "n_views": 1,
+          "view_ids": [
+            "id"
+          ]
+        },
+        "hflip2": {
+          "n": 256,
+          "dice_mean": 0.5660515180980644,
+          "dice_ci95": [
+            0.5180882051290984,
+            0.615338907366785
+          ],
+          "iou_mean": 0.5007541764803192,
+          "iou_ci95": [
+            0.4559986366989149,
+            0.5472117210982312
+          ],
+          "lesion_dice_mean": 0.5631317009220251,
+          "lesion_dice_ci95": [
+            0.5102700767194909,
+            0.6126849717981638
+          ],
+          "lesion_n": 252,
+          "cls_roc_auc": 0.7360853432282003,
+          "normal_n": 4,
+          "normal_false_positive_count": 1,
+          "normal_false_positive_rate": 0.25,
+          "ms_mean": 79.29429977344205,
+          "ms_median": 74.11011200002804,
+          "gated_count": 75,
+          "n_views": 2,
+          "view_ids": [
+            "id",
+            "h"
+          ]
+        },
+        "hflip_scale": {
+          "n": 256,
+          "dice_mean": 0.562613660346623,
+          "dice_ci95": [
+            0.5144811520668926,
+            0.6119774485504599
+          ],
+          "iou_mean": 0.497795706188078,
+          "iou_ci95": [
+            0.454660698598937,
+            0.5442766258767257
+          ],
+          "lesion_dice_mean": 0.563607527962963,
+          "lesion_dice_ci95": [
+            0.5146355772133135,
+            0.6126190401437079
+          ],
+          "lesion_n": 252,
+          "cls_roc_auc": 0.7577524516300027,
+          "normal_n": 4,
+          "normal_false_positive_count": 2,
+          "normal_false_positive_rate": 0.5,
+          "ms_mean": 162.29136358203888,
+          "ms_median": 170.95222249992048,
+          "gated_count": 76,
+          "n_views": 4,
+          "view_ids": [
+            "id",
+            "h",
+            "s095",
+            "s105"
+          ]
+        },
+        "hflip_shift": {
+          "n": 256,
+          "dice_mean": 0.5614696385194152,
+          "dice_ci95": [
+            0.5126812018115724,
+            0.610283441193684
+          ],
+          "iou_mean": 0.4954874421388713,
+          "iou_ci95": [
+            0.4515385691558379,
+            0.5423740828704681
+          ],
+          "lesion_dice_mean": 0.5624453470616866,
+          "lesion_dice_ci95": [
+            0.5081968749246449,
+            0.6151043741570801
+          ],
+          "lesion_n": 252,
+          "cls_roc_auc": 0.7338324940365758,
+          "normal_n": 4,
+          "normal_false_positive_count": 2,
+          "normal_false_positive_rate": 0.5,
+          "ms_mean": 103.2740180664118,
+          "ms_median": 72.09485149996908,
+          "gated_count": 75,
+          "n_views": 6,
+          "view_ids": [
+            "id",
+            "h",
+            "u4",
+            "d4",
+            "l4",
+            "r4"
+          ]
+        }
+      }
+    },
+    "busuclm": {
+      "available": false,
+      "error": "BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) often returns HTTP 403 without interactive login. Download the zip locally, extract under data/external/busuclm/ (see docs/BUSUCLM_STEPS.md), then re-run."
+    }
+  },
+  "decision": {
+    "recommend_ship": false,
+    "chosen_preset": null,
+    "candidates": [
+      {
+        "preset": "hflip2",
+        "keep": false,
+        "dice_delta": 0.0078075686001913835,
+        "lesion_dice_delta": -0.0013500249017406318,
+        "auc_delta": 0.004232804232804255,
+        "time_ratio": 1.955582813257452,
+        "normal_fp_delta": -1,
+        "outline_better": false,
+        "auc_ok": true,
+        "time_ok": true
+      },
+      {
+        "preset": "hflip_scale",
+        "keep": false,
+        "dice_delta": 0.01772449708473589,
+        "lesion_dice_delta": -0.010912433594219673,
+        "auc_delta": 0.013756613756613856,
+        "time_ratio": 3.8994697351079575,
+        "normal_fp_delta": -3,
+        "outline_better": false,
+        "auc_ok": true,
+        "time_ok": false
+      },
+      {
+        "preset": "hflip_shift",
+        "keep": false,
+        "dice_delta": 0.007175002774693184,
+        "lesion_dice_delta": -0.002111824598745371,
+        "auc_delta": 0.006878306878306817,
+        "time_ratio": 5.82109126279346,
+        "normal_fp_delta": -1,
+        "outline_better": false,
+        "auc_ok": true,
+        "time_ok": false
+      }
+    ],
+    "rule": "Ship only if lesion/all Dice improves (>0.001), AUC drop \u2264 0.005, and offline ONNX time ratio \u2264 ~2.15\u00d7 (proxy for browser ~2\u00d7).",
+    "plain": "Do not turn on averaging in the demo. On the BUSI held-out set, averaging a flip raised the all-image Dice a little (mostly by clearing one more false outline on a normal scan) but lesion Dice did not improve. Outside sets BUS-BRA and BrEaST lost outline Dice. Browser time was about 2.0\u00d7 for two views \u2014 at the limit of \u201creasonable,\u201d but accuracy did not earn the cost. Served weights stay v1.0.0; demo UI unchanged."
+  },
+  "plain_summary": "Tried averaging the outline and the harmless/cancerous score over a few slightly changed views of the same image (flip, optional small shift/zoom), then put each view back before averaging. Same served model weights.",
+  "browser_timing": {
+    "n_images": 6,
+    "single_ms_mean": 150.5000000000388,
+    "hflip2_ms_mean": 305.3333333333333,
+    "ratio": 2.0287929125133197,
+    "per_image": [
+      {
+        "id": "busi-test-00",
+        "singleMs": 209.90000000002328,
+        "avgMs": 412.9000000000233,
+        "singleCls": 0.04138866066932678,
+        "avgCls": 0.4454973489046097,
+        "softMax": 0.9975654482841492
+      },
+      {
+        "id": "busi-test-01",
+        "singleMs": 160.80000000004657,
+        "avgMs": 324,
+        "singleCls": 0.0001431107521057129,
+        "avgCls": 0.000637739896774292,
+        "softMax": 0.9999992847442627
+      },
+      {
+        "id": "busi-test-02",
+        "singleMs": 152.59999999997672,
+        "avgMs": 301.5999999999767,
+        "singleCls": 0.9326413869857788,
+        "avgCls": 0.9561581313610077,
+        "softMax": 0.9940716028213501
+      },
+      {
+        "id": "busi-test-03",
+        "singleMs": 126.60000000009313,
+        "avgMs": 264.5,
+        "singleCls": 0.9994451999664307,
+        "avgCls": 0.9993844628334045,
+        "softMax": 0.9988340139389038
+      },
+      {
+        "id": "busi-test-04",
+        "singleMs": 125.90000000002328,
+        "avgMs": 265.5,
+        "singleCls": 0.9782953262329102,
+        "avgCls": 0.9765691161155701,
+        "softMax": 0.9972864985466003
+      },
+      {
+        "id": "busi-test-05",
+        "singleMs": 127.20000000006985,
+        "avgMs": 263.5,
+        "singleCls": 0.9775909185409546,
+        "avgCls": 0.9791616797447205,
+        "softMax": 0.15579554438591003
+      }
+    ],
+    "note": "Chromium via vite preview on this VM; model download excluded (warmup). Soft-mask average of original + horizontal flip."
+  },
+  "overlap_note": "Another agent is re-scoring outside sets with the no-lump gate on a separate branch. This experiment writes results/tta_averaging*.json and docs/TTA_AVERAGING.md only \u2014 it does not edit results/no_lump_gate.json or the Results page no-lump section."
+}

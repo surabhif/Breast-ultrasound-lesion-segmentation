@@ -3,6 +3,29 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
+## [Unreleased] — Test-time averaging experiment (2026-11-21)
+
+**In plain words:** Tried averaging the outline and the harmless/cancerous score over a few flipped/shifted/zoomed views of each image (no retraining). It did **not** earn a place in the demo. Served model stays **v1.0.0**.
+
+### Added
+
+- Offline eval `scripts/eval_tta_averaging.py` → `results/tta_averaging.json` (BUSI held-out + BUS-BRA / BrEaST when present; 0.96 no-lump gate; bootstrap CIs).
+- In-browser timing helper `scripts/measure_tta_browser_time.mjs` (~2.0× for original + horizontal flip).
+- Plain write-up `docs/TTA_AVERAGING.md` with the comparison table and the no-ship decision.
+
+### Not changed
+
+- Demo UI (no Fast/Steadier toggle), Results no-lump section, model weights, credit line, disclaimer, dark mode.
+
+### BUSI held-out (gate on; headline)
+
+| Setting | Dice | Lesion Dice | AUC | Normal FP | Browser ms (≈) |
+|---|---|---|---|---|---|
+| Single | 0.710 | 0.758 | 0.929 | 10/19 | ~151 |
+| Flip average (2) | 0.718 | 0.757 | 0.933 | 9/19 | ~305 (~2.0×) |
+
+Outside outline Dice fell on BUS-BRA and BrEaST with averaging. Full table in `docs/TTA_AVERAGING.md`.
+
 ## [Unreleased] — Five site upgrades (2026-11-03)
 
 **In plain words:** Five small site upgrades on top of the Model Errors explorer and demo threshold controls. The served model stays **v1.0.0** — no weight, default threshold (including the 0.96 no-lump display gate), or reported-metric changes.
