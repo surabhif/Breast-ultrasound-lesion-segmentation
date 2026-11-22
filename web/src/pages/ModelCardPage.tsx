@@ -121,10 +121,13 @@ export default function ModelCardPage() {
       <h2 id="limitations">Limitations</h2>
       <ul>
         <li>
-          Domain shift: on outside sets, outline scores stay nearer the home score (BUS-BRA ≈ 0.714,
-          BrEaST ≈ 0.627, BUS-UCLM lump-only ≈ 0.679) while telling harmless from cancerous drops
-          (ranking scores ≈ 0.638 / 0.721 / 0.780 vs ≈ 0.931 at home). BUS-UCLM overall Dice ≈ 0.386
-          is dragged down by 320/413 false outlines on normal (no lump) images.
+          Domain shift: on outside sets, raw outline scores stay nearer the home score (BUS-BRA ≈
+          0.714, BrEaST ≈ 0.627, BUS-UCLM lump-only ≈ 0.679) while telling harmless from cancerous
+          drops (ranking scores ≈ 0.638 / 0.721 / 0.780 vs ≈ 0.931 at home). With the display-only
+          no-lump gate (hide when peak soft-mask is below 0.96), BUS-BRA Dice falls to ≈ 0.653 and
+          BrEaST to ≈ 0.572 — worse than raw; AUC unchanged. BUS-UCLM was not re-scored with the gate
+          when the archive was unavailable. BUS-UCLM overall Dice ≈ 0.386 is dragged down by 320/413
+          false outlines on normal (no lump) images.
         </li>
         <li>No patient IDs → residual risk from near-identical photos</li>
         <li>Caliper and on-screen text may still act as shortcuts</li>

@@ -1,0 +1,132 @@
+{
+  "label": "Outside-set re-score with display-only no-lump gate",
+  "disclaimer": "Research demo. Not for clinical use. Display option only. Model weights unchanged.",
+  "mask_max_thr": 0.96,
+  "model_version": "1.0.0",
+  "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+  "datasets": {
+    "busbra": {
+      "dataset": "busbra",
+      "model_version": "1.0.0",
+      "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+      "protocol": "docs/EXTERNAL_VALIDATION_PROTOCOL.md",
+      "gate": {
+        "rule": "Hide outline when peak soft-mask value is below threshold (display only).",
+        "mask_max_thr": 0.96,
+        "source": "results/no_lump_gate.json (PR #19; chosen on BUSI validation fold 0)",
+        "seg_threshold": 0.4,
+        "min_component_area": 40
+      },
+      "n": 1875,
+      "n_patients": 1064,
+      "n_normal": 0,
+      "n_hidden": 322,
+      "n_hidden_lesion": 322,
+      "raw": {
+        "test_dice": 0.7136202288207832,
+        "test_dice_bootstrap_95ci": [
+          0.6991090300120892,
+          0.7273477360554241
+        ],
+        "lesion_dice": 0.7136202288207832,
+        "lesion_dice_bootstrap_95ci": [
+          0.6991090300120892,
+          0.7273477360554241
+        ],
+        "test_iou": 0.6089462137607652,
+        "test_iou_bootstrap_95ci": [
+          0.59467916744832,
+          0.622259380642315
+        ],
+        "cls_roc_auc": 0.6380587416003618,
+        "normal_false_positive_count": null,
+        "normal_n": 0
+      },
+      "with_no_lump_gate": {
+        "test_dice": 0.6525358324785119,
+        "test_dice_bootstrap_95ci": [
+          0.6346435932898864,
+          0.6701588029703036
+        ],
+        "lesion_dice": 0.6525358324785119,
+        "lesion_dice_bootstrap_95ci": [
+          0.6346435932898864,
+          0.6701588029703036
+        ],
+        "test_iou": 0.5619431400469631,
+        "test_iou_bootstrap_95ci": [
+          0.5444964037495562,
+          0.5779779075739543
+        ],
+        "cls_roc_auc": 0.6380587416003618,
+        "normal_false_positive_count": null,
+        "normal_n": 0,
+        "lesion_dice_drop": 0.06108439634227136
+      },
+      "plain_summary": "Lump-only Dice got worse (0.714 \u2192 0.653; drop 0.061). This set has no normal (no-lump) scans, so false-outline rate does not apply. AUC is unchanged (the display gate does not touch the class score)."
+    },
+    "breast": {
+      "dataset": "breast",
+      "model_version": "1.0.0",
+      "model_sha256": "0bbf529dcb46f1f4c01c781f11976e4c0cdca7fc5b2f2b814f028af847743570",
+      "protocol": "docs/EXTERNAL_VALIDATION_PROTOCOL.md",
+      "gate": {
+        "rule": "Hide outline when peak soft-mask value is below threshold (display only).",
+        "mask_max_thr": 0.96,
+        "source": "results/no_lump_gate.json (PR #19; chosen on BUSI validation fold 0)",
+        "seg_threshold": 0.4,
+        "min_component_area": 40
+      },
+      "n": 256,
+      "n_patients": 256,
+      "n_normal": 4,
+      "n_hidden": 66,
+      "n_hidden_lesion": 64,
+      "raw": {
+        "test_dice": 0.6265385719593876,
+        "test_dice_bootstrap_95ci": [
+          0.5808692692878173,
+          0.6696840634359242
+        ],
+        "lesion_dice": 0.6285471207148108,
+        "lesion_dice_bootstrap_95ci": [
+          0.5808381083638959,
+          0.6728557008031967
+        ],
+        "test_iou": 0.5429766589527398,
+        "test_iou_bootstrap_95ci": [
+          0.500271066347354,
+          0.5831589028743634
+        ],
+        "cls_roc_auc": 0.7206467002385369,
+        "normal_false_positive_count": 2,
+        "normal_n": 4
+      },
+      "with_no_lump_gate": {
+        "test_dice": 0.5717967055437138,
+        "test_dice_bootstrap_95ci": [
+          0.5245798744152547,
+          0.6196522043507648
+        ],
+        "lesion_dice": 0.5729363357846022,
+        "lesion_dice_bootstrap_95ci": [
+          0.522658864708464,
+          0.6224325988135084
+        ],
+        "test_iou": 0.5015664040007146,
+        "test_iou_bootstrap_95ci": [
+          0.4580681457960466,
+          0.5464858595589401
+        ],
+        "cls_roc_auc": 0.7206467002385369,
+        "normal_false_positive_count": 2,
+        "normal_n": 4,
+        "lesion_dice_drop": 0.055610784930208546
+      },
+      "plain_summary": "Lump-only Dice got worse (0.629 \u2192 0.573; drop 0.056). False outlines on normal scans: 2/4 \u2192 2/4. AUC is unchanged (the display gate does not touch the class score)."
+    }
+  },
+  "skipped": {
+    "busuclm": "BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) often returns HTTP 403 without interactive login. Download the zip locally, extract under data/external/busuclm/ (see docs/BUSUCLM_STEPS.md), then re-run."
+  }
+}

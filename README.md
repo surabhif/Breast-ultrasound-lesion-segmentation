@@ -45,10 +45,12 @@ Numbers below are for the **served browser model (v1.0.0)**. Outline-overlap sco
 
 | Dataset | Outline-overlap (Dice) | Lump-only Dice | Harmless vs cancerous (AUC) | Notes |
 |---------|------------------------|----------------|-----------------------------|-------|
-| BUSI (held-out test) | **0.697** | **0.764** | **0.931** | n=112 |
-| BUS-BRA | **0.714** | 0.714 | **0.638** | Outside set |
-| BrEaST | **0.627** | 0.629 | **0.721** | Outside set |
-| BUS-UCLM | **0.386** | **0.679** | **0.780** | 640 images / 38 patients |
+| BUSI (held-out test) | **0.697** | **0.764** | **0.931** | n=112; raw browser scores |
+| BUS-BRA (raw) | **0.714** [0.699, 0.727] | **0.714** [0.699, 0.727] | **0.638** | Outside set; IoU 0.609 |
+| BUS-BRA (with no-lump gate) | **0.653** [0.635, 0.670] | **0.653** [0.635, 0.670] | **0.638** (unchanged) | Gate makes Dice **worse** here; no normal scans |
+| BrEaST (raw) | **0.627** [0.581, 0.670] | **0.629** [0.581, 0.673] | **0.721** | Outside set; IoU 0.543; false outlines 2/4 |
+| BrEaST (with no-lump gate) | **0.572** [0.525, 0.620] | **0.573** [0.523, 0.622] | **0.721** (unchanged) | Gate makes Dice **worse**; false outlines stay **2/4** |
+| BUS-UCLM (raw only) | **0.386** [0.326, 0.449] | **0.679** [0.593, 0.755] | **0.780** | 640 images / 38 patients; false outlines 320/413. **Not re-scored with the gate on this VM** (Mendeley archive unavailable / HTTP 403) |
 
 A bigger v2 model was tried; it was not better on fair tests, so v1 stays.
 
@@ -150,7 +152,7 @@ ONNX I/O: `input` `[N,3,160,160]` → `seg_mask` `[N,1,160,160]`, `cls_prob` `[N
 
 ## Limitations
 
-- Outside checks (frozen v1.0.0): BUS-BRA Dice **0.714** / AUC **0.638**; BrEaST Dice **0.627** / AUC **0.721**; BUS-UCLM all-image Dice **0.386** / lesion Dice **0.679** / AUC **0.780** (320/413 false outlines on normal scans; internal Dice 0.697 / AUC 0.931). See Results on the site.
+- Outside checks (frozen v1.0.0): **raw** BUS-BRA Dice **0.714** / AUC **0.638**; BrEaST Dice **0.627** / AUC **0.721**; BUS-UCLM all-image Dice **0.386** / lesion Dice **0.679** / AUC **0.780** (320/413 false outlines on normal scans; internal Dice 0.697 / AUC 0.931). With the display-only no-lump gate (peak soft-mask below 0.96): BUS-BRA Dice **0.653**, BrEaST Dice **0.572** — both **worse** than raw; AUC unchanged; BrEaST normal false outlines stay 2/4. BUS-UCLM was **not** re-scored with the gate here (dataset not on the VM). See Results → “Hide outline if likely no lump” and `results/no_lump_gate.json`.
 - No patient IDs  
 - Caliper detector is a heuristic, not OCR  
 - 160² resolution for CPU/browser practicality  

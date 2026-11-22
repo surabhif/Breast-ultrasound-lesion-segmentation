@@ -40,7 +40,8 @@ First freeze-ready release of the breast ultrasound lesion segmentation research
 
 - Frozen **v1.0.0** scored on **BUS-BRA** and **BrEaST** (no outside tuning)
 - BUS-BRA Dice **0.714** / AUC **0.638**; BrEaST Dice **0.627** / AUC **0.721**
-- BUS-UCLM scored (owner local copy): all-image Dice **0.386**, lesion Dice **0.679**, AUC **0.780** (320/413 false outlines on normal scans; 43 Doppler/combined frames excluded)
+- Display-only no-lump gate (peak soft-mask &lt; 0.96) re-score: BUS-BRA Dice **0.653**, BrEaST Dice **0.572** (both **worse** than raw); AUC unchanged; BrEaST normal FPs stay 2/4. See `results/no_lump_gate.json`.
+- BUS-UCLM scored (owner local copy): all-image Dice **0.386**, lesion Dice **0.679**, AUC **0.780** (320/413 false outlines on normal scans; 43 Doppler/combined frames excluded). Gate not re-applied when the archive is unavailable on a given machine.
 - Demo: expert-vs-model compare, lesion measurements; BrEaST measurement agreement offline
 - Leakage ablation (grouped vs random splits); literature comparison page
 

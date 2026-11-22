@@ -99,7 +99,7 @@ You can say:
 
 ## External validation (Phase 1)
 
-The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA**, **BrEaST**, and **BUS-UCLM** with the pre-registered protocol (no tuning). Dice stayed in a similar ballpark to BUSI on BUS-BRA, but **benign-vs-malignant AUC dropped a lot** under shift. On BUS-UCLM, all-image Dice is low (~0.386) mainly because of **normal false positives** (320/413); lesion-only Dice (~0.679) is the fairer comparison. Honest headline: segmentation transfers better than the auxiliary classifier when lesions are present, but normals remain a known weakness.
+The frozen served model (`v1.0.0` INT8) was also scored on **BUS-BRA**, **BrEaST**, and **BUS-UCLM** with the pre-registered protocol (no tuning). **Raw** Dice stayed in a similar ballpark to BUSI on BUS-BRA, but **benign-vs-malignant AUC dropped a lot** under shift. The display-only no-lump gate (hide outline when peak soft-mask &lt; 0.96) was re-applied on BUS-BRA and BrEaST with the same scripts: Dice got **worse** (BUS-BRA 0.714 → 0.653; BrEaST 0.627 → 0.572); AUC unchanged; BrEaST normal false outlines stayed 2/4. BUS-UCLM was not re-scored with the gate when the archive was unavailable. On BUS-UCLM, all-image Dice is low (~0.386) mainly because of **normal false positives** (320/413); lesion-only Dice (~0.679) is the fairer comparison. Honest headline: segmentation transfers better than the auxiliary classifier when lesions are present, but normals remain a known weakness, and the 0.96 display gate does not help outside Dice.
 
 ## Phase 2: checking reliability and uncertainty
 

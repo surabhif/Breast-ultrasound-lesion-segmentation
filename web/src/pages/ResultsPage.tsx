@@ -228,8 +228,22 @@ type ScoresPayload = {
   }[]
 }
 
+type GateMetrics = {
+  test_dice?: number
+  test_dice_bootstrap_95ci?: [number, number]
+  lesion_dice?: number
+  lesion_dice_bootstrap_95ci?: [number, number]
+  test_iou?: number
+  test_iou_bootstrap_95ci?: [number, number]
+  cls_roc_auc?: number | null
+  normal_false_positive_count?: number | null
+  normal_n?: number
+  lesion_dice_drop?: number
+}
+
 type NoLumpGate = {
   plain_summary?: string
+  plain_summary_external?: string
   busuclm_note?: string
   selection?: {
     mask_max_thr?: number
@@ -256,10 +270,18 @@ type NoLumpGate = {
   external?: Record<
     string,
     {
+      scored?: boolean
+      unavailable_on_vm?: boolean
       note?: string
-      lesion_dice_before?: number
-      normal_fp_before?: number
+      plain_summary?: string
+      n?: number
       n_normal?: number
+      lesion_dice_before?: number
+      lesion_dice_after?: number
+      normal_fp_before?: number | null
+      normal_fp_after?: number | null
+      raw?: GateMetrics
+      with_no_lump_gate?: GateMetrics
     }
   >
 }
@@ -1091,14 +1113,108 @@ export default function ResultsPage() {
             {fmt(noLumpGate.busi_test.lesion_dice_drop)} (limit 0.01). Overall Dice{' '}
             {fmt(noLumpGate.busi_test.dice_all_before)} → {fmt(noLumpGate.busi_test.dice_all_after)}{' '}
             out of 1. Default:{' '}
-            {noLumpGate.selection?.default_on ? 'on' : 'off'}.
+            {noLumpGate.selection?.default_on ? 'on' : 'off'}. BUSI held-out numbers above were not
+            changed by the outside-set re-score.
           </p>
-          {noLumpGate.busuclm_note && <p className="muted tiny">{noLumpGate.busuclm_note}</p>}
-          {noLumpGate.external && (
-            <p className="muted tiny">
-              BUS-BRA / BrEaST: outside per-image files do not include soft-mask peaks, so this
-              confidence gate was not re-scored case-by-case without those image archives.
-            </p>
+          {noLumpGate.external && Object.keys(noLumpGate.external).length > 0 && (
+            <>
+              <h3 className="section-title" style={{ marginTop: '1rem', fontSize: '1.05rem' }}>
+                Outside sets: raw vs with no-lump gate
+              </h3>
+              <p>
+                Same frozen v1.0.0 model, same preprocessing and thresholds as the published outside
+                scores. The gate value stays 0.96. <strong>Raw</strong> means the outline as the model
+                draws it; <strong>with no-lump gate</strong> means the outline is hidden when the
+                strongest outline pixel is below 0.96. AUC does not change. Where a number gets worse,
+                we say so.
+              </p>
+              {noLumpGate.plain_summary_external && (
+                <p className="muted tiny">{noLumpGate.plain_summary_external}</p>
+              )}
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Set</th>
+                      <th>Overall Dice raw → gated</th>
+                      <th>Lump-only Dice raw → gated</th>
+                      <th>IoU raw → gated</th>
+                      <th>AUC (unchanged)</th>
+                      <th>False outlines on normal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(noLumpGate.external).map(([name, row]) => {
+                      const label =
+                        name === 'busbra'
+                          ? 'BUS-BRA'
+                          : name === 'breast'
+                            ? 'BrEaST'
+                            : name === 'busuclm'
+                              ? 'BUS-UCLM'
+                              : name
+                      if (!row.scored || !row.raw || !row.with_no_lump_gate) {
+                        return (
+                          <tr key={name}>
+                            <td>{label}</td>
+                            <td colSpan={5}>
+                              Not re-scored here
+                              {row.note ? `: ${row.note}` : '.'}
+                            </td>
+                          </tr>
+                        )
+                      }
+                      const r = row.raw
+                      const g = row.with_no_lump_gate
+                      const ci = (
+                        m: GateMetrics | undefined,
+                        key: 'test_dice' | 'lesion_dice' | 'test_iou',
+                      ) => {
+                        const mean = m?.[key]
+                        const band =
+                          key === 'test_dice'
+                            ? m?.test_dice_bootstrap_95ci
+                            : key === 'lesion_dice'
+                              ? m?.lesion_dice_bootstrap_95ci
+                              : m?.test_iou_bootstrap_95ci
+                        return (
+                          <>
+                            {fmt(mean)} [{fmt(band?.[0])}, {fmt(band?.[1])}]
+                          </>
+                        )
+                      }
+                      const fp =
+                        r.normal_n && r.normal_n > 0
+                          ? `${r.normal_false_positive_count}/${r.normal_n} → ${g.normal_false_positive_count}/${g.normal_n}`
+                          : 'n/a (no normal scans)'
+                      return (
+                        <tr key={name}>
+                          <td>{label}</td>
+                          <td>
+                            {ci(r, 'test_dice')} → {ci(g, 'test_dice')}
+                          </td>
+                          <td>
+                            {ci(r, 'lesion_dice')} → {ci(g, 'lesion_dice')}
+                          </td>
+                          <td>
+                            {ci(r, 'test_iou')} → {ci(g, 'test_iou')}
+                          </td>
+                          <td>{fmt(r.cls_roc_auc ?? undefined)}</td>
+                          <td>{fp}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              {noLumpGate.external.busbra?.plain_summary && (
+                <p>{noLumpGate.external.busbra.plain_summary}</p>
+              )}
+              {noLumpGate.external.breast?.plain_summary && (
+                <p>{noLumpGate.external.breast.plain_summary}</p>
+              )}
+              {noLumpGate.busuclm_note && <p className="muted tiny">{noLumpGate.busuclm_note}</p>}
+            </>
           )}
         </section>
       )}

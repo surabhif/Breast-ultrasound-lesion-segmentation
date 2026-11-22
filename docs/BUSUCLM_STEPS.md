@@ -46,6 +46,14 @@ python scripts/eval_external.py
 
 If the archive is missing or pairs cannot be matched, the script prints `SKIP busuclm: …` and continues. When pairs are found, metrics are written to `results/external/busuclm.json` and merged into the `external` block of `web/public/results/metrics.json`.
 
+To re-score with the display-only no-lump gate (peak soft-mask below 0.96; does not change weights):
+
+```bash
+python scripts/eval_external_no_lump_gate.py --datasets busuclm
+```
+
+If the archive is still missing, that script records BUS-UCLM as unavailable and does **not** invent gated numbers (see `results/no_lump_gate.json`).
+
 ## 4. Citation
 
 Vallez et al., *Sci Data* 2025;12:242 — [doi:10.1038/s41597-025-04564-2](https://doi.org/10.1038/s41597-025-04564-2). Dataset: Mendeley [doi:10.17632/7fvgj4jsp7.3](https://doi.org/10.17632/7fvgj4jsp7.3), CC BY 4.0.
