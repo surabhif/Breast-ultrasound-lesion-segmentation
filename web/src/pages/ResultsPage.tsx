@@ -149,6 +149,51 @@ type Metrics = {
     config?: Record<string, unknown>
     busbra_split?: Record<string, unknown>
   }
+  v1_1_experiment?: {
+    served_unchanged?: boolean
+    decision_sentence?: string
+    note?: string
+    promotion_rule?: string
+    best_candidate_id?: string | null
+    best_abbreviated_candidate_id?: string | null
+    mean_pass?: boolean
+    swap_criteria?: {
+      criterion: string
+      rule: string
+      v1?: number | null
+      v2?: number | null
+      delta?: number | null
+      passed: boolean
+      note?: string | null
+    }[]
+    table?: {
+      name: string
+      role?: string
+      candidate_id?: string
+      dice?: number
+      dice_ci95?: number[]
+      lesion_dice?: number
+      lesion_dice_ci95?: number[]
+      iou?: number
+      iou_ci95?: number[]
+      clean_dice?: number
+      auc?: number
+      auc_ci95?: number[]
+      busbra_dice?: number | null
+      breast_dice?: number | null
+      busuclm_dice?: number | null
+      busuclm_lesion_dice?: number | null
+      normal_fp?: number
+      normal_fp_gate_0_96?: number
+      normal_fp_gate_retuned?: number
+      gate_retuned_thr?: number
+      int8_mb?: number
+      img_size?: number
+      latency_ms_p50?: number
+      swap_ok?: boolean | null
+      abbreviated_pass?: boolean
+    }[]
+  }
   uncertainty?: {
     spearman_rho?: number
     spearman_p?: number
@@ -824,6 +869,154 @@ export default function ResultsPage() {
       </section>
 
       {scores && <ThresholdExplorer data={scores} />}
+
+      {data.v1_1_experiment && (
+        <section className="panel" style={{ marginTop: '1rem' }} id="v1-1-comparison">
+          <h2 className="section-title">New model comparison: v1.1 candidates (not served)</h2>
+          <p>
+            {data.v1_1_experiment.note ??
+              'We tried larger BUSI-only U-Nets on the same cleaned data and leakage-safe splits as v1.0.0.'}{' '}
+            Live weights stay <strong>v1.0.0</strong>. Rows labelled candidate are experiment-only.
+            Source: <code>results/v1_1_experiment.json</code>.
+          </p>
+          {data.v1_1_experiment.promotion_rule && (
+            <p className="muted tiny">{data.v1_1_experiment.promotion_rule}</p>
+          )}
+          {data.v1_1_experiment.swap_criteria && data.v1_1_experiment.swap_criteria.length > 0 && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Criterion</th>
+                    <th>Rule</th>
+                    <th>v1.0.0</th>
+                    <th>Best candidate</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.v1_1_experiment.swap_criteria.map((row) => (
+                    <tr key={row.criterion}>
+                      <td>
+                        {row.criterion}
+                        {row.note ? <div className="muted tiny">{row.note}</div> : null}
+                      </td>
+                      <td>{row.rule}</td>
+                      <td>{row.v1 == null ? '—' : row.v1.toFixed(3)}</td>
+                      <td>
+                        {row.v2 == null
+                          ? '—'
+                          : row.delta == null
+                            ? row.v2.toFixed(3)
+                            : `${row.v2.toFixed(3)} (Δ ${row.delta >= 0 ? '+' : ''}${row.delta.toFixed(3)})`}
+                      </td>
+                      <td>{row.passed ? 'Pass' : 'Fail'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <p>
+            {data.v1_1_experiment.decision_sentence ??
+              (data.v1_1_experiment.served_unchanged !== false
+                ? 'No v1.1 candidate replaced v1.0.0; the site keeps serving v1.0.0.'
+                : 'A v1.1 candidate met the rule (still not auto-swapped in this experiment).')}
+            {data.v1_1_experiment.best_abbreviated_candidate_id ? (
+              <>
+                {' '}
+                Featured labelled candidate:{' '}
+                <code>{data.v1_1_experiment.best_abbreviated_candidate_id}</code> (passed Dice+AUC;
+                failed full D3 on outside Dice — not served).
+              </>
+            ) : null}
+          </p>
+          {data.v1_1_experiment.table && data.v1_1_experiment.table.length > 0 && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Setting</th>
+                    <th>Dice [95% CI]</th>
+                    <th>Lesion Dice</th>
+                    <th>IoU</th>
+                    <th>Clean Dice</th>
+                    <th>AUC [95% CI]</th>
+                    <th>BUS-BRA</th>
+                    <th>BrEaST</th>
+                    <th>Normal FP (raw / 0.96 / retuned)</th>
+                    <th>INT8 MB</th>
+                    <th>ORT CPU ms</th>
+                    <th>Swap</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.v1_1_experiment.table.map((row) => (
+                    <tr key={row.name}>
+                      <td>
+                        {row.role === 'candidate' ? (
+                          <>
+                            <span className="muted tiny">candidate</span> {row.name}
+                          </>
+                        ) : (
+                          row.name
+                        )}
+                      </td>
+                      <td>
+                        {fmt(row.dice)}
+                        {row.dice_ci95 && row.dice_ci95.length >= 2
+                          ? ` [${fmt(row.dice_ci95[0])}, ${fmt(row.dice_ci95[1])}]`
+                          : ''}
+                      </td>
+                      <td>{fmt(row.lesion_dice)}</td>
+                      <td>{fmt(row.iou)}</td>
+                      <td>{fmt(row.clean_dice)}</td>
+                      <td>
+                        {fmt(row.auc)}
+                        {row.auc_ci95 && row.auc_ci95.length >= 2
+                          ? ` [${fmt(row.auc_ci95[0])}, ${fmt(row.auc_ci95[1])}]`
+                          : ''}
+                      </td>
+                      <td>{fmt(row.busbra_dice ?? undefined)}</td>
+                      <td>{fmt(row.breast_dice ?? undefined)}</td>
+                      <td>
+                        {row.normal_fp == null
+                          ? '—'
+                          : `${row.normal_fp}${
+                              row.normal_fp_gate_0_96 != null
+                                ? ` / ${row.normal_fp_gate_0_96}`
+                                : ''
+                            }${
+                              row.normal_fp_gate_retuned != null
+                                ? ` / ${row.normal_fp_gate_retuned}`
+                                : ''
+                            }`}
+                      </td>
+                      <td>{fmt(row.int8_mb, 1)}</td>
+                      <td>
+                        {row.latency_ms_p50 == null ? '—' : `${Math.round(row.latency_ms_p50)}`}
+                      </td>
+                      <td>
+                        {row.swap_ok == null ? 'baseline' : row.swap_ok ? 'Pass' : 'Fail'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <details className="tech-details">
+            <summary>Technical details</summary>
+            <p className="muted tiny">
+              Same committed <code>results/splits.json</code> as v1.0.0. Postprocess and no-lump
+              gate tuned on validation fold 0 only. Outside-set scores use each candidate&apos;s
+              native input size with its val-chosen threshold/min-area. Latency is onnxruntime CPU
+              median ms/image (browser WASM is typically slower). BUS-UCLM scored only when local
+              data is present.
+            </p>
+          </details>
+        </section>
+      )}
 
       {data.v2_experiment && (
         <section className="panel" style={{ marginTop: '1rem' }} id="v2-comparison">

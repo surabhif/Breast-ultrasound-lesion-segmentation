@@ -3,6 +3,27 @@
 All notable changes to this project and its served model are documented here.
 Model versions follow [SemVer](https://semver.org/) under `web/public/models/vX.Y.Z/`.
 
+## [Unreleased] — v1.1 candidate comparison (2026-11-21)
+
+**In plain words:** Tried three larger BUSI-only U-Nets on the same cleaned data and frozen splits as v1.0.0. None passed the full swap rule (outside Dice fell). One candidate (`r18_224`) matched/beat v1 on held-out Dice and AUC, so it is shown on Results as a labelled **candidate** only. The served model stays **v1.0.0** — no live weight swap.
+
+### Added
+
+- `scripts/run_v1_1_experiment.py` — train/eval/quantize ResNet-18@224, ResNet-18@256, ResNet-34@224; validation-only postprocess + no-lump gate; bootstrap CIs; external BUS-BRA/BrEaST when present.
+- Results section **New model comparison: v1.1 candidates** (`v1_1_experiment` in `metrics.json`).
+- Plain-language note `docs/V1_1_EXPERIMENT.md` (what was tried, including failures).
+
+### Results (held-out BUSI INT8 vs v1.0.0)
+
+| Setting | Dice | AUC | Clean Dice | BUS-BRA | BrEaST | INT8 MB | Full D3 | Dice+AUC |
+|---|---|---|---|---|---|---|---|---|
+| v1.0.0 | 0.697 | 0.931 | 0.623 | 0.714 | 0.627 | 11.7 | baseline | — |
+| candidate r18@224 | **0.703** | **0.936** | 0.629 | 0.696 | 0.589 | 11.7 | Fail (external) | Pass |
+| candidate r18@256 | 0.674 | 0.926 | 0.593 | 0.633 | 0.575 | 11.7 | Fail | Fail |
+| candidate r34@224 | 0.679 | 0.934 | 0.646 | 0.665 | 0.585 | 21.3 | Fail | Fail |
+
+BUS-UCLM was not available on the Cursor VM for this run (manual download).
+
 ## [Unreleased] — Five site upgrades (2026-11-03)
 
 **In plain words:** Five small site upgrades on top of the Model Errors explorer and demo threshold controls. The served model stays **v1.0.0** — no weight, default threshold (including the 0.96 no-lump display gate), or reported-metric changes.

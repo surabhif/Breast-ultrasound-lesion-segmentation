@@ -10,6 +10,14 @@ Research demo, not for clinical use.
 
 ---
 
+## 2026-11-21 — v1.1 BUSI-only candidates (no live swap)
+
+**Decided:** Train up to three larger BUSI-only candidates (ResNet-18 @ 224/256, ResNet-34 @ 224) on the same cleaned data and committed `results/splits.json` as v1.0.0. Tune postprocess and no-lump gate on validation only. Score frozen test + outside sets. Apply MODEL_POLICY D3 for any live swap; also report the abbreviated Dice+AUC check. **Do not** rewrite `current.json` in this experiment — publish Results comparison only.
+
+**Outcome:** No candidate passed full D3 (outside Dice dropped on BUS-BRA/BrEaST). `r18_224` passed abbreviated Dice+AUC (Dice 0.703 ≥ 0.697, AUC 0.936 ≥ 0.931−0.02) and is labelled as a candidate on `/results`. Served model remains **v1.0.0**. See `docs/V1_1_EXPERIMENT.md` and `results/v1_1_experiment.json`.
+
+---
+
 ## 2026-10-10 — Citation / preprint prep
 
 Prep only — **no tags, releases, or submissions** by agents.

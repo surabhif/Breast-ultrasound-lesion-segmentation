@@ -49,7 +49,7 @@ Numbers below are for the **served browser model (v1.0.0)**. Outline-overlap sco
 | BrEaST | **0.627** | 0.629 | **0.721** | Outside set |
 | BUS-UCLM | **0.386** | **0.679** | **0.780** | 640 images / 38 patients |
 
-A bigger v2 model was tried; it was not better on fair tests, so v1 stays.
+A bigger v2 model was tried; it was not better on fair tests, so v1 stays. BUSI-only v1.1 candidates (larger resolution / ResNet-34) also did not pass the full swap rule — see `docs/V1_1_EXPERIMENT.md`.
 
 <details>
 <summary>Technical details</summary>
@@ -65,9 +65,9 @@ CPU-trained ResNet-18 U-Net, 160×160, grouped held-out test; val-tuned threshol
 | False outlines on normal (no lump) | 12/19 | **12/19** |
 | Artifact size | 46.3 MB | **~11.7 MB** |
 
-Later multi-dataset candidates were compared under a fixed swap rule (same-source held-out BUS-BRA vs BrEaST fully external; seed means). Seed-mean clean Dice failed (0.614 vs 0.623), so the site still serves v1.0.0. An earlier caliper-erase retrain also did not pass the outside-set rule. See Results on the site and `CHANGELOG.md`.
+Later multi-dataset candidates were compared under a fixed swap rule (same-source held-out BUS-BRA vs BrEaST fully external; seed means). Seed-mean clean Dice failed (0.614 vs 0.623), so the site still serves v1.0.0. An earlier caliper-erase retrain also did not pass the outside-set rule. A later BUSI-only v1.1 try (ResNet-18 @ 224/256, ResNet-34 @ 224) had one candidate pass Dice+AUC on the held-out test but fail outside Dice — published as a labelled Results candidate only. See Results on the site, `docs/V1_1_EXPERIMENT.md`, and `CHANGELOG.md`.
 
-Browser scores use the same half-pixel bilinear preprocess + min-area-40 postprocess as evaluation. Sources: `results/full_run.json`, `results/served_int8_test.json`, `results/v2_experiment.json`.
+Browser scores use the same half-pixel bilinear preprocess + min-area-40 postprocess as evaluation. Sources: `results/full_run.json`, `results/served_int8_test.json`, `results/v2_experiment.json`, `results/v1_1_experiment.json`.
 
 Quick baseline (tiny U-Net, 64×64, ~1 min CPU): Dice ≈ 0.42, AUC ≈ 0.80 — see `results/baseline_quick_run.json`.
 

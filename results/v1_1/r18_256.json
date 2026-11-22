@@ -1,0 +1,736 @@
+{
+  "candidate_id": "r18_256",
+  "label": "candidate resnet18 @256\u00b2 (v1.1)",
+  "model_kind": "resnet18",
+  "img_size": 256,
+  "params_millions": 12.127474,
+  "epochs_ran": 32,
+  "best_val_lesion_dice": 0.8182418621018276,
+  "postprocess": {
+    "seg_threshold": 0.45,
+    "min_component_area": 120,
+    "selected_on": "validation_lesion_dice",
+    "val_lesion_dice_at_selection": 0.8187228932560994
+  },
+  "quantization": {
+    "fp32_mb": 46.267,
+    "int8_mb": 11.664
+  },
+  "sha256_int8": "8a884aab39d6ca6c069ca500106bc0a6042e0d1508cec1775ff8090c06772e26",
+  "onnx_int8": "export/v1_1/r18_256/int8.onnx",
+  "test": {
+    "n": 112,
+    "seg_threshold": 0.45,
+    "min_component_area": 120,
+    "dice_mean": 0.6740109838446714,
+    "dice_ci95": [
+      0.6077483896300182,
+      0.7366067230702273
+    ],
+    "iou_mean": 0.6026980830661578,
+    "iou_ci95": [
+      0.5380197897320145,
+      0.662554284187242
+    ],
+    "lesion_dice_mean": 0.7579487117021712,
+    "lesion_dice_ci95": [
+      0.6960281270061136,
+      0.8119239467294638
+    ],
+    "by_label": {
+      "benign": {
+        "n": 63,
+        "dice_mean": 0.7432361650832564,
+        "dice_ci95": [
+          0.6578210415079161,
+          0.8168219249268046
+        ],
+        "iou_mean": 0.6718766883214083
+      },
+      "malignant": {
+        "n": 30,
+        "dice_mean": 0.7888450596018914,
+        "dice_ci95": [
+          0.7232762164960614,
+          0.8335543503359101
+        ],
+        "iou_mean": 0.6724651312286549
+      },
+      "normal": {
+        "n": 19,
+        "dice_mean": 0.263157894857963,
+        "dice_ci95": [
+          0.10526315801547617,
+          0.47368421061033106
+        ],
+        "iou_mean": 0.263157894857963
+      }
+    },
+    "classification": {
+      "n": 93,
+      "decision_threshold": 0.5,
+      "roc_auc": 0.9259259259259259,
+      "accuracy": 0.6989247311827957,
+      "sensitivity": 0.9666666666666667,
+      "specificity": 0.5714285714285714,
+      "ece": 0.22838676873073785,
+      "confusion_matrix": {
+        "labels": [
+          "benign",
+          "malignant"
+        ],
+        "matrix": [
+          [
+            36,
+            27
+          ],
+          [
+            1,
+            29
+          ]
+        ],
+        "row_means_true": true
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0,
+          "threshold": null
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.03333333333333333,
+          "threshold": 0.9943517446517944
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.3333333333333333,
+          "threshold": 0.9726372957229614
+        },
+        {
+          "fpr": 0.047619047619047616,
+          "tpr": 0.3333333333333333,
+          "threshold": 0.9686599969863892
+        },
+        {
+          "fpr": 0.047619047619047616,
+          "tpr": 0.7,
+          "threshold": 0.9380881786346436
+        },
+        {
+          "fpr": 0.06349206349206349,
+          "tpr": 0.7,
+          "threshold": 0.9363155364990234
+        },
+        {
+          "fpr": 0.06349206349206349,
+          "tpr": 0.7666666666666667,
+          "threshold": 0.9259802103042603
+        },
+        {
+          "fpr": 0.07936507936507936,
+          "tpr": 0.7666666666666667,
+          "threshold": 0.9228606224060059
+        },
+        {
+          "fpr": 0.07936507936507936,
+          "tpr": 0.8333333333333334,
+          "threshold": 0.9172753691673279
+        },
+        {
+          "fpr": 0.1111111111111111,
+          "tpr": 0.8333333333333334,
+          "threshold": 0.9131232500076294
+        },
+        {
+          "fpr": 0.1111111111111111,
+          "tpr": 0.8666666666666667,
+          "threshold": 0.9091352820396423
+        },
+        {
+          "fpr": 0.2222222222222222,
+          "tpr": 0.8666666666666667,
+          "threshold": 0.7724097371101379
+        },
+        {
+          "fpr": 0.2222222222222222,
+          "tpr": 0.9333333333333333,
+          "threshold": 0.7310222387313843
+        },
+        {
+          "fpr": 0.30158730158730157,
+          "tpr": 0.9333333333333333,
+          "threshold": 0.6512219905853271
+        },
+        {
+          "fpr": 0.30158730158730157,
+          "tpr": 0.9666666666666667,
+          "threshold": 0.6331649422645569
+        },
+        {
+          "fpr": 0.5555555555555556,
+          "tpr": 0.9666666666666667,
+          "threshold": 0.13774779438972473
+        },
+        {
+          "fpr": 0.5555555555555556,
+          "tpr": 1.0,
+          "threshold": 0.1256069839000702
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0,
+          "threshold": 0.00015479326248168945
+        }
+      ],
+      "calibration": [
+        {
+          "bin_start": 0.0,
+          "bin_end": 0.1,
+          "center": 0.05,
+          "mean_predicted": 0.024191326565212674,
+          "fraction_positive": 0.0,
+          "count": 27
+        },
+        {
+          "bin_start": 0.1,
+          "bin_end": 0.2,
+          "center": 0.15000000000000002,
+          "mean_predicted": 0.13665935397148132,
+          "fraction_positive": 0.2,
+          "count": 5
+        },
+        {
+          "bin_start": 0.2,
+          "bin_end": 0.30000000000000004,
+          "center": 0.25,
+          "mean_predicted": 0.2408907115459442,
+          "fraction_positive": 0.0,
+          "count": 2
+        },
+        {
+          "bin_start": 0.30000000000000004,
+          "bin_end": 0.4,
+          "center": 0.35000000000000003,
+          "mean_predicted": 0.340181827545166,
+          "fraction_positive": 0.0,
+          "count": 1
+        },
+        {
+          "bin_start": 0.4,
+          "bin_end": 0.5,
+          "center": 0.45,
+          "mean_predicted": 0.4657088369131088,
+          "fraction_positive": 0.0,
+          "count": 2
+        },
+        {
+          "bin_start": 0.5,
+          "bin_end": 0.6000000000000001,
+          "center": 0.55,
+          "mean_predicted": 0.5573089569807053,
+          "fraction_positive": 0.0,
+          "count": 4
+        },
+        {
+          "bin_start": 0.6000000000000001,
+          "bin_end": 0.7000000000000001,
+          "center": 0.6500000000000001,
+          "mean_predicted": 0.6413096520635817,
+          "fraction_positive": 0.1111111111111111,
+          "count": 9
+        },
+        {
+          "bin_start": 0.7000000000000001,
+          "bin_end": 0.8,
+          "center": 0.75,
+          "mean_predicted": 0.7484102100133896,
+          "fraction_positive": 0.5,
+          "count": 4
+        },
+        {
+          "bin_start": 0.8,
+          "bin_end": 0.9,
+          "center": 0.8500000000000001,
+          "mean_predicted": 0.8331619600454966,
+          "fraction_positive": 0.0,
+          "count": 6
+        },
+        {
+          "bin_start": 0.9,
+          "bin_end": 1.0,
+          "center": 0.95,
+          "mean_predicted": 0.9552449764627399,
+          "fraction_positive": 0.7878787878787878,
+          "count": 33
+        }
+      ]
+    },
+    "clean_dice": 0.5927947123744328,
+    "clean_dice_ci95": [
+      0.4805094969436653,
+      0.6973141037334902
+    ],
+    "clean_n": 55,
+    "cls_roc_auc": 0.9259259259259259,
+    "cls_roc_auc_ci95": [
+      0.873015873015873,
+      0.9762707328225018
+    ],
+    "normal_false_positive_count": 14,
+    "normal_n": 19
+  },
+  "val_summary": {
+    "n": 134,
+    "seg_threshold": 0.45,
+    "min_component_area": 120,
+    "dice_mean": 0.7244816486691315,
+    "dice_ci95": [
+      0.6690172802614859,
+      0.7779143810622747
+    ],
+    "iou_mean": 0.6498033824777597,
+    "iou_ci95": [
+      0.5974817528394759,
+      0.702217038250188
+    ],
+    "lesion_dice_mean": 0.8115364046459467,
+    "lesion_dice_ci95": [
+      0.7713697873247105,
+      0.8468787707169416
+    ],
+    "by_label": {
+      "benign": {
+        "n": 75,
+        "dice_mean": 0.8301218515482478,
+        "dice_ci95": [
+          0.7793488010199257,
+          0.8717054646294738
+        ],
+        "iou_mean": 0.7514979024398809
+      },
+      "malignant": {
+        "n": 36,
+        "dice_mean": 0.7728167235994859,
+        "dice_ci95": [
+          0.7122351449404776,
+          0.8271587504062143
+        ],
+        "iou_mean": 0.658647515640699
+      },
+      "normal": {
+        "n": 23,
+        "dice_mean": 0.304347826346241,
+        "dice_ci95": [
+          0.1304347827759211,
+          0.5217391305133681
+        ],
+        "iou_mean": 0.304347826346241
+      }
+    },
+    "classification": {
+      "n": 111,
+      "decision_threshold": 0.5,
+      "roc_auc": 0.9014814814814814,
+      "accuracy": 0.7567567567567568,
+      "sensitivity": 0.8888888888888888,
+      "specificity": 0.6933333333333334,
+      "ece": 0.17848445461677004,
+      "confusion_matrix": {
+        "labels": [
+          "benign",
+          "malignant"
+        ],
+        "matrix": [
+          [
+            52,
+            23
+          ],
+          [
+            4,
+            32
+          ]
+        ],
+        "row_means_true": true
+      },
+      "roc_curve": [
+        {
+          "fpr": 0.0,
+          "tpr": 0.0,
+          "threshold": null
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.027777777777777776,
+          "threshold": 0.9939318895339966
+        },
+        {
+          "fpr": 0.0,
+          "tpr": 0.4166666666666667,
+          "threshold": 0.9735302925109863
+        },
+        {
+          "fpr": 0.013333333333333334,
+          "tpr": 0.4166666666666667,
+          "threshold": 0.969498872756958
+        },
+        {
+          "fpr": 0.013333333333333334,
+          "tpr": 0.6388888888888888,
+          "threshold": 0.9339748620986938
+        },
+        {
+          "fpr": 0.02666666666666667,
+          "tpr": 0.6388888888888888,
+          "threshold": 0.9328054189682007
+        },
+        {
+          "fpr": 0.02666666666666667,
+          "tpr": 0.6944444444444444,
+          "threshold": 0.9246248602867126
+        },
+        {
+          "fpr": 0.09333333333333334,
+          "tpr": 0.6944444444444444,
+          "threshold": 0.891912579536438
+        },
+        {
+          "fpr": 0.09333333333333334,
+          "tpr": 0.7222222222222222,
+          "threshold": 0.8815890550613403
+        },
+        {
+          "fpr": 0.12,
+          "tpr": 0.7222222222222222,
+          "threshold": 0.8674212098121643
+        },
+        {
+          "fpr": 0.12,
+          "tpr": 0.7777777777777778,
+          "threshold": 0.8611001968383789
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.7777777777777778,
+          "threshold": 0.8376510143280029
+        },
+        {
+          "fpr": 0.16,
+          "tpr": 0.8055555555555556,
+          "threshold": 0.8090157508850098
+        },
+        {
+          "fpr": 0.21333333333333335,
+          "tpr": 0.8055555555555556,
+          "threshold": 0.7459786534309387
+        },
+        {
+          "fpr": 0.21333333333333335,
+          "tpr": 0.8611111111111112,
+          "threshold": 0.7366952896118164
+        },
+        {
+          "fpr": 0.25333333333333335,
+          "tpr": 0.8611111111111112,
+          "threshold": 0.6166391968727112
+        },
+        {
+          "fpr": 0.25333333333333335,
+          "tpr": 0.8888888888888888,
+          "threshold": 0.5906850099563599
+        },
+        {
+          "fpr": 0.4,
+          "tpr": 0.8888888888888888,
+          "threshold": 0.31796178221702576
+        },
+        {
+          "fpr": 0.4,
+          "tpr": 0.9166666666666666,
+          "threshold": 0.2863837778568268
+        },
+        {
+          "fpr": 0.4266666666666667,
+          "tpr": 0.9166666666666666,
+          "threshold": 0.20023128390312195
+        },
+        {
+          "fpr": 0.4266666666666667,
+          "tpr": 0.9444444444444444,
+          "threshold": 0.19082912802696228
+        },
+        {
+          "fpr": 0.5333333333333333,
+          "tpr": 0.9444444444444444,
+          "threshold": 0.07905194163322449
+        },
+        {
+          "fpr": 0.5333333333333333,
+          "tpr": 0.9722222222222222,
+          "threshold": 0.0788031816482544
+        },
+        {
+          "fpr": 0.8533333333333334,
+          "tpr": 0.9722222222222222,
+          "threshold": 0.00420340895652771
+        },
+        {
+          "fpr": 0.8533333333333334,
+          "tpr": 1.0,
+          "threshold": 0.0038295090198516846
+        },
+        {
+          "fpr": 1.0,
+          "tpr": 1.0,
+          "threshold": 8.845329284667969e-05
+        }
+      ],
+      "calibration": [
+        {
+          "bin_start": 0.0,
+          "bin_end": 0.1,
+          "center": 0.05,
+          "mean_predicted": 0.023717454610726774,
+          "fraction_positive": 0.05128205128205128,
+          "count": 39
+        },
+        {
+          "bin_start": 0.1,
+          "bin_end": 0.2,
+          "center": 0.15000000000000002,
+          "mean_predicted": 0.1427823305130005,
+          "fraction_positive": 0.14285714285714285,
+          "count": 7
+        },
+        {
+          "bin_start": 0.2,
+          "bin_end": 0.30000000000000004,
+          "center": 0.25,
+          "mean_predicted": 0.25519639253616333,
+          "fraction_positive": 0.3333333333333333,
+          "count": 3
+        },
+        {
+          "bin_start": 0.30000000000000004,
+          "bin_end": 0.4,
+          "center": 0.35000000000000003,
+          "mean_predicted": 0.3539116829633713,
+          "fraction_positive": 0.0,
+          "count": 4
+        },
+        {
+          "bin_start": 0.4,
+          "bin_end": 0.5,
+          "center": 0.45,
+          "mean_predicted": 0.4566886027654012,
+          "fraction_positive": 0.0,
+          "count": 3
+        },
+        {
+          "bin_start": 0.5,
+          "bin_end": 0.6000000000000001,
+          "center": 0.55,
+          "mean_predicted": 0.5432121396064759,
+          "fraction_positive": 0.2,
+          "count": 5
+        },
+        {
+          "bin_start": 0.6000000000000001,
+          "bin_end": 0.7000000000000001,
+          "center": 0.6500000000000001,
+          "mean_predicted": 0.6461859047412872,
+          "fraction_positive": 0.0,
+          "count": 2
+        },
+        {
+          "bin_start": 0.7000000000000001,
+          "bin_end": 0.8,
+          "center": 0.75,
+          "mean_predicted": 0.7446566820144653,
+          "fraction_positive": 0.4,
+          "count": 5
+        },
+        {
+          "bin_start": 0.8,
+          "bin_end": 0.9,
+          "center": 0.8500000000000001,
+          "mean_predicted": 0.8496603618065516,
+          "fraction_positive": 0.3333333333333333,
+          "count": 12
+        },
+        {
+          "bin_start": 0.9,
+          "bin_end": 1.0,
+          "center": 0.95,
+          "mean_predicted": 0.9609183188407652,
+          "fraction_positive": 0.8064516129032258,
+          "count": 31
+        }
+      ]
+    },
+    "clean_dice": 0.7087227704289492,
+    "clean_dice_ci95": [
+      0.6284840876399076,
+      0.7870657833386888
+    ],
+    "clean_n": 73,
+    "cls_roc_auc": 0.9014814814814814,
+    "cls_roc_auc_ci95": [
+      0.831159281894576,
+      0.9629491695668166
+    ],
+    "normal_false_positive_count": 16,
+    "normal_n": 23
+  },
+  "no_lump_gate": {
+    "val_tune": {
+      "baseline_val_lesion_dice": 0.8115364046459467,
+      "baseline_val_normal_fp": 16,
+      "retuned": {
+        "mask_max_thr": 0.855,
+        "val_lesion_dice": 0.8080205920087715,
+        "val_lesion_dice_drop": 0.003515812637175153,
+        "val_normal_fp": 15,
+        "val_normal_n": 23,
+        "val_fp_cleared": 1
+      },
+      "fixed_0_96": {
+        "mask_max_thr": 0.96,
+        "val_lesion_dice": 0.7975262118292974,
+        "val_normal_fp": 15
+      }
+    },
+    "test_fixed_0_96": {
+      "mask_max_thr": 0.96,
+      "lesion_dice_before": 0.7579487117021712,
+      "lesion_dice_after": 0.7451767354194518,
+      "lesion_dice_drop": 0.01277197628271931,
+      "normal_fp_before": 14,
+      "normal_fp_after": 9,
+      "normal_n": 19
+    },
+    "test_retuned": {
+      "mask_max_thr": 0.855,
+      "lesion_dice_before": 0.7579487117021712,
+      "lesion_dice_after": 0.7503389111929978,
+      "lesion_dice_drop": 0.00760980050917337,
+      "normal_fp_before": 14,
+      "normal_fp_after": 12,
+      "normal_n": 19
+    }
+  },
+  "latency": {
+    "backend": "onnxruntime_cpu",
+    "note": "CPU ORT latency proxy for in-browser WASM (browser typically slower).",
+    "img_size": 256,
+    "n_runs": 30,
+    "ms_mean": 24.501607633313444,
+    "ms_std": 0.2792088484215178,
+    "ms_p50": 24.458408000100462,
+    "ms_p95": 24.86546439963604
+  },
+  "v1_latency_reference": {
+    "backend": "onnxruntime_cpu",
+    "note": "CPU ORT latency proxy for in-browser WASM (browser typically slower).",
+    "img_size": 160,
+    "n_runs": 30,
+    "ms_mean": 11.93618299997373,
+    "ms_std": 0.13391978992762998,
+    "ms_p50": 11.903440499736462,
+    "ms_p95": 12.193793900178207
+  },
+  "external": {
+    "datasets": {
+      "busbra": {
+        "n": 1875,
+        "dice": 0.6326168526948829,
+        "dice_ci95": [
+          0.6189896323102536,
+          0.6455959506061538
+        ],
+        "lesion_dice": 0.6326168526948829,
+        "lesion_dice_ci95": [
+          0.6189896323102536,
+          0.6455959506061538
+        ],
+        "normal_fp": 0,
+        "normal_n": 0,
+        "auc": 0.6804096788778654
+      },
+      "breast": {
+        "n": 256,
+        "dice": 0.5753117233304532,
+        "dice_ci95": [
+          0.533715032369387,
+          0.6184581079463137
+        ],
+        "lesion_dice": 0.5765071474972914,
+        "lesion_dice_ci95": [
+          0.5341541977584113,
+          0.621385933759975
+        ],
+        "normal_fp": 2,
+        "normal_n": 4,
+        "auc": 0.7763715875960774
+      }
+    },
+    "skipped": {
+      "busuclm": "FileNotFoundError: BUS-UCLM archive not found under data/external/busuclm/. Mendeley Data (doi:10.17632/7fvgj4jsp7.3) often returns HTTP 403 without interactive login. Download the zip locally, extract under data/external/busuclm/ (see docs/BUSUCLM_STEPS.md), then re-run."
+    }
+  },
+  "swap": {
+    "rule": "D3 MODEL_POLICY: clean Dice \u2265 v1, external Dice \u2265 v1, AUC drop \u2264 0.02, INT8 \u2264 ~25 MB",
+    "abbreviated_user_rule": "Dice \u2265 v1 and AUC drop \u2264 0.02",
+    "v1": {
+      "test_dice": 0.6972011494235116,
+      "test_dice_ci95": [
+        0.6318544128007265,
+        0.7656603082162292
+      ],
+      "lesion_dice": 0.7643712765714284,
+      "lesion_dice_ci95": [
+        0.7049727284836597,
+        0.8211196389529184
+      ],
+      "iou": 0.6295263549739772,
+      "iou_ci95": [
+        0.567721238896154,
+        0.6939308107729822
+      ],
+      "auc": 0.9306878306878307,
+      "clean_dice": 0.6229383436474434,
+      "normal_fp": 12,
+      "normal_n": 19,
+      "int8_mb": 11.664,
+      "img_size": 160,
+      "busbra_dice": 0.7136202288207832,
+      "breast_dice": 0.6265385719593876,
+      "busuclm_dice": 0.386,
+      "busuclm_lesion_dice": 0.679,
+      "no_lump_gate_0_96_fp": 10
+    },
+    "candidate": {
+      "dice": 0.6740109838446714,
+      "clean_dice": 0.5927947123744328,
+      "auc": 0.9259259259259259,
+      "busbra_dice": 0.6326168526948829,
+      "breast_dice": 0.5753117233304532,
+      "int8_mb": 11.664
+    },
+    "checks": {
+      "clean_dice_ok": false,
+      "dice_ok": false,
+      "auc_ok": true,
+      "busbra_ok": false,
+      "breast_ok": false,
+      "size_ok": true
+    },
+    "swap_ok": false,
+    "abbreviated_pass": false,
+    "served_unchanged": true
+  },
+  "train_meta": {
+    "train_runtime_seconds": 2820.9290754795074,
+    "best_val_lesion_dice": 0.8182418621018276
+  }
+}
